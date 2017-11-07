@@ -157,14 +157,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Arena.h" />
+    <ClInclude Include="VArray.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
-    <ClInclude Include="Array.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
@@ -228,13 +227,13 @@
     <ClInclude Include="LiquidFun\Particle\b2VoronoiDiagram.h" />
     <ClInclude Include="LiquidFun\Rope\b2Rope.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="Map.h" />
+    <ClInclude Include="VMap.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="String.h" />
+    <ClInclude Include="VString.h" />
     <ClInclude Include="Utilities\Utilities.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vec2.h" />
@@ -372,9 +371,6 @@
     <Image Include="Chili.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Voodoo Sweet Revengine.vssettings">
-      <DependentUpon>Arena.h</DependentUpon>
-    </None>
     <None Include="LiquidFun\Documentation\footer.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

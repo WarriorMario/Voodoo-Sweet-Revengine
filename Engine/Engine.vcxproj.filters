@@ -255,6 +255,15 @@
     <ClInclude Include="Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -461,5 +470,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LiquidFun\Documentation\footer.html" />
+    <None Include="..\Voodoo Sweet Revengine.vssettings" />
   </ItemGroup>
 </Project>
