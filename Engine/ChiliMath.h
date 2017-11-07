@@ -22,9 +22,17 @@
 
 #include <math.h>
 
-constexpr float PI = 3.14159265f;
-constexpr double PI_D = 3.1415926535897932;
-constexpr float epsilon = 1e-4;
+// a few global defines
+static constexpr float PI = 3.1415926535897932384626433832795;
+static constexpr float TWO_PI = 6.283185307179586476925286766559;
+static constexpr float HALF_PI = 1.5707963267948966192313216916398;
+static constexpr float INV_PI = 0.31830988618379067153776752674503;
+static constexpr float INV_TWO_PI = 0.15915494309189533576888376337251;
+static constexpr float INV_FOUR_PI = 0.07957747154594766788444188168626;
+
+static constexpr float INV_LOG2 = 3.3219280948873623478703194294894;
+
+constexpr float epsilon = 1e-5;
 
 template <typename T>
 inline auto sq( const T& x )
@@ -41,6 +49,40 @@ inline T wrap_angle( T theta )
       modded;
 }
 
+inline float Deg2Rad(float deg)
+{
+	return (PI / 180.0f) * deg;
+}
+inline float Rad2Def(float rad)
+{
+	return (180.0f / PI) * rad;
+}
+inline float Log2(float x)
+{
+	return log(x) * INV_LOG2;
+}
+inline int Log2int(float x)
+{
+	return (int)Log2(x);
+}
+inline bool IsPowerOf2(int v)
+{
+	return (v & (v - 1)) == 0;
+}
+inline int RoundUpPow2(int v)
+{
+	v--;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	return v + 1;
+}
+inline float Lerp(float v1, float v2, float t)
+{
+	return (1.0f - t) * v1 + t * v2;
+}
 
 template<typename T>
 inline constexpr T clamp( T val, T low, T high )
@@ -48,32 +90,6 @@ inline constexpr T clamp( T val, T low, T high )
    return val <= low ? low : val >= high ? high : val;
 }
 
-template<typename T>
-void fresnel( T cosi, const T &ior, T &kr )
-{
-   T etai = 1, etat = ior;
-   if ( cosi > 0.0f )
-   {
-      std::swap( etai, etat );
-   }
-   // Compute sini using Snell's law
-   T sint = etai / etat * sqrtf( std::max( 0.f, 1.0f - cosi * cosi ) );
-   // Total internal reflection
-   if ( sint >= 1.0f )
-   {
-      kr = 1.0f;
-   }
-   else
-   {
-      T cost = sqrtf( std::max( 0.f, 1.0f - sint * sint ) );
-      cosi = fabsf( cosi );
-      T Rs = ( ( etat * cosi ) - ( etai * cost ) ) / ( ( etat * cosi ) + ( etai * cost ) );
-      T Rp = ( ( etai * cosi ) - ( etat * cost ) ) / ( ( etai * cosi ) + ( etat * cost ) );
-      kr = ( Rs * Rs + Rp * Rp ) / 2.0f;
-   }
-   // As a consequence of the conservation of energy, transmittance is given by:
-   // kt = 1 - kr;
-}
 template <typename T>
 inline void Swap( T& l, T& r )
 {

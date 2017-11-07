@@ -228,6 +228,7 @@
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Utilities\Utilities.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>

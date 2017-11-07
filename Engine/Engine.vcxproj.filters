@@ -252,6 +252,9 @@
     <ClInclude Include="LiquidFun\Box2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
