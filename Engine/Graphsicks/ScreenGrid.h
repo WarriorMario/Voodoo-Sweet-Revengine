@@ -34,7 +34,7 @@ public:
     {
       for(int j = 0; j < width; ++j, offset += cell_buff_sz)
       {
-        Cell& cell = cells[i * height + j];
+        ScreenGridCell& cell = cells[i * height + j];
         cell.num_indices = 0;
         cell.buff = buff + offset;
       }
