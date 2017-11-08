@@ -30,8 +30,8 @@
 template<int width, int height, int cell_width = 16, int cell_height = 16>
 class Grid
 {
-  constexpr size_t RESOLUTION_X = width * cell_width;
-  constexpr size_t RESOLUTION_Y = height * cell_height;
+  static constexpr size_t RESOLUTION_X = width * cell_width;
+  static constexpr size_t RESOLUTION_Y = height * cell_height;
 
 public:
   struct Cell
