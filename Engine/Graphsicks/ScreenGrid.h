@@ -19,6 +19,8 @@ class ScreenGrid
 
 public:
   static constexpr size_t NUM_CELLS = width*height;
+  static constexpr size_t WIDTH = width;
+  static constexpr size_t HEIGHT= height;
   ScreenGrid()
   {
     static_assert(IsPowerOf2(cell_width));
@@ -58,7 +60,6 @@ public:
       for(int x = start_x; x < end_x; ++x)
       {
         Cell& cell = cells[y*height + x];
-
         cell.indices[cell.num_indices] = primitive_index;
         cell.num_indices++;
       }
