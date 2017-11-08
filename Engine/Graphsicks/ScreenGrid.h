@@ -45,9 +45,11 @@ public:
   }
 
   void PlaceTriangleInCell(Vec3 points[3], int primitive_index)
-  {}
+  {
 
-  void PlaceAABBInCell(RectI rect, int primitive_index)
+  }
+
+  void PlaceAABBInCell(RectI rect, int primitive_index, int primitve_index_2)
   {
     // Calculate grid start and end points
     size_t start_x = Max(rect.left / cell_width, 0);
@@ -61,6 +63,8 @@ public:
       {
         Cell& cell = cells[y*height + x];
         cell.indices[cell.num_indices] = primitive_index;
+        cell.num_indices++;
+        cell.indices[cell.num_indices] = primitve_index_2;
         cell.num_indices++;
       }
     }
