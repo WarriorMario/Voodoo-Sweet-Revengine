@@ -4,7 +4,8 @@
 #include "Colors.h"
 #include "Utility.h"
 
-struct Cell
+
+struct ScreenGridCell
 {
   size_t num_indices;
   size_t indices[64];
@@ -42,8 +43,7 @@ public:
   }
 
   void PlaceTriangleInCell(Vec3 points[3], int primitive_index)
-  {
-  }
+  {}
 
   void PlaceAABBInCell(RectI rect, int primitive_index)
   {
