@@ -161,8 +161,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Graphsicks\PostProcessor.h" />
     <ClInclude Include="Graphsicks\Rasterizer.h" />
     <ClInclude Include="Graphsicks\Renderer.h" />
+    <ClInclude Include="Graphsicks\Shader.h" />
     <ClInclude Include="Graphsicks\ScreenGrid.h" />
     <ClInclude Include="VArray.h" />
     <ClInclude Include="ChiliException.h" />
@@ -250,6 +252,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
+    <ClCompile Include="Graphsicks\Rasterizer.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2BroadPhase.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2CollideCircle.cpp" />
