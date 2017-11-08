@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(Graphics & graphics)
+Renderer::Renderer( Graphics & graphics)
   :
   gfx(graphics)
 {
@@ -13,8 +13,5 @@ void Renderer::Render()
   // rasterizer cells
   //  shade cells
   
-  ApplyPasses(passes, grid, rasterizer);
-
-  Tuple<int, char> str;
-  std::get<0>(str);
+	ApplyPasses(passes, grid , rasterizer);
 }

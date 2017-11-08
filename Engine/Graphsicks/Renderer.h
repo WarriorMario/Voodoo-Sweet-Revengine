@@ -1,7 +1,5 @@
 #pragma once
 #include "Rasterizer.h"
-#include "Graphics.h"
-#include "ScreenGrid.h"
 #include "VTuple.h"
 #include "VArray.h"
 #include "VMove.h"
@@ -14,13 +12,11 @@ template<typename Shader>
 class RenderPass
 {
 public:
-  void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
+	void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
   {
     for(int i = 0; i < commands.size(); ++i)
     {
-      //commands[i].prim_data;
-      Vec3 arr[3];
-      grid.PlaceTriangleInCell(arr, i);
+      grid.PlaceTriangleInCell(commands[i].prim_data, i);
       //rasterizer.RasterizeCells(grid, commands[i]);
     }
   }
@@ -46,7 +42,7 @@ class Renderer
   }
 
 public:
-  Renderer(Graphics& gfx);
+	Renderer(Graphics& gfx);
 
   template<typename Shader>
   void AddDrawCommand(Shader& s)
@@ -55,10 +51,10 @@ public:
   }
   void Render();
 
+  ScreenGrid grid;
 private:
   Rasterizer rasterizer;
   Graphics& gfx;
-  ScreenGrid grid;
   Passes passes;
 };
 

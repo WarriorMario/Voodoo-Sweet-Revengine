@@ -1,5 +1,5 @@
-/****************************************************************************************** 
- *	Chili DirectX Framework Version 16.07.20											  *	
+/******************************************************************************************
+ *	Chili DirectX Framework Version 16.07.20											  *
  *	Game.h																				  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
  *																						  *
@@ -24,12 +24,15 @@
 #include "Mouse.h"
 #include "Graphsicks/Graphics.h"
 #include "LiquidFun/Box2D.h"
+#include "Graphsicks\Renderer.h"
+#include "Triangle.h"
+
 class Game
 {
 public:
-	Game( class MainWindow& wnd, RenderWindow& wnd2 );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
+	Game(class MainWindow& wnd, class RenderWindow& wnd2);
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 	void Go();
 private:
 	void ComposeFrame();
@@ -39,10 +42,13 @@ private:
 	/********************************/
 private:
 	MainWindow& godWindow;
-   RenderWindow& playerWindow;
+	RenderWindow& playerWindow;
 	Graphics gfx;
-   b2World world;
-   b2ParticleSystem* particleSystem;
+	b2World world;
+	b2ParticleSystem* particleSystem;
+	Renderer renderer;
+	Triangle* tri_buff;
+
 	/********************************/
 	/*  User Variables              */
 	/********************************/

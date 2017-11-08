@@ -1,16 +1,7 @@
 #pragma once
-
 #include "Colors.h"
+#include "Vec2.h"
 
-// ****************************************************************************
-template<typename T>
-class ShadeOperation
-{
-public:
-  using PixelData = typename T::PixelData;
-  using ConstData = typename T::ConstData;
-  Color operator()(PixelData&, ConstData&);
-};
 
 // ****************************************************************************
 struct BackgroundShader
@@ -44,9 +35,15 @@ struct ForegroundShader
   ConstData const_data;
   Vec2 prim_data[3];
 };
-template<>
-Color ShadeOperation<BackgroundShader>::operator()(PixelData& pixel_data, ConstData& const_data)
+// ****************************************************************************
+template<typename T>
+class ShadeOperation
 {
-  return Colors::White;
-}
+public:
+	using PixelData = typename T::PixelData;
+	using ConstData = typename T::ConstData;
+	Color operator()(PixelData&, ConstData&);
+};
 
+//template<>
+//Color ShadeOperation<BackgroundShader>::operator()(PixelData& pixel_data, ConstData& const_data);
