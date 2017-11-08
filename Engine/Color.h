@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Colors.h"
-#include "Utilities\Utilities.h"
+#include "Utility.h"
 
 class VectorColor
 {
@@ -189,9 +189,9 @@ public:
 
     void Limit(float value)
     {
-        r = min(r, value);
-        b = min(b, value);
-        g = min(g, value);
+        r = Min(r, value);
+        b = Min(b, value);
+        g = Min(g, value);
     }
 
     Color To32Bit() const

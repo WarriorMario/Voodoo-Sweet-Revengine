@@ -83,35 +83,3 @@ inline float Lerp(float v1, float v2, float t)
 {
 	return (1.0f - t) * v1 + t * v2;
 }
-
-template<typename T>
-inline constexpr T clamp( T val, T low, T high )
-{
-   return val <= low ? low : val >= high ? high : val;
-}
-
-template <typename T>
-inline void Swap( T& l, T& r )
-{
-   T temp = l;
-   l = r;
-   r = temp;
-}
-template <typename T>
-inline T Clamp( T val, T low, T high )
-{
-   T res = val;
-   res = res > high ? high : res;
-   res = res < low ? low : res;
-   return res;
-}
-template <typename T>
-inline T min( T a, T b )
-{
-   return a < b ? a : b;
-}
-template <typename T>
-inline T max( T a, T b )
-{
-   return a > b ? a : b;
-}
