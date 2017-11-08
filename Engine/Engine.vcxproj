@@ -157,8 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\Assets.h" />
+    <ClInclude Include="Assets\Audio.h" />
+    <ClInclude Include="Assets\Resource.h" />
+    <ClInclude Include="Assets\Texture.h" />
+    <ClInclude Include="VMove.h" />
     <ClInclude Include="Graphsicks\Rasterizer.h" />
     <ClInclude Include="Graphsicks\Renderer.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="VArray.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />
@@ -239,6 +245,7 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="VTuple.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
