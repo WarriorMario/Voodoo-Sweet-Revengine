@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClInclude Include="Graphsicks\Rasterizer.h" />
     <ClInclude Include="Graphsicks\Renderer.h" />
+    <ClInclude Include="Graphsicks\ScreenGrid.h" />
     <ClInclude Include="VArray.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />

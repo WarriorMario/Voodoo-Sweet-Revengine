@@ -65,7 +65,7 @@ inline int Log2int(float x)
 {
 	return (int)Log2(x);
 }
-inline bool IsPowerOf2(int v)
+constexpr inline bool IsPowerOf2(int v)
 {
 	return (v & (v - 1)) == 0;
 }
