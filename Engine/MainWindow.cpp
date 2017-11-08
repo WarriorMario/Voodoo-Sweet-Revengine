@@ -20,7 +20,7 @@
 ******************************************************************************************/
 #include "MainWindow.h"
 #include "Resource.h"
-#include "Graphics.h"
+#include "Graphsicks\Graphics.h"
 #include "ChiliException.h"
 #include "Game.h"
 #include <assert.h>

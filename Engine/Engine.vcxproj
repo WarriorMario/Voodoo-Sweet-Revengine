@@ -157,17 +157,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Rasterizer.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Graphsicks\Rasterizer.h" />
+    <ClInclude Include="Graphsicks\Renderer.h" />
     <ClInclude Include="VArray.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />
     <ClInclude Include="ChiliWin.h" />
-    <ClInclude Include="Color.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Graphsicks\Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LiquidFun\Box2D.h" />
     <ClInclude Include="LiquidFun\Collision\b2BroadPhase.h" />
@@ -244,7 +243,7 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2BroadPhase.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2CollideCircle.cpp" />

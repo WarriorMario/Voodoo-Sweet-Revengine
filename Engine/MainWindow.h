@@ -20,7 +20,7 @@
 ******************************************************************************************/
 #pragma once
 #include "ChiliWin.h"
-#include "Graphics.h"
+#include "Graphsicks\Graphics.h"
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "ChiliException.h"

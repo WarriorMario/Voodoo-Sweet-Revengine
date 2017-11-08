@@ -22,7 +22,7 @@
 
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "Graphics.h"
+#include "Graphsicks/Graphics.h"
 #include "LiquidFun/Box2D.h"
 class Game
 {
