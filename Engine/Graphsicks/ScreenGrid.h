@@ -80,6 +80,6 @@ public:
     }
   }
 
-  Cell cells[width * height];
+  ScreenGridCell cells[width * height];
   Color* buff;
 };
