@@ -200,7 +200,7 @@ RenderWindow::RenderWindow( HINSTANCE hInst, wchar_t * pArgs, wchar_t* name, WND
    wr.top = 100;
    wr.bottom = Graphics::ScreenHeight + wr.top;
    AdjustWindowRect( &wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE );
-   hWnd = CreateWindow( name, L"Chili DirectX Framework",
+   hWnd = CreateWindow( name, name,
       WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
       wr.left, wr.top, wr.right - wr.left, wr.bottom - wr.top,
       nullptr, nullptr, hInst, this );
