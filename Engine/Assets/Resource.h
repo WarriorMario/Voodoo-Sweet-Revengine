@@ -19,59 +19,59 @@ template<typename T>
 class Resource
 {
 public:
-	using Base = Resource<T>;
+  using Base = Resource<T>;
 
-	Resource(const Resource& other)
-	{
-		*this = other;
-	}
-	Resource(Resource&& other)
-	{
-		*this = std::move(other);
-	}
-	~Resource()
-	{
-		if (data)
-		{
-			Assets::Get().RemoveRef<T>(filename);
-		}
-	}
+  Resource(const Resource& other)
+  {
+    *this = other;
+  }
+  Resource(Resource&& other)
+  {
+    *this = std::move(other);
+  }
+  ~Resource()
+  {
+    if(data)
+    {
+      Assets::Get().RemoveRef<T>(filename);
+    }
+  }
 
-	Resource& operator=(const Resource& other)
-	{
-		data = other.data;
-	}
-	Resource& operator=(Resource&& other)
-	{
-		data = other.data;
-		other.data = nullptr
-	}
+  Resource& operator=(const Resource& other)
+  {
+    data = other.data;
+  }
+  Resource& operator=(Resource&& other)
+  {
+    data = other.data;
+    other.data = nullptr
+  }
 
 protected:
-	Resource(StringRef filename)
-		:
-		data(nullptr),
-		filename(filename)
-	{
-		if (Assets::Get().HasData<T>(filename))
-		{
-			data = &Assets::Get().GetData<T>(filename);
-		}
-		else
-		{
-			data = ::operator new(sizeof(T::Data));
-			if (!Load(filename, *(T::Data*)data))
-			{
-				delete data;
+  Resource(StringRef filename)
+    :
+    data(nullptr),
+    filename(filename)
+  {
+    if(Assets::Get().HasData<T>(filename))
+    {
+      data = &Assets::Get().GetData<T>(filename);
+    }
+    else
+    {
+      data = ::operator new(sizeof(T::Data));
+      if(!Load(filename, *(T::Data*)data))
+      {
+        delete data;
 
-				// if load failed, use fallback instead
-				data = &Assets::Get().GetFallback<T>();
-			}
-		}
-	}
+        // if load failed, use fallback instead
+        data = &Assets::Get().GetFallback<T>();
+      }
+    }
+  }
 
 private:
-	String filename;
-	const void* data;
+  String filename;
+  const void* data;
 
 };
