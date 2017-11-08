@@ -19,6 +19,7 @@ class ScreenGrid
 
 public:
   static constexpr size_t NUM_CELLS = width*height;
+  static constexpr size_t NUM_CELL_PIXELS = cell_width * cell_height;
   static constexpr size_t WIDTH = width;
   static constexpr size_t HEIGHT= height;
   ScreenGrid()
@@ -72,7 +73,11 @@ public:
 
   void UnPackBuffer(Color* destination)
   {
-
+    for(int i = 0; i < NUM_CELLS; ++i)
+    {
+      memmove(destination, cells[i].buff, NUM_CELL_PIXELS * sizeof(Color));
+      destination += NUM_CELL_PIXELS;
+    }
   }
 
   Cell cells[width * height];
