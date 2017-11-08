@@ -24,6 +24,9 @@
 #include "Mouse.h"
 #include "Graphsicks/Graphics.h"
 #include "LiquidFun/Box2D.h"
+#include "Graphsicks\Renderer.h"
+#include "Triangle.h"
+
 class Game
 {
 public:
@@ -43,6 +46,9 @@ private:
 	Graphics gfx;
    b2World world;
    b2ParticleSystem* particleSystem;
+   Renderer renderer;
+   Triangle* tri_buff;
+
 	/********************************/
 	/*  User Variables              */
 	/********************************/

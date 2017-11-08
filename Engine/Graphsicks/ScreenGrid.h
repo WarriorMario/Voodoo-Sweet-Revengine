@@ -8,9 +8,10 @@
 struct ScreenGridCell
 {
   size_t num_indices;
-  size_t indices[64];
+  size_t indices[8];
   Color* buff;
 };
+
 template<int width, int height, int cell_width, int cell_height>
 class ScreenGrid
 {
@@ -21,7 +22,10 @@ public:
   static constexpr size_t NUM_CELLS = width*height;
   static constexpr size_t NUM_CELL_PIXELS = cell_width * cell_height;
   static constexpr size_t WIDTH = width;
-  static constexpr size_t HEIGHT= height;
+  static constexpr size_t HEIGHT = height;
+  static constexpr size_t CELL_WIDTH = cell_width;
+  static constexpr size_t CELL_HEIGHT = cell_height;
+
   ScreenGrid()
   {
     static_assert(IsPowerOf2(cell_width));
@@ -34,7 +38,7 @@ public:
     {
       for(int j = 0; j < width; ++j, offset += cell_buff_sz)
       {
-        ScreenGridCell& cell = cells[i * height + j];
+        ScreenGridCell& cell = cells[i * width + j];
         cell.num_indices = 0;
         cell.buff = buff + offset;
       }
@@ -54,15 +58,15 @@ public:
   {
     // Calculate grid start and end points
     size_t start_x = Max(rect.left / cell_width, 0);
-    size_t start_y = rect.top / cell_width;
-    size_t end_x = rect.right / cell_width;
-    size_t end_y = rect.bottom / cell_width;
+    size_t start_y = rect.bottom / cell_height;
+    size_t end_x = (rect.right + cell_width - 1) / cell_width;
+    size_t end_y = (rect.top + cell_height - 1) / cell_height;
 
     for(int y = start_y; y < end_y; ++y)
     {
       for(int x = start_x; x < end_x; ++x)
       {
-        Cell& cell = cells[y*height + x];
+        ScreenGridCell& cell = cells[y * width + x];
         cell.indices[cell.num_indices] = primitive_index;
         cell.num_indices++;
         cell.indices[cell.num_indices] = primitve_index_2;

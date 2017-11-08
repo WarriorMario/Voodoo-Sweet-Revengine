@@ -1,26 +1,13 @@
 #pragma once
+#include "Colors.h"
+#include "Graphics.h"
 
-template<typename T>
 class Shader
 {
-  void Shade(T::PrimData&, T::ConstData&);
+public:
+  Shader(Graphics& gfx);
+  void Shade(int x, int y);
+
+public:
+  Graphics& gfx;
 };
-
-struct BG
-{
-  struct PrimData
-  {
-
-  };
-
-  struct ConstData
-  {
-
-  };
-};
-
-template<>
-void Shader<BG>::Shade(BG::PrimData& primData, BG::ConstData& constData)
-{
-
-}
