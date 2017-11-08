@@ -1,26 +1,52 @@
 #pragma once
 
+#include "Colors.h"
+
+// ****************************************************************************
 template<typename T>
-class Shader
+class ShadeOperation
 {
-  void Shade(T::PrimData&, T::ConstData&);
+public:
+  using PixelData = typename T::PixelData;
+  using ConstData = typename T::ConstData;
+  Color operator()(PixelData&, ConstData&);
 };
 
-struct BG
+// ****************************************************************************
+struct BackgroundShader
 {
-  struct PrimData
-  {
-
-  };
-
   struct ConstData
   {
-
+    int color;
   };
+  struct PixelData
+  {
+    float x, y;
+    float u, v;
+  };
+
+  ConstData const_data;
+  Vec2 prim_data[3];
 };
-
-template<>
-void Shader<BG>::Shade(BG::PrimData& primData, BG::ConstData& constData)
+struct ForegroundShader
 {
+  struct ConstData
+  {
+    int color;
+  };
+  struct PixelData
+  {
+    float x, y, z;
+    float u, v;
+    float nx, ny, nz;
+  };
 
+  ConstData const_data;
+  Vec2 prim_data[3];
+};
+template<>
+Color ShadeOperation<BackgroundShader>::operator()(PixelData& pixel_data, ConstData& const_data)
+{
+  return Colors::White;
 }
+

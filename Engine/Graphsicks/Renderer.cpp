@@ -7,10 +7,14 @@ Renderer::Renderer(Graphics & graphics)
 
 }
 
-void Renderer::UnPackToBuffers()
+void Renderer::Render()
 {
-  for(int i = 0; i < grid1920_1080p.NUM_CELLS; ++i)
-  {
+  // place in cells
+  // rasterizer cells
+  //  shade cells
+  
+  ApplyPasses(passes, grid, rasterizer);
 
-  }
+  Tuple<int, char> str;
+  std::get<0>(str);
 }

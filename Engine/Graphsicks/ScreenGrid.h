@@ -4,7 +4,7 @@
 #include "Colors.h"
 #include "Utility.h"
 
-
+// ****************************************************************************
 struct ScreenGridCell
 {
   size_t num_indices;
@@ -12,7 +12,7 @@ struct ScreenGridCell
   Color* buff;
 };
 template<int width, int height, int cell_width, int cell_height>
-class ScreenGrid
+class ScreenGridImpl
 {
   static constexpr size_t RESOLUTION_X = width * cell_width;
   static constexpr size_t RESOLUTION_Y = height * cell_height;
@@ -22,7 +22,7 @@ public:
   static constexpr size_t NUM_CELL_PIXELS = cell_width * cell_height;
   static constexpr size_t WIDTH = width;
   static constexpr size_t HEIGHT= height;
-  ScreenGrid()
+  ScreenGridImpl()
   {
     static_assert(IsPowerOf2(cell_width));
     static_assert(IsPowerOf2(cell_height));
@@ -40,7 +40,7 @@ public:
       }
     }
   }
-  ~ScreenGrid()
+  ~ScreenGridImpl()
   {
     delete[] buff;
   }
@@ -83,3 +83,9 @@ public:
   ScreenGridCell cells[width * height];
   Color* buff;
 };
+
+// ****************************************************************************
+using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
+//using ScreenGrid = ScreenGridImpl<60, 34, 32, 32>;
+//using ScreenGrid = ScreenGridImpl<30, 17, 64, 64>
+//using ScreenGrid = ScreenGridImpl<15, 17, 128, 64>;

@@ -5,9 +5,12 @@ class Grid;
 class Triangle;
 class Shader;
 
+#include "VArray.h"
+
 class Rasterizer
 {
 public:
   // rasterize cells
-  void RasterizeCells(Grid& grid);
+  template<typename Shader>
+  void RasterizeCells(Grid& grid, Array<Shader>& commands);
 };
