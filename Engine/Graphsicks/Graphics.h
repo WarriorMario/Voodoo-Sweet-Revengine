@@ -27,45 +27,6 @@
 #include "Rect.h"
 #include "Utility.h"
 
-template<int width, int height, int cell_width = 16, int cell_height = 16>
-class Grid
-{
-  static constexpr size_t RESOLUTION_X = width * cell_width;
-  static constexpr size_t RESOLUTION_Y = height * cell_height;
-
-public:
-  struct Cell
-  {
-    Color* buff;
-  };
-  Grid()
-  {
-    static_assert(IsPowerOf2(cell_width));
-    static_assert(IsPowerOf2(cell_height));
-
-    buff = new Color[RESOLUTION_X * RESOLUTION_Y];
-    int cell_buff_sz = cell_width * cell_height;
-    int offset = 0;
-    for(int i = 0; i < height; ++i)
-    {
-      for(int j = 0; j < width; ++j, offset += cell_buff_sz)
-      {
-        cells[i * height + j].buff = buff + offset;
-      }
-    }
-  }
-  ~Grid()
-  {
-    delete[] buff;
-  }
-
-private:
-  Cell cells[width * height];
-  Color* buff;
-};
-
-
-
 class Graphics
 {
 public:
