@@ -2,6 +2,7 @@ Categories
 [FILE]	   - File (e.g. move/remove) or file management (e.g. gitignore, guidelines) related changes
 [UTILITY]  - Utility libraries/source code
 [PROJECT]  - IDE project files
+[LIBRARY]  - 3rd party library files
 [ENGINE]   - Engine related work
 [GRAPHICS] - Graphics related work
 [SOUND]	   - Sound related work
