@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "ChiliException.h"
+#include "Utility\Logging.h"
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
@@ -30,6 +31,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
     RenderWindow wnd1(hInst, pArgs);
     try
     {
+      Logger::Get().Init();
+
       Game theGame(wnd, wnd1);
       while(wnd.ProcessMessage() && wnd1.IsOpen())
       {
