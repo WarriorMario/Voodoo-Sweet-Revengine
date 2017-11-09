@@ -258,6 +258,8 @@
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utility\Logging.h" />
+    <ClInclude Include="Utility\ProfileOutput.h" />
+    <ClInclude Include="Utility\Profiling.h" />
     <ClInclude Include="Utility\Timer.h" />
     <ClInclude Include="VMove.h" />
     <ClInclude Include="Singleton.h" />
@@ -412,6 +414,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Utility\Profiling.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
