@@ -51,7 +51,11 @@ public:
 
   void PlaceTriangleInCell(Vec2 points[3], int primitive_index)
   {
-
+	  int maxX = Max(Max(points[0].x, points[1].x), points[2].x);
+	  int maxY = Min(Min(points[0].y, points[1].y), points[2].y);
+	  int minX = Min(Min(points[0].x, points[1].x), points[2].x);
+	  int minY = Max(Max(points[0].y, points[1].y), points[2].y);
+	  PlaceAABBInCell(RectI(minY, maxY, minX, maxX), primitive_index, primitive_index);
   }
 
   void PlaceAABBInCell(RectI rect, int primitive_index, int primitve_index_2)
@@ -77,10 +81,26 @@ public:
 
   void UnPackBuffer(Color* destination)
   {
-    for(int i = 0; i < NUM_CELLS; ++i)
+    for(int i = 0; i < height; ++i)
     {
-      memmove(destination, cells[i].buff, NUM_CELL_PIXELS * sizeof(Color));
-      destination += NUM_CELL_PIXELS;
+      for(int j = 0; j < width; ++j)
+      {
+        ScreenGridCell& cell = cells[i * width + j];
+        Color* cur = &destination[(i * CELL_HEIGHT)*Graphics::ScreenWidth + j*CELL_WIDTH];
+        for(int y = 0; y < cell_height; ++y)
+        {
+          memcpy(cur, &cell.buff[y*cell_width], sizeof(Color)*ScreenGrid::CELL_WIDTH);
+          cur += Graphics::ScreenWidth;
+        }
+      }
+    }
+  }
+
+  void Clear()
+  {
+    for(int i = 0; i < NUM_CELLS ; ++i)
+    {
+      cells[i].num_indices = 0;
     }
   }
 
@@ -89,7 +109,7 @@ public:
 };
 
 // ****************************************************************************
-using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
-//using ScreenGrid = ScreenGridImpl<60, 34, 32, 32>;
+//using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
+using ScreenGrid = ScreenGridImpl<25, 75, 32, 8>;
 //using ScreenGrid = ScreenGridImpl<30, 17, 64, 64>
 //using ScreenGrid = ScreenGridImpl<15, 17, 128, 64>;
