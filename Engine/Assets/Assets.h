@@ -6,7 +6,7 @@
 #include "VMap.h"
 #include "VMove.h"
 
-#include <cassert>
+#include "Utility.h"
 
 // ****************************************************************************
 template<typename... Types>

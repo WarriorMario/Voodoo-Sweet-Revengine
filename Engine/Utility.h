@@ -1,5 +1,6 @@
 #pragma once
 #include "ChiliMath.h"
+#include <cassert>
 
 #ifndef INFINITY
 #define INFINITY FLT_MAX
