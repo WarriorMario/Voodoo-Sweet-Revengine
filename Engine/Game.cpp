@@ -36,6 +36,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   world(b2Vec2(0, 9.81f)),
   renderer(Renderer(gfx))
 {
+  godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
   verts[0] = Vec3(50, 100, 1);
   verts[1] = Vec3(100, 52, 1);
@@ -117,6 +118,10 @@ void Game::Go()
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
 {
+  if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
+  {
+    godWindow.Kill();
+  }
   if(godWindow.mouse.LeftIsPressed() == true)
   {
 	  tri_buff[0] = Triangle(
