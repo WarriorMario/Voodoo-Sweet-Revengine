@@ -17,8 +17,8 @@ public:
     for(int i = 0; i < commands.size(); ++i)
     {
       grid.PlaceTriangleInCell(commands[i].prim_data, i);
-      //rasterizer.RasterizeCells(grid, commands[i]);
     }
+      rasterizer.RasterizeCells(grid, commands);
   }
 
   Array<Shader> commands;
@@ -47,7 +47,7 @@ public:
   template<typename Shader>
   void AddDrawCommand(Shader& s)
   {
-    Get<Shader>(passes).commands.push_back(s);
+    Get<RenderPass<Shader>>(passes).commands.push_back(s);
   }
   void Render();
 

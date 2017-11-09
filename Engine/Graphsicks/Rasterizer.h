@@ -1,5 +1,6 @@
 #include "VArray.h"
 #include "ScreenGrid.h"
+#include "Graphics.h"
 
 class Rasterizer
 {
@@ -9,7 +10,18 @@ public:
   //  Triangle* tri_buff, Shader shader,
   //  int cell_width, int cell_height,
   //  int grid_width, int grid_height);
-
+  template<typename Shader>
+  void RasterizeCells(ScreenGrid& grid, Array<Shader>& commands)
+  {
+    for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
+    {
+      for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+      {
+        RasterizeCell(grid, grid.cells[y * ScreenGrid::WIDTH + x], commands,
+          x, y);
+      }
+    }
+  }
 private:
   // rasterize a single cell. Utility function for public RasterizeCells
   //void RasterizeCell(ScreenGridCell& cell,
@@ -19,18 +31,7 @@ private:
 
   // see if the point is to the right of the line. Utility function for RasterizeCell
   bool IsRightOfLine(const Vec2& v1, const Vec2& v2, const Vec2& p);
-  template<typename Shader>
-  void RasterizeCells(ScreenGrid& grid, Array<Shader>& commands)
-  {
-	  for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
-	  {
-		  for(int x = 0; x < ScreenGrid::WIDTH; ++x)
-		  {
-			  RasterizeCell(ScreenGrid,cells[y * ScreenGrid::WIDTH + x],
-				  x, y);
-		  }
-	  }
-  }
+
 
   template<typename Shader>
   void RasterizeCell(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
@@ -51,7 +52,8 @@ private:
 				  continue;
 			  }
 
-			  shader.gfx.PutPixel((x + start_x), (y + start_y), randColor);
+			  //shader.gfx.PutPixel((x + start_x), (y + start_y), randColor);
+        //cell.buff[y*ScreenGrid::CELL_WIDTH + x] = randColor;
 			  for(int j = 0; j < cell.num_indices; ++j)
 			  {
 				  Vec2 p = Vec2((float)(x + start_x), (float)(y + start_y));
@@ -64,14 +66,7 @@ private:
 
 				  if(is_inside == true)
 				  {
-					  if(j == 0)
-					  {
-						  //shader.Shade((x + start_x), (y + start_y));
-					  }
-					  else
-					  {
-						  //shader.Shade((x + start_x), (y + start_y));
-					  }
+              cell.buff[y*ScreenGrid::CELL_WIDTH + x] = commands[cell.indices[j]].const_data.color;
 				  }
 			  }
 		  }

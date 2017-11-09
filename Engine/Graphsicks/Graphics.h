@@ -30,67 +30,67 @@
 class Graphics
 {
 public:
-	class Exception : public ChiliException
-	{
-	public:
-		Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line );
-		std::wstring GetErrorName() const;
-		std::wstring GetErrorDescription() const;
-		virtual std::wstring GetFullMessage() const override;
-		virtual std::wstring GetExceptionType() const override;
-	private:
-		HRESULT hr;
-	};
+  class Exception : public ChiliException
+  {
+  public:
+    Exception(HRESULT hr, const std::wstring& note, const wchar_t* file, unsigned int line);
+    std::wstring GetErrorName() const;
+    std::wstring GetErrorDescription() const;
+    virtual std::wstring GetFullMessage() const override;
+    virtual std::wstring GetExceptionType() const override;
+  private:
+    HRESULT hr;
+  };
 private:
-	// vertex format for the framebuffer fullscreen textured quad
-	struct FSQVertex
-	{
-		float x,y,z;		// position
-		float u,v;			// texcoords
-	};
+  // vertex format for the framebuffer fullscreen textured quad
+  struct FSQVertex
+  {
+    float x, y, z;		// position
+    float u, v;			// texcoords
+  };
 public:
-	Graphics( class HWNDKey& key, HWNDKey& key2 );
-	Graphics( const Graphics& ) = delete;
-	Graphics& operator=( const Graphics& ) = delete;
-	void EndFrame();
-	void BeginFrame();
-	void PutPixel( int x,int y,Color c );
-   void DrawLine( Vec2 p0, Vec2 p1, Color c );
-   inline void DrawLine(int x1, int y1, int x2, int y2, Color c);
-   inline void DrawLineClip(Vec2 p0, Vec2 p1, Color color, const RectF& clip);
-   void DrawClippedLineCircle(float size, Vec2 pos, unsigned int points, const RectF& clip);
-	~Graphics();
-private:
-	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
-	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				pSysBufferTexture;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	pSysBufferTextureView;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>			pPixelShader;
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>			pVertexShader;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>				pVertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState;
-	D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture;
-	Color*                                              pSysBuffer = nullptr;
+  Graphics(class HWNDKey& key, HWNDKey& key2);
+  Graphics(const Graphics&) = delete;
+  Graphics& operator=(const Graphics&) = delete;
+  void EndFrame();
+  void BeginFrame();
+  void PutPixel(int x, int y, Color c);
+  void DrawLine(Vec2 p0, Vec2 p1, Color c);
+  inline void DrawLine(int x1, int y1, int x2, int y2, Color c);
+  inline void DrawLineClip(Vec2 p0, Vec2 p1, Color color, const RectF& clip);
+  void DrawClippedLineCircle(float size, Vec2 pos, unsigned int points, const RectF& clip);
+  ~Graphics();
+//private:
+  Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
+  Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
+  Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D>				pSysBufferTexture;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	pSysBufferTextureView;
+  Microsoft::WRL::ComPtr<ID3D11PixelShader>			pPixelShader;
+  Microsoft::WRL::ComPtr<ID3D11VertexShader>			pVertexShader;
+  Microsoft::WRL::ComPtr<ID3D11Buffer>				pVertexBuffer;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout;
+  Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState;
+  D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture;
+  Color*                                              pSysBuffer = nullptr;
 
-   Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain2;
-   Microsoft::WRL::ComPtr<ID3D11Device>				pDevice2;
-   Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext2;
-   Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView2;
-   Microsoft::WRL::ComPtr<ID3D11Texture2D>				pSysBufferTexture2;
-   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	pSysBufferTextureView2;
-   Microsoft::WRL::ComPtr<ID3D11PixelShader>			pPixelShader2;
-   Microsoft::WRL::ComPtr<ID3D11VertexShader>			pVertexShader2;
-   Microsoft::WRL::ComPtr<ID3D11Buffer>				pVertexBuffer2;
-   Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout2;
-   Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState2;
-   D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture2;
-   Color*                                              pSysBuffer2 = nullptr;
-   float*                                              pZBuffer2 = nullptr;
+  Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain2;
+  Microsoft::WRL::ComPtr<ID3D11Device>				pDevice2;
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext2;
+  Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView2;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D>				pSysBufferTexture2;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	pSysBufferTextureView2;
+  Microsoft::WRL::ComPtr<ID3D11PixelShader>			pPixelShader2;
+  Microsoft::WRL::ComPtr<ID3D11VertexShader>			pVertexShader2;
+  Microsoft::WRL::ComPtr<ID3D11Buffer>				pVertexBuffer2;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout2;
+  Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState2;
+  D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture2;
+  Color*                                              pSysBuffer2 = nullptr;
+  float*                                              pZBuffer2 = nullptr;
 
 public:
-	static constexpr int ScreenWidth = 800;
-	static constexpr int ScreenHeight = 600;
+  static constexpr int ScreenWidth = 800;
+  static constexpr int ScreenHeight = 600;
 };

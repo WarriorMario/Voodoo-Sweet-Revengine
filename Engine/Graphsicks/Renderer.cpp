@@ -14,4 +14,6 @@ void Renderer::Render()
   //  shade cells
   
 	ApplyPasses(passes, grid , rasterizer);
+  grid.UnPackBuffer(gfx.pSysBuffer);
+  grid.Clear();
 }

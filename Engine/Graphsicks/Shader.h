@@ -8,7 +8,7 @@ struct BackgroundShader
 {
   struct ConstData
   {
-    int color;
+    Color color;
   };
   struct PixelData
   {
@@ -23,7 +23,7 @@ struct ForegroundShader
 {
   struct ConstData
   {
-    int color;
+	  Color color;
   };
   struct PixelData
   {
