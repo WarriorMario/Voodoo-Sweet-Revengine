@@ -338,29 +338,29 @@ Graphics::Graphics( HWNDKey& key, HWNDKey& key2 )
    }
 
 	// allocate memory for sysbuffer (16-byte aligned for faster access)
-	pSysBuffer = reinterpret_cast<Color*>( 
+	god_window_buffer = reinterpret_cast<Color*>( 
 		_aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight,16u ) );
    // allocate memory for sysbuffer (16-byte aligned for faster access)
-   pSysBuffer2 = reinterpret_cast<Color*>(
+   player_window_buffer = reinterpret_cast<Color*>(
       _aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight, 16u ) );
 }
 
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)
-	if( pSysBuffer )
+	if( god_window_buffer )
 	{
-		_aligned_free( pSysBuffer );
-		pSysBuffer = nullptr;
+		_aligned_free( god_window_buffer );
+		god_window_buffer = nullptr;
 	}
 	// clear the state of the device context before destruction
 	if( pImmediateContext ) pImmediateContext->ClearState();
 
    // free sysbuffer memory (aligned free)
-   if ( pSysBuffer2 )
+   if ( player_window_buffer )
    {
-      _aligned_free( pSysBuffer2 );
-      pSysBuffer2 = nullptr;
+      _aligned_free( player_window_buffer );
+      player_window_buffer = nullptr;
    }
    // clear the state of the device context before destruction
    if ( pImmediateContext2 ) pImmediateContext2->ClearState();
@@ -384,7 +384,7 @@ void Graphics::EndFrame()
 	// perform the copy line-by-line
 	for( size_t y = 0u; y < Graphics::ScreenHeight; y++ )
 	{
-		memcpy( &pDst[ y * dstPitch ],&pSysBuffer[y * srcPitch],rowBytes );
+		memcpy( &pDst[ y * dstPitch ],&god_window_buffer[y * srcPitch],rowBytes );
 	}
 	// release the adapter memory
 	pImmediateContext->Unmap( pSysBufferTexture.Get(),0u );
@@ -430,7 +430,7 @@ void Graphics::EndFrame()
    // perform the copy line-by-line
    for ( size_t y = 0u; y < Graphics::ScreenHeight; y++ )
    {
-      memcpy( &pDst[y * dstPitch], &pSysBuffer2[y * srcPitch], rowBytes );
+      memcpy( &pDst[y * dstPitch], &player_window_buffer[y * srcPitch], rowBytes );
    }
    // release the adapter memory
    pImmediateContext2->Unmap( pSysBufferTexture2.Get(), 0u );
@@ -463,9 +463,9 @@ void Graphics::EndFrame()
 void Graphics::BeginFrame()
 {
 	// clear the sysbuffer
-	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
+	memset( god_window_buffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
    // clear the sysbuffer
-   memset( pSysBuffer2, 0u, sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
+   memset( player_window_buffer, 0u, sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
 }
 
 void Graphics::PutPixel( int x,int y,Color c )
@@ -474,8 +474,8 @@ void Graphics::PutPixel( int x,int y,Color c )
 	assert( x < int( Graphics::ScreenWidth ) );
 	assert( y >= 0 );
 	assert( y < int( Graphics::ScreenHeight ) );
-	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
-   pSysBuffer2[Graphics::ScreenWidth * y + x] = Colors::Cyan;
+	god_window_buffer[Graphics::ScreenWidth * y + x] = c;
+   player_window_buffer[Graphics::ScreenWidth * y + x] = Colors::Cyan;
 }
 
 void Graphics::DrawLine( Vec2 p0, Vec2 p1, Color c )
