@@ -193,17 +193,26 @@ RenderWindow::RenderWindow( HINSTANCE hInst, wchar_t * pArgs, wchar_t* name, WND
    wc.hCursor = LoadCursor( nullptr, IDC_ARROW );
    RegisterClassEx( &wc );
 
+   static int windowID = 0;
+   windowID++;
    // create window & get hWnd
    RECT wr;
-   wr.left = 350;
+   wr.left = 0;
    wr.right = Graphics::ScreenWidth + wr.left;
-   wr.top = 100;
+   wr.top = 0;
    wr.bottom = Graphics::ScreenHeight + wr.top;
-   AdjustWindowRect( &wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE );
+   if(windowID == 2)
+   {
+     wr.left += Graphics::ScreenWidth;
+     wr.right = Graphics::ScreenWidth + wr.left;
+   }
+   AdjustWindowRect( &wr, 0, FALSE );
    hWnd = CreateWindow( name, name,
-      WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+      WS_BORDER,
       wr.left, wr.top, wr.right - wr.left, wr.bottom - wr.top,
       nullptr, nullptr, hInst, this );
+
+   SetWindowLong(hWnd, GWL_STYLE, 0);
 
    // throw exception if something went terribly wrong
    if ( hWnd == nullptr )

@@ -61,10 +61,10 @@ public:
   void PlaceAABBInCell(RectI rect, int primitive_index, int primitve_index_2)
   {
     // Calculate grid start and end points
-    size_t start_x = (rect.left / cell_width);
-    size_t start_y = rect.bottom / cell_height;
-    size_t end_x = (rect.right + cell_width - 1) / cell_width;
-    size_t end_y = (rect.top + cell_height - 1) / cell_height;
+    size_t start_x = Max(rect.left / cell_width,0);
+    size_t start_y = Max(rect.bottom / cell_height,0);
+    size_t end_x = Min((rect.right + cell_width - 1) / cell_width,width);
+    size_t end_y = Min((rect.top + cell_height - 1) / cell_height,height);
 
     for(int y = start_y; y < end_y; ++y)
     {
@@ -110,7 +110,7 @@ public:
 };
 
 // ****************************************************************************
-//using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
-using ScreenGrid = ScreenGridImpl<25, 75, 32, 8>;
+using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
+//using ScreenGrid = ScreenGridImpl<25, 75, 32, 8>;
 //using ScreenGrid = ScreenGridImpl<30, 17, 64, 64>
 //using ScreenGrid = ScreenGridImpl<15, 17, 128, 64>;

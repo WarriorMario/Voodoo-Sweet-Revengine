@@ -84,7 +84,7 @@ struct ForegroundShader
   {
     const float lx = 200.f;
     const float ly = 200.f;
-    const float ldist = 300.f;
+    const float ldist = 3000.f;
 
     const float dx = pixel_data.x - lx;
     const float dy = pixel_data.y - ly;

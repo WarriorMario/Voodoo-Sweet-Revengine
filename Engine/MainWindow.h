@@ -56,6 +56,10 @@ public:
    ~RenderWindow();
    bool IsOpen() const;
    bool IsActive() const;
+   void SetFocused()
+   {
+     SetFocus(hWnd);
+   }
    bool IsFocused() const;
    bool IsMinimized() const;
    void ShowMessageBox( const std::wstring& title, const std::wstring& message ) const;
