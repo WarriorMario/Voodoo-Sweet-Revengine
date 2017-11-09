@@ -178,6 +178,7 @@
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Utility\Timer.h" />
     <ClInclude Include="VMove.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Graphsicks\PostProcessor.h" />
@@ -272,7 +273,6 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
-    <ClCompile Include="Graphsicks\Rasterizer.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2BroadPhase.cpp" />

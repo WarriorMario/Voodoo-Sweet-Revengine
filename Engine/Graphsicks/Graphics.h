@@ -60,7 +60,7 @@ public:
   inline void DrawLineClip(Vec2 p0, Vec2 p1, Color color, const RectF& clip);
   void DrawClippedLineCircle(float size, Vec2 pos, unsigned int points, const RectF& clip);
   ~Graphics();
-//private:
+private:
   Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
   Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
   Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
@@ -73,7 +73,6 @@ public:
   Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout;
   Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState;
   D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture;
-  Color*                                              pSysBuffer = nullptr;
 
   Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain2;
   Microsoft::WRL::ComPtr<ID3D11Device>				pDevice2;
@@ -87,10 +86,11 @@ public:
   Microsoft::WRL::ComPtr<ID3D11InputLayout>			pInputLayout2;
   Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState2;
   D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture2;
-  Color*                                              pSysBuffer2 = nullptr;
-  float*                                              pZBuffer2 = nullptr;
 
 public:
   static constexpr int ScreenWidth = 1920;
   static constexpr int ScreenHeight = 1080;
+
+  Color* player_window_buffer = nullptr;
+  Color* god_window_buffer = nullptr;
 };
