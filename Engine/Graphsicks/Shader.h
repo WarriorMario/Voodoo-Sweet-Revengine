@@ -1,7 +1,6 @@
 #pragma once
 #include "Colors.h"
 #include "Utility.h"
-#include "..\Lib\FreeType\Headers\ft2build.h"
 
 
 // ****************************************************************************
