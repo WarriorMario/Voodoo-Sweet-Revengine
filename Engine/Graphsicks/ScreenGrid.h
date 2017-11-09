@@ -61,7 +61,7 @@ public:
   void PlaceAABBInCell(RectI rect, int primitive_index, int primitve_index_2)
   {
     // Calculate grid start and end points
-    size_t start_x = Max(rect.left / cell_width, 0);
+    size_t start_x = (rect.left / cell_width);
     size_t start_y = rect.bottom / cell_height;
     size_t end_x = (rect.right + cell_width - 1) / cell_width;
     size_t end_y = (rect.top + cell_height - 1) / cell_height;
@@ -102,6 +102,7 @@ public:
     {
       cells[i].num_indices = 0;
     }
+    memset(buff, 0, sizeof(Color)*ScreenGrid::RESOLUTION_X * ScreenGrid::RESOLUTION_Y);
   }
 
   ScreenGridCell cells[width * height];

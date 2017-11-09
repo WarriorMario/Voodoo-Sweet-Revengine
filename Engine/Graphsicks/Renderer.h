@@ -16,9 +16,16 @@ public:
   {
     for(int i = 0; i < commands.size(); ++i)
     {
-      grid.PlaceTriangleInCell(commands[i].prim_data, i);
+      auto& pd = commands[i].prim_data;
+      Vec2 points[3] = {
+        {pd[0].x, pd[0].y}, 
+        {pd[1].x, pd[1].y}, 
+        {pd[2].x, pd[2].y}
+      };
+      grid.PlaceTriangleInCell(points, i);
     }
       rasterizer.RasterizeCells(grid, commands);
+      commands.clear();
   }
 
   Array<Shader> commands;
@@ -28,7 +35,9 @@ public:
 
 class Renderer
 {
-  using Passes = Tuple<RenderPass<BackgroundShader>>;
+  template<typename... Shaders>
+  using Passes = Tuple<RenderPass<Shaders>...>;
+  //using Passes = Tuple<RenderPass<BackgroundShader>>;
   template<size_t I = 0, typename... Types, typename... Args>
   typename std::enable_if_t<I == sizeof...(Types), void>
     ApplyPasses(Tuple<Types...>&, Args&&...)
@@ -55,6 +64,6 @@ public:
 private:
   Rasterizer rasterizer;
   Graphics& gfx;
-  Passes passes;
+  Passes<BackgroundShader, ForegroundShader> passes;
 };
 

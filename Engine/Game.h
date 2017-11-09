@@ -47,7 +47,7 @@ private:
 	b2World world;
 	b2ParticleSystem* particleSystem;
 	Renderer renderer;
-	Triangle* tri_buff;
+	Triangle tri_buff[2];
 
 	/********************************/
 	/*  User Variables              */

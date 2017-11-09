@@ -36,40 +36,50 @@ private:
   template<typename Shader>
   void RasterizeCell(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
   {
-	  int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
-	  Color randColor;
-	  randColor.SetR(std::rand() % 255);
-	  randColor.SetG(std::rand() % 255);
-	  randColor.SetB(std::rand() % 255);
-	  randColor.SetA(255);
-	  for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y)
-	  {
-		  for(int x = 0; x <  ScreenGrid::CELL_WIDTH; ++x)
-		  {
-			  if(((y + start_y) >(Graphics::ScreenHeight - 1)) ||
-				  ((x + start_x) >(Graphics::ScreenWidth - 1)))
-			  {
-				  continue;
-			  }
+    int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
+    Color randColor;
+    randColor.SetR(std::rand() % 255);
+    randColor.SetG(std::rand() % 255);
+    randColor.SetB(std::rand() % 255);
+    randColor.SetA(255);
+    for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y)
+    {
+      for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x)
+      {
+        if(((y + start_y) > (Graphics::ScreenHeight - 1)) ||
+          ((x + start_x) > (Graphics::ScreenWidth - 1)))
+        {
+          continue;
+        }
 
-			  //shader.gfx.PutPixel((x + start_x), (y + start_y), randColor);
+        //shader.gfx.PutPixel((x + start_x), (y + start_y), randColor);
         //cell.buff[y*ScreenGrid::CELL_WIDTH + x] = randColor;
-			  for(int j = 0; j < cell.num_indices; ++j)
-			  {
-				  Vec2 p = Vec2((float)(x + start_x), (float)(y + start_y));
-				  Vec2* t = commands[cell.indices[j]].prim_data;
+        for(int j = 0; j < cell.num_indices; ++j)
+        {
+          auto& cmd = commands[cell.indices[j]];
 
-				  bool is_inside = true;
-				  is_inside &= IsRightOfLine(t[0], t[1], p);
-				  is_inside &= IsRightOfLine(t[1], t[2], p);
-				  is_inside &= IsRightOfLine(t[2], t[0], p);
+          Vec2 p = Vec2((float)(x + start_x), (float)(y + start_y));
+          auto* d = cmd.prim_data;
 
-				  if(is_inside == true)
-				  {
-              cell.buff[y*ScreenGrid::CELL_WIDTH + x] = commands[cell.indices[j]].const_data.color;
-				  }
-			  }
-		  }
-	  }
+          // return ((p.x - v1.x) * (v2.y - v1.y) - (p.y - v1.y) * (v2.x - v1.x) <= 0);
+          const float t0 = (p.x - d[1].x) * (d[2].y - d[1].y) - (p.y - d[1].y) * (d[2].x - d[1].x);
+          const float t1 = (p.x - d[2].x) * (d[0].y - d[2].y) - (p.y - d[2].y) * (d[0].x - d[2].x);
+          const float t2 = (p.x - d[0].x) * (d[1].y - d[0].y) - (p.y - d[0].y) * (d[1].x - d[0].x);
+          const bool is_inside = (t0 <= 0) & (t1 <= 0) & (t2 <= 0);
+          if(is_inside == true)
+          {
+            const Vec2 A(d[1].x - d[0].x, d[1].y - d[0].y);
+            const Vec2 B(d[2].x - d[0].x, d[2].y - d[0].y);
+            const float prarea = -1.f / (A.x * B.y - A.y * B.x);
+
+            // Determine interpolated values
+            auto id = cmd.Interpolate(t0 * prarea, t1 * prarea, t2 * prarea);
+
+            cell.buff[y*ScreenGrid::CELL_WIDTH + x] = cmd.Shade(id);
+            //cell.buff[y*ScreenGrid::CELL_WIDTH + x] = commands[cell.indices[j]].const_data.color;
+          }
+        }
+      }
+    }
   }
 };

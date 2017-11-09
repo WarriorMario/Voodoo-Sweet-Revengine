@@ -105,35 +105,6 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
-  tri_buff = new Triangle[2];
-  tri_buff[0] = Triangle(
-    Vec2(300, 300),
-    Vec2(300, 200),
-    Vec2(400, 200),
-    Vec2(0.0f, 0.0f),
-    Vec2(0.0f, 0.0f),
-    Vec2(0.0f, 0.0f));
-  tri_buff[1] = Triangle(
-    Vec2(350, 300),
-    Vec2(400, 200),
-    Vec2(400, 300),
-    Vec2(0.0f, 0.0f),
-    Vec2(0.0f, 0.0f),
-    Vec2(0.0f, 0.0f));
-  BackgroundShader testASDASD;
-  testASDASD.const_data.color = Colors::Yellow;
-  testASDASD.prim_data[0] = tri_buff[0].p[0];
-  testASDASD.prim_data[1] = tri_buff[0].p[1];
-  testASDASD.prim_data[2] = tri_buff[0].p[2];
-  BackgroundShader asdsa;
-  asdsa.const_data.color = Colors::Blue;
-  asdsa.prim_data[0] = tri_buff[1].p[0];
-  asdsa.prim_data[1] = tri_buff[1].p[1];
-  asdsa.prim_data[2] = tri_buff[1].p[2];
-
-
-  renderer.AddDrawCommand(testASDASD);
-  renderer.AddDrawCommand(asdsa);
 }
 
 void Game::Go()
@@ -148,6 +119,41 @@ void Game::UpdateModel()
 {
   if(godWindow.mouse.LeftIsPressed() == true)
   {
+	  tri_buff[0] = Triangle(
+		  Vec2(300, 300),
+		  Vec2(300, 200),
+		  Vec2(400, 200),
+		  Vec2(0.0f, 0.0f),
+		  Vec2(0.0f, 0.0f),
+		  Vec2(0.0f, 0.0f));
+	  tri_buff[1] = Triangle(
+		  Vec2(350, 300),
+		  Vec2(400, 200),
+		  Vec2(400, 300),
+		  Vec2(0.0f, 0.0f),
+		  Vec2(0.0f, 0.0f),
+		  Vec2(0.0f, 0.0f));
+
+	  BackgroundShader testASDASD;
+	  testASDASD.const_data.color = Colors::Yellow;
+    testASDASD.prim_data[0] = {300, 300, 0.0, 0.0f};
+    testASDASD.prim_data[1] = {300, 200, 1.0f, 0.0f};
+    testASDASD.prim_data[2] = {400, 200, 0.5f, 1.0f};
+
+    ForegroundShader fg_tri;
+    fg_tri.const_data.color = Colors::Red;
+    fg_tri.prim_data[0] = {-50 + (float)godWindow.mouse.GetPosX() , (float)godWindow.mouse.GetPosY()+ 50, 0.0, 0.0f};
+    fg_tri.prim_data[1] = {-50 + (float)godWindow.mouse.GetPosX(),(float)godWindow.mouse.GetPosY() - 50, 1.0f, 0.0f};
+    fg_tri.prim_data[2] = {50 + (float)godWindow.mouse.GetPosX(), (float)godWindow.mouse.GetPosY() - 50, 0.5f, 1.0f};
+	  //BackgroundShader asdsa;
+	  //asdsa.const_data.color = Colors::Blue;
+	  //asdsa.prim_data[0] = tri_buff[1].p[0];
+	  //asdsa.prim_data[1] = tri_buff[1].p[1];
+	  //asdsa.prim_data[2] = tri_buff[1].p[2];
+
+
+	  renderer.AddDrawCommand(testASDASD);
+	  renderer.AddDrawCommand(fg_tri);
     b2ParticleDef pd;
     pd.flags = b2_waterParticle;
     pd.color.Set(0, 0, 255, 255);
