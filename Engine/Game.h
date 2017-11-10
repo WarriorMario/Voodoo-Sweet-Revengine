@@ -26,6 +26,7 @@
 #include "LiquidFun/Box2D.h"
 #include "Graphsicks\Renderer.h"
 #include "Triangle.h"
+#include "Gameplay\Framework\Arena.h"
 
 class Game
 {
@@ -48,7 +49,7 @@ private:
 	b2ParticleSystem* particleSystem;
 	Renderer renderer;
 	Triangle tri_buff[2];
-
+  Arena arena;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

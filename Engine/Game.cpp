@@ -21,7 +21,7 @@
 #include "Game.h"
 #include "MainWindow.h"
 #include "Vec3.h"
-
+#include "Utility\Timer.h"
 b2Body* b;
 b2Body* temp;
 b2BodyDef test0;
@@ -34,8 +34,11 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   playerWindow(playerWindow),
   gfx(godWindow, playerWindow),
   world(b2Vec2(0, 9.81f)),
-  renderer(Renderer(gfx))
+  renderer(Renderer(gfx)),
+  arena()
 {
+  auto test = arena.Create<GameObject>();
+
   godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
   verts[0] = Vec3(50, 100, 1);
@@ -110,10 +113,14 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 
 void Game::Go()
 {
+  Timer frame_time;
   gfx.BeginFrame();
   UpdateModel();
   ComposeFrame();
   gfx.EndFrame();
+  char buff[128];
+  sprintf(buff, "%f \n", frame_time.Elapsed());
+  OutputDebugStringA(buff);
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()

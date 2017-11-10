@@ -161,10 +161,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\Framework\Arena.h" />
     <ClInclude Include="Assets\Assets.h" />
     <ClInclude Include="Assets\Audio.h" />
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
+    <ClInclude Include="Gameplay\Framework\ArenaObject.h" />
+    <ClInclude Include="Gameplay\Framework\Handle.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftconfig.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftheader.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftmodule.h" />
@@ -256,6 +259,7 @@
     <ClInclude Include="Lib\FreeType\Headers\freetype\tttags.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\ttunpat.h" />
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h" />
+    <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utility\Timer.h" />
     <ClInclude Include="VMove.h" />
@@ -350,6 +354,7 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\Framework\Arena.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
