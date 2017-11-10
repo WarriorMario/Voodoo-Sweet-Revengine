@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "ChiliException.h"
 #include "Utility\Logging.h"
+#include "Assets\Assets.h"
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
@@ -33,11 +34,19 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
     {
       Logger::Get().Init();
 
-      Game theGame(wnd, wnd1);
-      while(wnd.ProcessMessage() && wnd1.IsOpen())
-      {
-        theGame.Go();
+      MakeSingleton<Assets>();
+
+      { // Extra scope here so game releases its resources before assets get freed
+        Game theGame(wnd, wnd1);
+        while(wnd.ProcessMessage() && wnd1.IsOpen())
+        {
+          theGame.Go();
+        }
       }
+
+      Assets::Get().CleanUp();
+
+      DestroySingleton<Assets>();
     }
     catch(const ChiliException& e)
     {
