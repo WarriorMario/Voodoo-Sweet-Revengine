@@ -59,15 +59,25 @@ protected:
     }
     else
     {
-      data = ::operator new(sizeof(T::Data));
-      if(!Load(filename, *(T::Data*)data))
+      T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
+      if(!Load(filename, *tmp_data))
       {
-        delete data;
+        delete tmp_data;
 
         // if load failed, use fallback instead
         data = &Assets::Get().GetFallback<T>();
       }
+      else
+      {
+        data = &Assets::Get().AddData<T>(filename, Move(*tmp_data));
+      }
     }
+  }
+
+  template<typename Resource>
+  const typename Resource::Data* GetData()
+  {
+    return (const typename Resource::Data*)data;
   }
 
 private:
