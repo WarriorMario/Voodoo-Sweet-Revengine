@@ -6,8 +6,8 @@
 #include "VMap.h"
 #include "VTraits.h"
 #include "Utility/Logging.h"
+#include "Utility.h"
 
-#include <cassert>
 #include <typeinfo>
 
 // ****************************************************************************

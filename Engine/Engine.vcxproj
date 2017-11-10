@@ -458,7 +458,6 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Graphsicks\FontManager.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
