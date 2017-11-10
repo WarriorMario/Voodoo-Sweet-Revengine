@@ -37,18 +37,15 @@ class Renderer
 {
   template<typename... Shaders>
   using Passes = Tuple<RenderPass<Shaders>...>;
-  
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename EnableIf<I == sizeof...(Types)>
-    ApplyPasses(Tuple<Types...>&, Args&&...)
-  {}
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename EnableIf<I < sizeof...(Types)>
-    ApplyPasses(Tuple<Types...>& tuple, Args&&... args)
+
+  struct PassApplyer
   {
-    Get<I>(tuple).Apply(args...);
-    ApplyPasses<I + 1, Types...>(tuple, args...);
-  }
+    template<typename T, typename... Args>
+    void operator()(T& pass, Args&&... args)
+    {
+      pass.Apply(Forward<Args>(args)...);
+    }
+  };
 
 public:
 	Renderer(Graphics& gfx);

@@ -27,12 +27,12 @@ constexpr auto Get(Tuple<Types...>& tuple) noexcept -> std::tuple_element_t<inde
 
 #include <VTraits.h>
 
-template<size_t I = 0, typename... Types, typename Callable>
-auto ForEach(Tuple<Types...>& tuple, Callable callable) -> EnableIf<I == sizeof...(Types)>
+template<size_t I = 0, typename... Types, typename Callable, typename... Args>
+auto ForEach(Tuple<Types...>& tuple, Callable callable, Args... args) -> EnableIf<I == sizeof...(Types)>
 {}
-template<size_t I = 0, typename... Types, typename Callable>
-auto ForEach(Tuple<Types...>& tuple, Callable callable)->EnableIf<I < sizeof...(Types)>
+template<size_t I = 0, typename... Types, typename Callable, typename... Args>
+auto ForEach(Tuple<Types...>& tuple, Callable callable, Args... args) -> EnableIf<I < sizeof...(Types)>
 {
-  callable(Get<I>(tuple));
-  ForEach<I + 1>(tuple, callable);
+  callable(Get<I>(tuple), Forward<Args>(args)...);
+  ForEach<I + 1>(tuple, callable, Forward<Args>(args)...);
 }
