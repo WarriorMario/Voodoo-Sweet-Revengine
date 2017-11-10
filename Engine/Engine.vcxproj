@@ -360,6 +360,7 @@
     <ClInclude Include="Lib\FreeType\Headers\freetype\tttags.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\ttunpat.h" />
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h" />
+    <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utility\Logging.h" />
     <ClInclude Include="Utility\ProfileOutput.h" />
@@ -519,6 +520,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
