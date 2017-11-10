@@ -24,3 +24,15 @@ constexpr auto Get(Tuple<Types...>& tuple) noexcept -> std::tuple_element_t<inde
 {
   return std::get<index>(tuple);
 }
+
+#include <VTraits.h>
+
+template<size_t I = 0, typename... Types, typename Callable>
+auto ForEach(Tuple<Types...>& tuple, Callable callable) -> EnableIf<I == sizeof...(Types)>
+{}
+template<size_t I = 0, typename... Types, typename Callable>
+auto ForEach(Tuple<Types...>& tuple, Callable callable)->EnableIf<I < sizeof...(Types)>
+{
+  callable(Get<I>(tuple));
+  ForEach<I + 1>(tuple, callable);
+}

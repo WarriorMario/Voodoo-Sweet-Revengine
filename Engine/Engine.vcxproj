@@ -366,7 +366,7 @@
     <ClInclude Include="Utility\ProfileOutput.h" />
     <ClInclude Include="Utility\Profiling.h" />
     <ClInclude Include="Utility\Timer.h" />
-    <ClInclude Include="VMove.h" />
+    <ClInclude Include="VTraits.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Graphsicks\PostProcessor.h" />
     <ClInclude Include="Graphsicks\Rasterizer.h" />

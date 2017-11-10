@@ -11,3 +11,7 @@ auto Move(T&& arg) -> decltype(std::move(arg))
 {
 	return std::move(arg);
 }
+
+template<bool Test, typename T = void>
+using EnableIf = std::enable_if_t<Test, T>;
+

@@ -2,7 +2,7 @@
 #include "Rasterizer.h"
 #include "VTuple.h"
 #include "VArray.h"
-#include "VMove.h"
+#include "VTraits.h"
 #include "Shader.h"
 
 class Graphics;
@@ -37,13 +37,13 @@ class Renderer
 {
   template<typename... Shaders>
   using Passes = Tuple<RenderPass<Shaders>...>;
-  //using Passes = Tuple<RenderPass<BackgroundShader>>;
+  
   template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t<I == sizeof...(Types), void>
+  typename EnableIf<I == sizeof...(Types)>
     ApplyPasses(Tuple<Types...>&, Args&&...)
   {}
   template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t < I<sizeof...(Types), void>
+  typename EnableIf<I < sizeof...(Types)>
     ApplyPasses(Tuple<Types...>& tuple, Args&&... args)
   {
     Get<I>(tuple).Apply(args...);
