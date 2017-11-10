@@ -21,7 +21,9 @@
 #include "Game.h"
 #include "MainWindow.h"
 #include "Vec3.h"
-#include "Utility\Timer.h"
+
+#include "Utility\ProfileOutput.h"
+
 b2Body* b;
 b2Body* temp;
 b2BodyDef test0;
@@ -113,18 +115,25 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 
 void Game::Go()
 {
-  Timer frame_time;
-  gfx.BeginFrame();
-  UpdateModel();
-  ComposeFrame();
-  gfx.EndFrame();
-  char buff[128];
-  sprintf(buff, "%f \n", frame_time.Elapsed());
-  OutputDebugStringA(buff);
+  ProfilerLogHandler pf_output;
+  ProfileSample::output_handler = &pf_output;
+
+  {
+    PROFILE_SCOPE("Game::Go");
+
+    gfx.BeginFrame();
+    UpdateModel();
+    ComposeFrame();
+    gfx.EndFrame();
+  }
+
+  ProfileSample::Output();
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
 {
+  PROFILE_SCOPE("Game::UpdateModel");
+
   if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
   {
     godWindow.Kill();
@@ -183,6 +192,8 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+  PROFILE_SCOPE("Game::ComposeFrame");
+
   for(b2Body* current = world.GetBodyList(); current != nullptr; current = current->GetNext())
   {
     gfx.DrawClippedLineCircle(5, *(Vec2*)&current->GetPosition(), 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));

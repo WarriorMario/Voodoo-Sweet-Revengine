@@ -288,21 +288,6 @@
     <ClInclude Include="VMove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphsicks\PostProcessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphsicks\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphsicks\ScreenGrid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -576,16 +561,28 @@
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Framework\Arena.h">
+    <ClInclude Include="Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Framework\ArenaObject.h">
+    <ClInclude Include="Utility\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Framework\Handle.h">
+    <ClInclude Include="Graphsicks\PostProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Physics.h">
+    <ClInclude Include="Graphsicks\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphsicks\ScreenGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Profiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\ProfileOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -779,7 +776,10 @@
     <ClCompile Include="Graphsicks\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Framework\Arena.cpp">
+    <ClCompile Include="Utility\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Profiling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
