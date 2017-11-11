@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VString.h"
+#include "Utility.h"
 
 // ****************************************************************************
 // To create a new resource you can derive it from Resource, using itself as
@@ -25,13 +26,9 @@ public:
   {
     *this = other;
   }
-  Resource(Resource&& other)
-  {
-    *this = std::move(other);
-  }
   ~Resource()
   {
-    if(data)
+    if(!is_fallback)
     {
       Assets::Get().RemoveRef<T>(filename);
     }
@@ -39,19 +36,21 @@ public:
 
   Resource& operator=(const Resource& other)
   {
+    filename = other.filename;
     data = other.data;
-  }
-  Resource& operator=(Resource&& other)
-  {
-    data = other.data;
-    other.data = nullptr
+    is_fallback = other.is_fallback;
+    if(!is_fallback)
+    {
+      Assets::Get().AddRef<T>(filename);
+    }
   }
 
 protected:
   Resource(StringRef filename)
     :
     data(nullptr),
-    filename(filename)
+    filename(filename),
+    is_fallback(false)
   {
     if(Assets::Get().HasData<T>(filename))
     {
@@ -60,12 +59,14 @@ protected:
     else
     {
       T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
+      ZeroMem(tmp_data, sizeof(T::Data));
       if(!Load(filename, *tmp_data))
       {
         delete tmp_data;
 
         // if load failed, use fallback instead
         data = &Assets::Get().GetFallback<T>();
+        is_fallback = true;
       }
       else
       {
@@ -83,5 +84,6 @@ protected:
 private:
   String filename;
   const void* data;
+  bool is_fallback;
 
 };

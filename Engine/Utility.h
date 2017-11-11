@@ -1,6 +1,7 @@
 #pragma once
 #include "ChiliMath.h"
 #include <cassert>
+#include <cstring>
 
 #ifndef INFINITY
 #define INFINITY FLT_MAX
@@ -33,4 +34,8 @@ template <typename T>
 inline T Max(T a, T b)
 {
 	return a > b ? a : b;
+}
+inline void ZeroMem(void* dest, size_t size)
+{
+  memset(dest, 0, size);
 }

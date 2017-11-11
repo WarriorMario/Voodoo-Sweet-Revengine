@@ -24,7 +24,7 @@ class AssetsImpl : public Singleton<AssetsImpl<Types...>>
     int refs;
   };
   template<typename T>
-  using AssetMap = Map<String, Asset<T>>;
+  using AssetMap = UnorderedMap<String, Asset<T>>;
 
 public:
   template<typename T>
@@ -55,8 +55,8 @@ public:
 
     AssetMap<T>& map = ::Get<AssetMap<T>>(data_maps);
     assert(map.find(String(filename)) == map.end() && "Duplicate resource loaded");
-    map.emplace((String)filename, Move(new_asset)); // use move constructor to place data in map permanently
-    return map.begin()->second.data;
+    auto it = map.emplace((String)filename, Move(new_asset)).first; // use move constructor to place data in map permanently
+    return it->second.data;
   }
   template<typename T>
   bool HasData(StringRef filename) const
