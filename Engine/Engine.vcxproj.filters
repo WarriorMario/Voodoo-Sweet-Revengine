@@ -864,6 +864,9 @@
     <ClInclude Include="VTraits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\DirectoryWatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -1061,10 +1064,10 @@
     <ClCompile Include="Utility\Profiling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphsicks\FontManager.cpp">
+    <ClCompile Include="StbImage\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StbImage\stb_image.cpp">
+    <ClCompile Include="Utility\DirectoryWatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

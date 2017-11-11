@@ -39,3 +39,18 @@ inline void ZeroMem(void* dest, size_t size)
 {
   memset(dest, 0, size);
 }
+template<typename T, size_t count>
+constexpr size_t CountOf(const T(&arr)[count])
+{
+  return count;
+}
+template<typename T, size_t count, typename V>
+inline bool RangeEquals(const T(&arr)[count], const V& comparison)
+{
+  bool val = false;
+  for(int i = 0; i < count; ++i)
+  {
+    val |= (arr[i] == comparison);
+  }
+  return val;
+}

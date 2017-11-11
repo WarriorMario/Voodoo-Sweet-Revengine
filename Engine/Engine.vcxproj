@@ -177,6 +177,7 @@
     <ClInclude Include="Assets\Audio.h" />
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
+    <ClInclude Include="Utility\DirectoryWatch.h" />
     <ClInclude Include="FreeType\freetype\config\ftconfig.h" />
     <ClInclude Include="FreeType\freetype\config\ftheader.h" />
     <ClInclude Include="FreeType\freetype\config\ftmodule.h" />
@@ -520,6 +521,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
+    <ClCompile Include="Utility\DirectoryWatch.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
