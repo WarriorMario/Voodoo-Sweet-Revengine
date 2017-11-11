@@ -59,6 +59,15 @@ public:
     return it->second.data;
   }
   template<typename T>
+  void ReplaceData(StringRef filename, AssetData<T>&& value)
+  {
+    AssetMap<T>& map = ::Get<AssetMap<T>>(data_maps);
+    auto it = map.find(String(filename));
+    assert(it != map.end() && "Attempt to replace resource where none exists");
+    it->second.data.~AssetData<T>(); // deconstruct existing object
+    new (&it->second.data) AssetData<T>(Move(value)); // use move constructor to place data in map permanently
+  }
+  template<typename T>
   bool HasData(StringRef filename) const
   {
     const AssetMap<T>& map = ::Get<AssetMap<T>>(data_maps);

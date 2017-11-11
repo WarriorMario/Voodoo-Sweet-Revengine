@@ -45,6 +45,28 @@ public:
     }
   }
 
+  void Reload()
+  {
+    T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
+    ZeroMem(tmp_data, sizeof(T::Data));
+    if(!Load(filename, *tmp_data))
+    {
+      // if load failed, keep existing resource
+      delete tmp_data;
+    }
+    else
+    {
+      if(is_fallback)
+      {
+        data = &Assets::Get().AddData<T>(filename, Move(*tmp_data));
+      }
+      else
+      {
+        Assets::Get().ReplaceData<T>(filename, Move(*tmp_data));
+      }
+    }
+  }
+
 protected:
   Resource(StringRef filename)
     :
