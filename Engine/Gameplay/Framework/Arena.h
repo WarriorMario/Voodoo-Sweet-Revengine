@@ -1,11 +1,12 @@
 #pragma once
-#include "ArenaObject.h"
+#include "Objects\PhysicsObject.h"
 #include "Physics\Physics.h"
 #include "VTuple.h"
 #include "VArray.h"
 template<typename T>
 struct RefCounter : public T
 {
+  using Type = typename T;
   RefCounter(const T& obj)
     : T(obj)
   {
@@ -33,10 +34,7 @@ public:
     physx()
     //input(input)
   {
-
-    InitGroups(objectGroups);
-    Handle<MeshObject> s = Create<MeshObject>();
-    s->test = 1;
+    ArenaBaseObject::arena = this;
   }
 
   template<typename T>
@@ -75,9 +73,10 @@ public:
   void Update()
   {
     UpdateGroup(objectGroups);
+    physx.Update();
   }
-private:
   Physics physx;
+private:
   // class Input& input;
 
 
@@ -100,17 +99,20 @@ private:
     UpdateGroup<I + 1, Types...>(tuple, args...);
   }
 
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t<I == sizeof...(Types), void>
-    InitGroups(Tuple<Array<RefCounter<Types>>...>&, Args&&...)
-  {}
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t < I<sizeof...(Types), void>
-    InitGroups(Tuple<Array<RefCounter<Types>>...>& tuple, Args&&... args)
-  {
-    Handle<Types>::arena = this;
-    InitGroups<I + 1, Types...>(tuple, args...);
-  }
+  //
+  //template<size_t I = 0, typename... Types, typename... Args>
+  //typename std::enable_if_t<I == sizeof...(Types), void>
+  //  InitGroups(Tuple<Array<RefCounter<Types>>...>&, Args&&...)
+  //{}
+  //template<size_t I = 0, typename... Types, typename... Args>
+  //typename std::enable_if_t < I<sizeof...(Types), void>
+  //  InitGroups(Tuple<Array<RefCounter<Types>>...>& tuple, Args&&... args)
+  //{
+  //  InitGroups<I + 1, Types...>(tuple, args...);
+  //}
+
+
+
 public:
-  ObjectGroup<GameObject, MeshObject> objectGroups;
+  ObjectGroup<GameObject, MeshObject, PhysicsObject> objectGroups;
 };

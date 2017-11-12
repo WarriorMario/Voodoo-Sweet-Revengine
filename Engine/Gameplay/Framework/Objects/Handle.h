@@ -1,5 +1,6 @@
 #pragma once
 #include "VArray.h"
+class Arena;
 
 template<typename Type>
 class Handle
@@ -10,7 +11,7 @@ public:
   Handle(size_t index) :index(index)
   {}
 
-  bool IsValid()
+  bool IsValid() const
   {
     return index == INVALID_HANDLE;
   }
@@ -30,16 +31,11 @@ public:
 
   Type* operator->() const
   {
-    return &(Get<Array<RefCounter<Type>>>(arena->objectGroups)[index]);
+    //assert(IsValid());
+    return &(Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index]);
   }
 private:
   size_t index;
-  static class Arena* arena;
-  static friend void SetArena(Arena* arena_ptr)
-  {
-    arena = arena_ptr;
-  }
-
   inline friend size_t GetIndex(Handle& handle)
   {
     return handle.index;
