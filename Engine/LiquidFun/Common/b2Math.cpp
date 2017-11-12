@@ -18,7 +18,7 @@
 
 #include <LiquidFun/Common/b2Math.h>
 
-const b2Vec2 b2Vec2_zero(0.0f, 0.0f);
+const Vec2 b2Vec2_zero(0.0f, 0.0f);
 
 /// Solve A * x = b, where b is a column vector. This is more efficient
 /// than computing the inverse in one-shot cases.
@@ -38,7 +38,7 @@ b2Vec3 b2Mat33::Solve33(const b2Vec3& b) const
 
 /// Solve A * x = b, where b is a column vector. This is more efficient
 /// than computing the inverse in one-shot cases.
-b2Vec2 b2Mat33::Solve22(const b2Vec2& b) const
+Vec2 b2Mat33::Solve22(const Vec2& b) const
 {
 	float32 a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
 	float32 det = a11 * a22 - a12 * a21;
@@ -46,7 +46,7 @@ b2Vec2 b2Mat33::Solve22(const b2Vec2& b) const
 	{
 		det = 1.0f / det;
 	}
-	b2Vec2 x;
+	Vec2 x;
 	x.x = det * (a22 * b.x - a12 * b.y);
 	x.y = det * (a11 * b.y - a21 * b.x);
 	return x;

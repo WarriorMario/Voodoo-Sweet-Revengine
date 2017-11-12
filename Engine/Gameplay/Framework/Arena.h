@@ -1,5 +1,6 @@
 #pragma once
 #include "Objects\PhysicsObject.h"
+#include "Objects\ParticleObject.h"
 #include "Physics\Physics.h"
 #include "VTuple.h"
 #include "VArray.h"
@@ -114,5 +115,5 @@ private:
 
 
 public:
-  ObjectGroup<GameObject, MeshObject, PhysicsObject> objectGroups;
+  ObjectGroup<GameObject, MeshObject, PhysicsObject, ParticleObject> objectGroups;
 };

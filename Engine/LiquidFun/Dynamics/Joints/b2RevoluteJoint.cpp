@@ -33,7 +33,7 @@
 // J = [0 0 -1 0 0 1]
 // K = invI1 + invI2
 
-void b2RevoluteJointDef::Initialize(b2Body* bA, b2Body* bB, const b2Vec2& anchor)
+void b2RevoluteJointDef::Initialize(b2Body* bA, b2Body* bB, const Vec2& anchor)
 {
 	bodyA = bA;
 	bodyB = bB;
@@ -73,11 +73,11 @@ void b2RevoluteJoint::InitVelocityConstraints(const b2SolverData& data)
 	m_invIB = m_bodyB->m_invI;
 
 	float32 aA = data.positions[m_indexA].a;
-	b2Vec2 vA = data.velocities[m_indexA].v;
+	Vec2 vA = data.velocities[m_indexA].v;
 	float32 wA = data.velocities[m_indexA].w;
 
 	float32 aB = data.positions[m_indexB].a;
-	b2Vec2 vB = data.velocities[m_indexB].v;
+	Vec2 vB = data.velocities[m_indexB].v;
 	float32 wB = data.velocities[m_indexB].w;
 
 	b2Rot qA(aA), qB(aB);
@@ -160,7 +160,7 @@ void b2RevoluteJoint::InitVelocityConstraints(const b2SolverData& data)
 		m_impulse *= data.step.dtRatio;
 		m_motorImpulse *= data.step.dtRatio;
 
-		b2Vec2 P(m_impulse.x, m_impulse.y);
+		Vec2 P(m_impulse.x, m_impulse.y);
 
 		vA -= mA * P;
 		wA -= iA * (b2Cross(m_rA, P) + m_motorImpulse + m_impulse.z);
@@ -182,9 +182,9 @@ void b2RevoluteJoint::InitVelocityConstraints(const b2SolverData& data)
 
 void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 {
-	b2Vec2 vA = data.velocities[m_indexA].v;
+	Vec2 vA = data.velocities[m_indexA].v;
 	float32 wA = data.velocities[m_indexA].w;
-	b2Vec2 vB = data.velocities[m_indexB].v;
+	Vec2 vB = data.velocities[m_indexB].v;
 	float32 wB = data.velocities[m_indexB].w;
 
 	float32 mA = m_invMassA, mB = m_invMassB;
@@ -209,7 +209,7 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 	// Solve limit constraint.
 	if (m_enableLimit && m_limitState != e_inactiveLimit && fixedRotation == false)
 	{
-		b2Vec2 Cdot1 = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
+		Vec2 Cdot1 = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
 		float32 Cdot2 = wB - wA;
 		b2Vec3 Cdot(Cdot1.x, Cdot1.y, Cdot2);
 
@@ -224,8 +224,8 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 			float32 newImpulse = m_impulse.z + impulse.z;
 			if (newImpulse < 0.0f)
 			{
-				b2Vec2 rhs = -Cdot1 + m_impulse.z * b2Vec2(m_mass.ez.x, m_mass.ez.y);
-				b2Vec2 reduced = m_mass.Solve22(rhs);
+				Vec2 rhs = -Cdot1 + m_impulse.z * Vec2(m_mass.ez.x, m_mass.ez.y);
+				Vec2 reduced = m_mass.Solve22(rhs);
 				impulse.x = reduced.x;
 				impulse.y = reduced.y;
 				impulse.z = -m_impulse.z;
@@ -243,8 +243,8 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 			float32 newImpulse = m_impulse.z + impulse.z;
 			if (newImpulse > 0.0f)
 			{
-				b2Vec2 rhs = -Cdot1 + m_impulse.z * b2Vec2(m_mass.ez.x, m_mass.ez.y);
-				b2Vec2 reduced = m_mass.Solve22(rhs);
+				Vec2 rhs = -Cdot1 + m_impulse.z * Vec2(m_mass.ez.x, m_mass.ez.y);
+				Vec2 reduced = m_mass.Solve22(rhs);
 				impulse.x = reduced.x;
 				impulse.y = reduced.y;
 				impulse.z = -m_impulse.z;
@@ -258,7 +258,7 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 			}
 		}
 
-		b2Vec2 P(impulse.x, impulse.y);
+		Vec2 P(impulse.x, impulse.y);
 
 		vA -= mA * P;
 		wA -= iA * (b2Cross(m_rA, P) + impulse.z);
@@ -269,8 +269,8 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 	else
 	{
 		// Solve point-to-point constraint
-		b2Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
-		b2Vec2 impulse = m_mass.Solve22(-Cdot);
+		Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
+		Vec2 impulse = m_mass.Solve22(-Cdot);
 
 		m_impulse.x += impulse.x;
 		m_impulse.y += impulse.y;
@@ -290,9 +290,9 @@ void b2RevoluteJoint::SolveVelocityConstraints(const b2SolverData& data)
 
 bool b2RevoluteJoint::SolvePositionConstraints(const b2SolverData& data)
 {
-	b2Vec2 cA = data.positions[m_indexA].c;
+	Vec2 cA = data.positions[m_indexA].c;
 	float32 aA = data.positions[m_indexA].a;
-	b2Vec2 cB = data.positions[m_indexB].c;
+	Vec2 cB = data.positions[m_indexB].c;
 	float32 aB = data.positions[m_indexB].a;
 
 	b2Rot qA(aA), qB(aB);
@@ -342,10 +342,10 @@ bool b2RevoluteJoint::SolvePositionConstraints(const b2SolverData& data)
 	{
 		qA.Set(aA);
 		qB.Set(aB);
-		b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
+		Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
+		Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
 
-		b2Vec2 C = cB + rB - cA - rA;
+		Vec2 C = cB + rB - cA - rA;
 		positionError = C.Length();
 
 		float32 mA = m_invMassA, mB = m_invMassB;
@@ -357,7 +357,7 @@ bool b2RevoluteJoint::SolvePositionConstraints(const b2SolverData& data)
 		K.ey.x = K.ex.y;
 		K.ey.y = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
 
-		b2Vec2 impulse = -K.Solve(C);
+		Vec2 impulse = -K.Solve(C);
 
 		cA -= mA * impulse;
 		aA -= iA * b2Cross(rA, impulse);
@@ -374,19 +374,19 @@ bool b2RevoluteJoint::SolvePositionConstraints(const b2SolverData& data)
 	return positionError <= b2_linearSlop && angularError <= b2_angularSlop;
 }
 
-b2Vec2 b2RevoluteJoint::GetAnchorA() const
+Vec2 b2RevoluteJoint::GetAnchorA() const
 {
 	return m_bodyA->GetWorldPoint(m_localAnchorA);
 }
 
-b2Vec2 b2RevoluteJoint::GetAnchorB() const
+Vec2 b2RevoluteJoint::GetAnchorB() const
 {
 	return m_bodyB->GetWorldPoint(m_localAnchorB);
 }
 
-b2Vec2 b2RevoluteJoint::GetReactionForce(float32 inv_dt) const
+Vec2 b2RevoluteJoint::GetReactionForce(float32 inv_dt) const
 {
-	b2Vec2 P(m_impulse.x, m_impulse.y);
+	Vec2 P(m_impulse.x, m_impulse.y);
 	return inv_dt * P;
 }
 

@@ -42,7 +42,7 @@ public:
 	/// @warning the points may be re-ordered, even if they form a convex polygon
 	/// @warning collinear points are handled but not removed. Collinear points
 	/// may lead to poor stacking behavior.
-	void Set(const b2Vec2* points, int32 count);
+	void Set(const Vec2* points, int32 count);
 
 	/// Build vertices to represent an axis-aligned box centered on the local origin.
 	/// @param hx the half-width.
@@ -54,13 +54,13 @@ public:
 	/// @param hy the half-height.
 	/// @param center the center of the box in local coordinates.
 	/// @param angle the rotation of the box in local coordinates.
-	void SetAsBox(float32 hx, float32 hy, const b2Vec2& center, float32 angle);
+	void SetAsBox(float32 hx, float32 hy, const Vec2& center, float32 angle);
 
 	/// @see b2Shape::TestPoint
-	bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;
+	bool TestPoint(const b2Transform& transform, const Vec2& p) const;
 
 	// @see b2Shape::ComputeDistance
-	void ComputeDistance(const b2Transform& xf, const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const;
+	void ComputeDistance(const b2Transform& xf, const Vec2& p, float32* distance, Vec2* normal, int32 childIndex) const;
 
 	/// Implement b2Shape.
 	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
@@ -76,7 +76,7 @@ public:
 	int32 GetVertexCount() const { return m_count; }
 
 	/// Get a vertex by index.
-	const b2Vec2& GetVertex(int32 index) const;
+	const Vec2& GetVertex(int32 index) const;
 
 	/// Validate convexity. This is a very time consuming operation.
 	/// @returns true if valid
@@ -96,9 +96,9 @@ public:
 								float32 angle);
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 
-	b2Vec2 m_centroid;
-	b2Vec2 m_vertices[b2_maxPolygonVertices];
-	b2Vec2 m_normals[b2_maxPolygonVertices];
+	Vec2 m_centroid;
+	Vec2 m_vertices[b2_maxPolygonVertices];
+	Vec2 m_normals[b2_maxPolygonVertices];
 	int32 m_count;
 };
 
@@ -110,7 +110,7 @@ inline b2PolygonShape::b2PolygonShape()
 	m_centroid.SetZero();
 }
 
-inline const b2Vec2& b2PolygonShape::GetVertex(int32 index) const
+inline const Vec2& b2PolygonShape::GetVertex(int32 index) const
 {
 	b2Assert(0 <= index && index < m_count);
 	return m_vertices[index];
@@ -127,7 +127,7 @@ inline void b2PolygonShape::SetAsBox(float32 hx,
 										 float32 centerX,
 										 float32 centerY,
 										 float32 angle) {
-	SetAsBox(hx, hy, b2Vec2(centerX, centerY), angle);
+	SetAsBox(hx, hy, Vec2(centerX, centerY), angle);
 }
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 

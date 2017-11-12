@@ -25,21 +25,22 @@ enum class BodyType
 class Physics
 {
 public:
-  Physics()
-    :
-    world(Vec2(0,9.81))
-  {
-    static CircleShape shape;
-    shape.m_radius = 3;
-
-    AddShape(&shape,"Circle");
-  }
+  Physics();
   Body CreateBody(Vec2 pos = Vec2(0, 0), StringRef shape = "Circle", BodyType type = BodyType::DYNAMIC);
+  size_t CreateParticle(Vec2 pos = Vec2(0, 0), ParticleFlag flag = ParticleFlag::b2_waterParticle);
   void AddShape(Shape* shape, StringRef name);
+  
+  
+  
   void Update();
+  
+  void CreateDebugDraw(class Graphics& gfx);
+  void DebugDraw();
+
+  b2ParticleSystem* particle_system;
 private:
   World world;
-  Map<StringRef,Shape*> shapes;
+  Map<StringRef, Shape*> shapes;
   Array<BodyDef> body_defs;
   Array<FixtureDef> fixture_defs;
   float time_step = 1.0f / 60.0f;

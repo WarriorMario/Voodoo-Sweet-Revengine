@@ -8,8 +8,8 @@ using FixtureDef = b2FixtureDef;
 class b2Fixture;
 using Fixture = b2Fixture;
 
-struct b2Vec2;
-using Vec2 = b2Vec2;
+struct Vec2;
+using Vec2 = Vec2;
 
 class PhysicsObject : public ArenaObject<PhysicsObject>
 {

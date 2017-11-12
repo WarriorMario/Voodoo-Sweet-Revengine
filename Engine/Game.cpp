@@ -21,6 +21,8 @@
 #include "Game.h"
 #include "MainWindow.h"
 #include "Vec3.h"
+#include "Vec2.h"
+#include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
 
@@ -40,7 +42,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   arena()
 {
   test = arena.Create<PhysicsObject>();
-
+  arena.physx.CreateDebugDraw(gfx);
   godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
   verts[0] = Vec3(50, 100, 1);
@@ -66,7 +68,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   testf0.shape = &circle;
   //   testf0.friction = 0.5f;
   //   testf0.density = 1.0f;
-  //   b->SetTransform(b2Vec2(i,i%5),0);
+  //   b->SetTransform(Vec2(i,i%5),0);
   //   b->CreateFixture( &testf0 );
   //}
   //for(int i = 1; i < 80; ++i)
@@ -75,14 +77,14 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
   //  testf1.density = 1.0f;
-  //  temp->SetTransform(b2Vec2(i * 10, 590), 0);
+  //  temp->SetTransform(Vec2(i * 10, 590), 0);
   //  temp->CreateFixture(&testf1);
   //  
   //  temp = world.CreateBody(&test1);
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
   //  testf1.density = 1.0f;
-  //  temp->SetTransform(b2Vec2(i * 10, 0), 0);
+  //  temp->SetTransform(Vec2(i * 10, 0), 0);
   //  temp->CreateFixture(&testf1);
   //}
   //for(int i = 1; i < 80; ++i)
@@ -91,13 +93,13 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
   //  testf1.density = 1.0f;
-  //  temp->SetTransform(b2Vec2(10, i * 10), 0);
+  //  temp->SetTransform(Vec2(10, i * 10), 0);
   //  temp->CreateFixture(&testf1);
   //  temp = world.CreateBody(&test1);
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
   //  testf1.density = 1.0f;
-  //  temp->SetTransform(b2Vec2(790, i * 10), 0);
+  //  temp->SetTransform(Vec2(790, i * 10), 0);
   //  temp->CreateFixture(&testf1);
   //}
 
@@ -177,7 +179,8 @@ void Game::UpdateModel()
 
     renderer.AddDrawCommand(testASDASD);
     renderer.AddDrawCommand(fg_tri);
-    //b2ParticleDef pd;
+    b2ParticleDef pd;
+    
     //pd.flags = b2_waterParticle;
     //pd.color.Set(0, 0, 255, 255);
     //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
@@ -185,11 +188,11 @@ void Game::UpdateModel()
   }
   if(godWindow.mouse.RightIsPressed() == true)
   {
-    char buff[125];
-    sprintf(buff, "%d\n", particleSystem->GetParticleCount());
-    OutputDebugStringA(buff);
+    auto particle = arena.Create<ParticleObject>();
+    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()) / PHYSICS_SCALE);
+   
   }
-  test->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
+  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY())/PHYSICS_SCALE);
   arena.Update();
 }
 
@@ -207,6 +210,7 @@ void Game::ComposeFrame()
   //  gfx.DrawClippedLineCircle(3, *(Vec2*)&particleSystem->GetPositionBuffer()[i], 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
   //}
   renderer.Render();
+  arena.physx.DebugDraw();
   //  Rasterizer rasterizer;
     //Shader shader(gfx);
     //rasterizer.RasterizeCells(renderer.grid.cells, tri_buff, shader,
