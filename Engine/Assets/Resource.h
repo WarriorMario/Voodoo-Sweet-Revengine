@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VString.h"
+#include "Utility.h"
 
 // ****************************************************************************
 // To create a new resource you can derive it from Resource, using itself as
@@ -25,13 +26,9 @@ public:
   {
     *this = other;
   }
-  Resource(Resource&& other)
-  {
-    *this = std::move(other);
-  }
   ~Resource()
   {
-    if(data)
+    if(!is_fallback)
     {
       Assets::Get().RemoveRef<T>(filename);
     }
@@ -39,19 +36,43 @@ public:
 
   Resource& operator=(const Resource& other)
   {
+    filename = other.filename;
     data = other.data;
+    is_fallback = other.is_fallback;
+    if(!is_fallback)
+    {
+      Assets::Get().AddRef<T>(filename);
+    }
   }
-  Resource& operator=(Resource&& other)
+
+  void Reload()
   {
-    data = other.data;
-    other.data = nullptr
+    T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
+    ZeroMem(tmp_data, sizeof(T::Data));
+    if(!Load(filename, *tmp_data))
+    {
+      // if load failed, keep existing resource
+      delete tmp_data;
+    }
+    else
+    {
+      if(is_fallback)
+      {
+        data = &Assets::Get().AddData<T>(filename, Move(*tmp_data));
+      }
+      else
+      {
+        Assets::Get().ReplaceData<T>(filename, Move(*tmp_data));
+      }
+    }
   }
 
 protected:
   Resource(StringRef filename)
     :
     data(nullptr),
-    filename(filename)
+    filename(filename),
+    is_fallback(false)
   {
     if(Assets::Get().HasData<T>(filename))
     {
@@ -59,19 +80,32 @@ protected:
     }
     else
     {
-      data = ::operator new(sizeof(T::Data));
-      if(!Load(filename, *(T::Data*)data))
+      T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
+      ZeroMem(tmp_data, sizeof(T::Data));
+      if(!Load(filename, *tmp_data))
       {
-        delete data;
+        delete tmp_data;
 
         // if load failed, use fallback instead
         data = &Assets::Get().GetFallback<T>();
+        is_fallback = true;
+      }
+      else
+      {
+        data = &Assets::Get().AddData<T>(filename, Move(*tmp_data));
       }
     }
+  }
+
+  template<typename Resource>
+  const typename Resource::Data* GetData()
+  {
+    return (const typename Resource::Data*)data;
   }
 
 private:
   String filename;
   const void* data;
+  bool is_fallback;
 
 };

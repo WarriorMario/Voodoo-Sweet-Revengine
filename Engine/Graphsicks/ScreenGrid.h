@@ -71,6 +71,7 @@ public:
       for(int x = start_x; x < end_x; ++x)
       {
         ScreenGridCell& cell = cells[y * width + x];
+        assert(cell.num_indices < _countof(cell.indices) && "Cell indices out of bounds");
         cell.indices[cell.num_indices] = primitive_index;
         cell.num_indices++;
         cell.indices[cell.num_indices] = primitve_index_2;
