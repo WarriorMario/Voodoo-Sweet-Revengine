@@ -93,10 +93,10 @@ public:
 
 		// Project along inverse normal (as returned in the contact) to get the
 		// point to check.
-		b2Vec2 n = contact.normal;
+		Vec2 n = contact.normal;
 		// weight is 1-(inv(diameter) * distance)
 		n *= m_system->m_particleDiameter * (1 - contact.weight);
-		b2Vec2 pos = m_system->m_positionBuffer.data[contact.index] + n;
+		Vec2 pos = m_system->m_positionBuffer.data[contact.index] + n;
 
 		// pos is now a point projected back along the contact normal to the
 		// contact distance. If the surface makes sense for a contact, pos will
@@ -107,7 +107,7 @@ public:
 			for (int32 childIndex = 0; childIndex < childCount; childIndex++)
 			{
 				float32 distance;
-				b2Vec2 normal;
+				Vec2 normal;
 				contact.fixture->ComputeDistance(pos, &distance, &normal,
 																	childIndex);
 				if (distance < b2_linearSlop)
@@ -856,7 +856,7 @@ int32 b2ParticleSystem::DestroyParticlesInShape(
 }
 
 int32 b2ParticleSystem::CreateParticleForGroup(
-	const b2ParticleGroupDef& groupDef, const b2Transform& xf, const b2Vec2& p)
+	const b2ParticleGroupDef& groupDef, const b2Transform& xf, const Vec2& p)
 {
 	b2ParticleDef particleDef;
 	particleDef.flags = groupDef.flags;
@@ -894,11 +894,11 @@ void b2ParticleSystem::CreateParticlesStrokeShapeForGroup(
 			b2Assert(shape->GetType() == b2Shape::e_chain);
 			((b2ChainShape*) shape)->GetChildEdge(&edge, childIndex);
 		}
-		b2Vec2 d = edge.m_vertex2 - edge.m_vertex1;
+		Vec2 d = edge.m_vertex2 - edge.m_vertex1;
 		float32 edgeLength = d.Length();
 		while (positionOnEdge < edgeLength)
 		{
-			b2Vec2 p = edge.m_vertex1 + positionOnEdge / edgeLength * d;
+			Vec2 p = edge.m_vertex1 + positionOnEdge / edgeLength * d;
 			CreateParticleForGroup(groupDef, xf, p);
 			positionOnEdge += stride;
 		}
@@ -926,7 +926,7 @@ void b2ParticleSystem::CreateParticlesFillShapeForGroup(
 		for (float32 x = floorf(aabb.lowerBound.x / stride) * stride;
 			x < aabb.upperBound.x; x += stride)
 		{
-			b2Vec2 p(x, y);
+			Vec2 p(x, y);
 			if (shape->TestPoint(identity, p))
 			{
 				CreateParticleForGroup(groupDef, xf, p);
@@ -976,7 +976,7 @@ void b2ParticleSystem::CreateParticlesWithShapesForGroup(
 		{
 			return 1;
 		}
-		bool TestPoint(const b2Transform& xf, const b2Vec2& p) const
+		bool TestPoint(const b2Transform& xf, const Vec2& p) const
 		{
 			for (int32 i = 0; i < m_shapeCount; i++)
 			{
@@ -987,8 +987,8 @@ void b2ParticleSystem::CreateParticlesWithShapesForGroup(
 			}
 			return false;
 		}
-		void ComputeDistance(const b2Transform& xf, const b2Vec2& p,
-					float32* distance, b2Vec2* normal, int32 childIndex) const
+		void ComputeDistance(const b2Transform& xf, const Vec2& p,
+					float32* distance, Vec2* normal, int32 childIndex) const
 		{
 			b2Assert(false);
 			B2_NOT_USED(xf);
@@ -1066,7 +1066,7 @@ b2ParticleGroup* b2ParticleSystem::CreateParticleGroup(
 		b2Assert(groupDef.positionData);
 		for (int32 i = 0; i < groupDef.particleCount; i++)
 		{
-			b2Vec2 p = groupDef.positionData[i];
+			Vec2 p = groupDef.positionData[i];
 			CreateParticleForGroup(groupDef, transform, p);
 		}
 	}
@@ -1544,12 +1544,12 @@ void b2ParticleSystem::UpdatePairsAndTriads(
 				if (((af | bf | cf) & k_triadFlags) &&
 					m_filter->ShouldCreateTriad(a, b, c))
 				{
-					const b2Vec2& pa = m_system->m_positionBuffer.data[a];
-					const b2Vec2& pb = m_system->m_positionBuffer.data[b];
-					const b2Vec2& pc = m_system->m_positionBuffer.data[c];
-					b2Vec2 dab = pa - pb;
-					b2Vec2 dbc = pb - pc;
-					b2Vec2 dca = pc - pa;
+					const Vec2& pa = m_system->m_positionBuffer.data[a];
+					const Vec2& pb = m_system->m_positionBuffer.data[b];
+					const Vec2& pc = m_system->m_positionBuffer.data[c];
+					Vec2 dab = pa - pb;
+					Vec2 dbc = pb - pc;
+					Vec2 dca = pc - pa;
 					float32 maxDistanceSquared = b2_maxTriadDistanceSquared *
 												 m_system->m_squaredDiameter;
 					if (b2Dot(dab, dab) > maxDistanceSquared ||
@@ -1570,7 +1570,7 @@ void b2ParticleSystem::UpdatePairsAndTriads(
 						groupA ? groupA->m_strength : 1,
 						groupB ? groupB->m_strength : 1),
 						groupC ? groupC->m_strength : 1);
-					b2Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
+					Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
 					triad.pa = pa - midPoint;
 					triad.pb = pb - midPoint;
 					triad.pc = pc - midPoint;
@@ -1810,7 +1810,7 @@ b2ParticleSystem::GetInsideBoundsEnumerator(const b2AABB& aabb) const
 inline void b2ParticleSystem::AddContact(int32 a, int32 b,
 	b2GrowableBuffer<b2ParticleContact>& contacts) const
 {
-	b2Vec2 d = m_positionBuffer.data[b] - m_positionBuffer.data[a];
+	Vec2 d = m_positionBuffer.data[b] - m_positionBuffer.data[a];
 	float32 distBtParticlesSq = b2Dot(d, d);
 	if (distBtParticlesSq < m_squaredDiameter)
 	{
@@ -1874,7 +1874,7 @@ void b2ParticleSystem::ReorderForFindContact(FindContactInput* reordered,
 	{
 		FindContactInput& r = reordered[i];
 		r.proxyIndex = 0;
-		r.position = b2Vec2(b2_maxFloat, b2_maxFloat);
+		r.position = Vec2(b2_maxFloat, b2_maxFloat);
 	}
 }
 
@@ -2034,7 +2034,7 @@ void b2ParticleSystem::UpdateProxies_Reference(
 	for (Proxy* proxy = proxies.Begin(); proxy < endProxy; ++proxy)
 	{
 		int32 i = proxy->index;
-		b2Vec2 p = m_positionBuffer.data[i];
+		Vec2 p = m_positionBuffer.data[i];
 		proxy->tag = computeTag(m_inverseDiameter * p.x,
 								m_inverseDiameter * p.y);
 	}
@@ -2344,7 +2344,7 @@ void b2ParticleSystem::ComputeAABB(b2AABB* const aabb) const
 
 	for (int32 i = 0; i < particleCount; i++)
 	{
-		b2Vec2 p = m_positionBuffer.data[i];
+		Vec2 p = m_positionBuffer.data[i];
 		aabb->lowerBound = b2Min(aabb->lowerBound, p);
 		aabb->upperBound = b2Max(aabb->upperBound, p);
 	}
@@ -2653,14 +2653,14 @@ void b2ParticleSystem::UpdateBodyContacts()
 		void ReportFixtureAndParticle(
 								b2Fixture* fixture, int32 childIndex, int32 a)
 		{
-			b2Vec2 ap = m_system->m_positionBuffer.data[a];
+			Vec2 ap = m_system->m_positionBuffer.data[a];
 			float32 d;
-			b2Vec2 n;
+			Vec2 n;
 			fixture->ComputeDistance(ap, &d, &n, childIndex);
 			if (d < m_system->m_particleDiameter && ShouldCollide(fixture, a))
 			{
 				b2Body* b = fixture->GetBody();
-				b2Vec2 bp = b->GetWorldCenter();
+				Vec2 bp = b->GetWorldCenter();
 				float32 bm = b->GetMass();
 				float32 bI =
 					b->GetInertia() - bm * b->GetLocalCenter().LengthSquared();
@@ -2669,7 +2669,7 @@ void b2ParticleSystem::UpdateBodyContacts()
 				float32 invAm =
 					m_system->m_flagsBuffer.data[a] &
 					b2_wallParticle ? 0 : m_system->GetParticleInvMass();
-				b2Vec2 rp = ap - bp;
+				Vec2 rp = ap - bp;
 				float32 rpn = b2Cross(rp, n);
 				float32 invM = invAm + invBm + invBI * rpn * rpn;
 
@@ -2763,9 +2763,9 @@ void b2ParticleSystem::SolveCollision(const b2TimeStep& step)
 	aabb.upperBound.y = -b2_maxFloat;
 	for (int32 i = 0; i < m_count; i++)
 	{
-		b2Vec2 v = m_velocityBuffer.data[i];
-		b2Vec2 p1 = m_positionBuffer.data[i];
-		b2Vec2 p2 = p1 + step.dt * v;
+		Vec2 v = m_velocityBuffer.data[i];
+		Vec2 p1 = m_positionBuffer.data[i];
+		Vec2 p2 = p1 + step.dt * v;
 		aabb.lowerBound = b2Min(aabb.lowerBound, b2Min(p1, p2));
 		aabb.upperBound = b2Max(aabb.upperBound, b2Max(p1, p2));
 	}
@@ -2775,14 +2775,14 @@ void b2ParticleSystem::SolveCollision(const b2TimeStep& step)
 								b2Fixture* fixture, int32 childIndex, int32 a)
 		{
 			b2Body* body = fixture->GetBody();
-			b2Vec2 ap = m_system->m_positionBuffer.data[a];
-			b2Vec2 av = m_system->m_velocityBuffer.data[a];
+			Vec2 ap = m_system->m_positionBuffer.data[a];
+			Vec2 av = m_system->m_velocityBuffer.data[a];
 			b2RayCastOutput output;
 			b2RayCastInput input;
 			if (m_system->m_iterationIndex == 0)
 			{
 				// Put 'ap' in the local space of the previous frame
-				b2Vec2 p1 = b2MulT(body->m_xf0, ap);
+				Vec2 p1 = b2MulT(body->m_xf0, ap);
 				if (fixture->GetShape()->GetType() == b2Shape::e_circle)
 				{
 					// Make relative to the center of the circle
@@ -2806,14 +2806,14 @@ void b2ParticleSystem::SolveCollision(const b2TimeStep& step)
 			input.maxFraction = 1;
 			if (fixture->RayCast(&output, input, childIndex))
 			{
-				b2Vec2 n = output.normal;
-				b2Vec2 p =
+				Vec2 n = output.normal;
+				Vec2 p =
 					(1 - output.fraction) * input.p1 +
 					output.fraction * input.p2 +
 					b2_linearSlop * n;
-				b2Vec2 v = m_step.inv_dt * (p - ap);
+				Vec2 v = m_step.inv_dt * (p - ap);
 				m_system->m_velocityBuffer.data[a] = v;
-				b2Vec2 f = m_step.inv_dt *
+				Vec2 f = m_step.inv_dt *
 					m_system->GetParticleMass() * (av - v);
 				m_system->ParticleApplyForce(a, f);
 			}
@@ -2854,38 +2854,38 @@ void b2ParticleSystem::SolveBarrier(const b2TimeStep& step)
 		{
 			int32 a = pair.indexA;
 			int32 b = pair.indexB;
-			b2Vec2 pa = m_positionBuffer.data[a];
-			b2Vec2 pb = m_positionBuffer.data[b];
+			Vec2 pa = m_positionBuffer.data[a];
+			Vec2 pb = m_positionBuffer.data[b];
 			b2AABB aabb;
 			aabb.lowerBound = b2Min(pa, pb);
 			aabb.upperBound = b2Max(pa, pb);
 			b2ParticleGroup *aGroup = m_groupBuffer[a];
 			b2ParticleGroup *bGroup = m_groupBuffer[b];
-			b2Vec2 va = GetLinearVelocity(aGroup, a, pa);
-			b2Vec2 vb = GetLinearVelocity(bGroup, b, pb);
-			b2Vec2 pba = pb - pa;
-			b2Vec2 vba = vb - va;
+			Vec2 va = GetLinearVelocity(aGroup, a, pa);
+			Vec2 vb = GetLinearVelocity(bGroup, b, pb);
+			Vec2 pba = pb - pa;
+			Vec2 vba = vb - va;
 			InsideBoundsEnumerator enumerator = GetInsideBoundsEnumerator(aabb);
 			int32 c;
 			while ((c = enumerator.GetNext()) >= 0)
 			{
-				b2Vec2 pc = m_positionBuffer.data[c];
+				Vec2 pc = m_positionBuffer.data[c];
 				b2ParticleGroup *cGroup = m_groupBuffer[c];
 				if (aGroup != cGroup && bGroup != cGroup)
 				{
-					b2Vec2 vc = GetLinearVelocity(cGroup, c, pc);
+					Vec2 vc = GetLinearVelocity(cGroup, c, pc);
 					// Solve the equation below:
 					//   (1-s)*(pa+t*va)+s*(pb+t*vb) = pc+t*vc
 					// which expresses that the particle c will pass a line
 					// connecting the particles a and b at the time of t.
 					// if s is between 0 and 1, c will pass between a and b.
-					b2Vec2 pca = pc - pa;
-					b2Vec2 vca = vc - va;
+					Vec2 pca = pc - pa;
+					Vec2 vca = vc - va;
 					float32 e2 = b2Cross(vba, vca);
 					float32 e1 = b2Cross(pba, vca) - b2Cross(pca, vba);
 					float32 e0 = b2Cross(pba, pca);
 					float32 s, t;
-					b2Vec2 qba, qca;
+					Vec2 qba, qca;
 					if (e2 == 0)
 					{
 						if (e1 == 0) continue;
@@ -2920,8 +2920,8 @@ void b2ParticleSystem::SolveBarrier(const b2TimeStep& step)
 					}
 					// Apply a force to particle c so that it will have the
 					// interpolated velocity at the collision point on line ab.
-					b2Vec2 dv = va + s * vba - vc;
-					b2Vec2 f = GetParticleMass() * dv;
+					Vec2 dv = va + s * vba - vc;
+					Vec2 f = GetParticleMass() * dv;
 					if (IsRigidGroup(cGroup))
 					{
 						// If c belongs to a rigid group, the force will be
@@ -3101,7 +3101,7 @@ void b2ParticleSystem::LimitVelocity(const b2TimeStep& step)
 	float32 criticalVelocitySquared = GetCriticalVelocitySquared(step);
 	for (int32 i = 0; i < m_count; i++)
 	{
-		b2Vec2& v = m_velocityBuffer.data[i];
+		Vec2& v = m_velocityBuffer.data[i];
 		float32 v2 = b2Dot(v, v);
 		if (v2 > criticalVelocitySquared)
 		{
@@ -3112,7 +3112,7 @@ void b2ParticleSystem::LimitVelocity(const b2TimeStep& step)
 
 void b2ParticleSystem::SolveGravity(const b2TimeStep& step)
 {
-	b2Vec2 gravity = step.dt * m_def.gravityScale * m_world->GetGravity();
+	Vec2 gravity = step.dt * m_def.gravityScale * m_world->GetGravity();
 	for (int32 i = 0; i < m_count; i++)
 	{
 		m_velocityBuffer.data[i] += gravity;
@@ -3217,10 +3217,10 @@ void b2ParticleSystem::SolvePressure(const b2TimeStep& step)
 		b2Body* b = contact.body;
 		float32 w = contact.weight;
 		float32 m = contact.mass;
-		b2Vec2 n = contact.normal;
-		b2Vec2 p = m_positionBuffer.data[a];
+		Vec2 n = contact.normal;
+		Vec2 p = m_positionBuffer.data[a];
 		float32 h = m_accumulationBuffer[a] + pressurePerWeight * w;
-		b2Vec2 f = velocityPerPressure * w * m * h * n;
+		Vec2 f = velocityPerPressure * w * m * h * n;
 		m_velocityBuffer.data[a] -= GetParticleInvMass() * f;
 		b->ApplyLinearImpulse(f, p, true);
 	}
@@ -3230,9 +3230,9 @@ void b2ParticleSystem::SolvePressure(const b2TimeStep& step)
 		int32 a = contact.GetIndexA();
 		int32 b = contact.GetIndexB();
 		float32 w = contact.GetWeight();
-		b2Vec2 n = contact.GetNormal();
+		Vec2 n = contact.GetNormal();
 		float32 h = m_accumulationBuffer[a] + m_accumulationBuffer[b];
-		b2Vec2 f = velocityPerPressure * w * h * n;
+		Vec2 f = velocityPerPressure * w * h * n;
 		m_velocityBuffer.data[a] -= f;
 		m_velocityBuffer.data[b] += f;
 	}
@@ -3250,16 +3250,16 @@ void b2ParticleSystem::SolveDamping(const b2TimeStep& step)
 		b2Body* b = contact.body;
 		float32 w = contact.weight;
 		float32 m = contact.mass;
-		b2Vec2 n = contact.normal;
-		b2Vec2 p = m_positionBuffer.data[a];
-		b2Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
+		Vec2 n = contact.normal;
+		Vec2 p = m_positionBuffer.data[a];
+		Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
 				   m_velocityBuffer.data[a];
 		float32 vn = b2Dot(v, n);
 		if (vn < 0)
 		{
 			float32 damping =
 				b2Max(linearDamping * w, b2Min(- quadraticDamping * vn, 0.5f));
-			b2Vec2 f = damping * m * vn * n;
+			Vec2 f = damping * m * vn * n;
 			m_velocityBuffer.data[a] += GetParticleInvMass() * f;
 			b->ApplyLinearImpulse(-f, p, true);
 		}
@@ -3270,14 +3270,14 @@ void b2ParticleSystem::SolveDamping(const b2TimeStep& step)
 		int32 a = contact.GetIndexA();
 		int32 b = contact.GetIndexB();
 		float32 w = contact.GetWeight();
-		b2Vec2 n = contact.GetNormal();
-		b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
+		Vec2 n = contact.GetNormal();
+		Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
 		float32 vn = b2Dot(v, n);
 		if (vn < 0)
 		{
 			float32 damping =
 				b2Max(linearDamping * w, b2Min(- quadraticDamping * vn, 0.5f));
-			b2Vec2 f = damping * vn * n;
+			Vec2 f = damping * vn * n;
 			m_velocityBuffer.data[a] += f;
 			m_velocityBuffer.data[b] -= f;
 		}
@@ -3289,9 +3289,9 @@ inline bool b2ParticleSystem::IsRigidGroup(b2ParticleGroup *group) const
 	return group && (group->m_groupFlags & b2_rigidParticleGroup);
 }
 
-inline b2Vec2 b2ParticleSystem::GetLinearVelocity(
+inline Vec2 b2ParticleSystem::GetLinearVelocity(
 	b2ParticleGroup *group, int32 particleIndex,
-	const b2Vec2 &point) const
+	const Vec2 &point) const
 {
 	if (IsRigidGroup(group))
 	{
@@ -3305,8 +3305,8 @@ inline b2Vec2 b2ParticleSystem::GetLinearVelocity(
 
 inline void b2ParticleSystem::InitDampingParameter(
 	float32* invMass, float32* invInertia, float32* tangentDistance,
-	float32 mass, float32 inertia, const b2Vec2& center,
-	const b2Vec2& point, const b2Vec2& normal) const
+	float32 mass, float32 inertia, const Vec2& center,
+	const Vec2& point, const Vec2& normal) const
 {
 	*invMass = mass > 0 ? 1 / mass : 0;
 	*invInertia = inertia > 0 ? 1 / inertia : 0;
@@ -3316,7 +3316,7 @@ inline void b2ParticleSystem::InitDampingParameter(
 inline void b2ParticleSystem::InitDampingParameterWithRigidGroupOrParticle(
 	float32* invMass, float32* invInertia, float32* tangentDistance,
 	bool isRigidGroup, b2ParticleGroup* group, int32 particleIndex,
-	const b2Vec2& point, const b2Vec2& normal) const
+	const Vec2& point, const Vec2& normal) const
 {
 	if (isRigidGroup)
 	{
@@ -3349,7 +3349,7 @@ inline float32 b2ParticleSystem::ComputeDampingImpulse(
 inline void b2ParticleSystem::ApplyDamping(
 	float32 invMass, float32 invInertia, float32 tangentDistance,
 	bool isRigidGroup, b2ParticleGroup* group, int32 particleIndex,
-	float32 impulse, const b2Vec2& normal)
+	float32 impulse, const Vec2& normal)
 {
 	if (isRigidGroup)
 	{
@@ -3375,10 +3375,10 @@ void b2ParticleSystem::SolveRigidDamping()
 		if (IsRigidGroup(aGroup))
 		{
 			b2Body* b = contact.body;
-			b2Vec2 n = contact.normal;
+			Vec2 n = contact.normal;
 			float32 w = contact.weight;
-			b2Vec2 p = m_positionBuffer.data[a];
-			b2Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
+			Vec2 p = m_positionBuffer.data[a];
+			Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
 					   aGroup->GetLinearVelocityFromWorldPoint(p);
 			float32 vn = b2Dot(v, n);
 			if (vn < 0)
@@ -3414,7 +3414,7 @@ void b2ParticleSystem::SolveRigidDamping()
 		const b2ParticleContact& contact = m_contactBuffer[k];
 		int32 a = contact.GetIndexA();
 		int32 b = contact.GetIndexB();
-		b2Vec2 n = contact.GetNormal();
+		Vec2 n = contact.GetNormal();
 		float32 w = contact.GetWeight();
 		b2ParticleGroup* aGroup = m_groupBuffer[a];
 		b2ParticleGroup* bGroup = m_groupBuffer[b];
@@ -3422,9 +3422,9 @@ void b2ParticleSystem::SolveRigidDamping()
 		bool bRigid = IsRigidGroup(bGroup);
 		if (aGroup != bGroup && (aRigid || bRigid))
 		{
-			b2Vec2 p =
+			Vec2 p =
 				0.5f * (m_positionBuffer.data[a] + m_positionBuffer.data[b]);
-			b2Vec2 v =
+			Vec2 v =
 				GetLinearVelocity(bGroup, b, p) -
 				GetLinearVelocity(aGroup, a, p);
 			float32 vn = b2Dot(v, n);
@@ -3468,15 +3468,15 @@ void b2ParticleSystem::SolveExtraDamping()
 		{
 			b2Body* b = contact.body;
 			float32 m = contact.mass;
-			b2Vec2 n = contact.normal;
-			b2Vec2 p = m_positionBuffer.data[a];
-			b2Vec2 v =
+			Vec2 n = contact.normal;
+			Vec2 p = m_positionBuffer.data[a];
+			Vec2 v =
 				b->GetLinearVelocityFromWorldPoint(p) -
 				m_velocityBuffer.data[a];
 			float32 vn = b2Dot(v, n);
 			if (vn < 0)
 			{
-				b2Vec2 f = 0.5f * m * vn * n;
+				Vec2 f = 0.5f * m * vn * n;
 				m_velocityBuffer.data[a] += GetParticleInvMass() * f;
 				b->ApplyLinearImpulse(-f, p, true);
 			}
@@ -3532,19 +3532,19 @@ void b2ParticleSystem::SolveElastic(const b2TimeStep& step)
 			int32 a = triad.indexA;
 			int32 b = triad.indexB;
 			int32 c = triad.indexC;
-			const b2Vec2& oa = triad.pa;
-			const b2Vec2& ob = triad.pb;
-			const b2Vec2& oc = triad.pc;
-			b2Vec2 pa = m_positionBuffer.data[a];
-			b2Vec2 pb = m_positionBuffer.data[b];
-			b2Vec2 pc = m_positionBuffer.data[c];
-			b2Vec2& va = m_velocityBuffer.data[a];
-			b2Vec2& vb = m_velocityBuffer.data[b];
-			b2Vec2& vc = m_velocityBuffer.data[c];
+			const Vec2& oa = triad.pa;
+			const Vec2& ob = triad.pb;
+			const Vec2& oc = triad.pc;
+			Vec2 pa = m_positionBuffer.data[a];
+			Vec2 pb = m_positionBuffer.data[b];
+			Vec2 pc = m_positionBuffer.data[c];
+			Vec2& va = m_velocityBuffer.data[a];
+			Vec2& vb = m_velocityBuffer.data[b];
+			Vec2& vc = m_velocityBuffer.data[c];
 			pa += step.dt * va;
 			pb += step.dt * vb;
 			pc += step.dt * vc;
-			b2Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
+			Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
 			pa -= midPoint;
 			pb -= midPoint;
 			pc -= midPoint;
@@ -3573,17 +3573,17 @@ void b2ParticleSystem::SolveSpring(const b2TimeStep& step)
 		{
 			int32 a = pair.indexA;
 			int32 b = pair.indexB;
-			b2Vec2 pa = m_positionBuffer.data[a];
-			b2Vec2 pb = m_positionBuffer.data[b];
-			b2Vec2& va = m_velocityBuffer.data[a];
-			b2Vec2& vb = m_velocityBuffer.data[b];
+			Vec2 pa = m_positionBuffer.data[a];
+			Vec2 pb = m_positionBuffer.data[b];
+			Vec2& va = m_velocityBuffer.data[a];
+			Vec2& vb = m_velocityBuffer.data[b];
 			pa += step.dt * va;
 			pb += step.dt * vb;
-			b2Vec2 d = pb - pa;
+			Vec2 d = pb - pa;
 			float32 r0 = pair.distance;
 			float32 r1 = d.Length();
 			float32 strength = springStrength * pair.strength;
-			b2Vec2 f = strength * (r0 - r1) / r1 * d;
+			Vec2 f = strength * (r0 - r1) / r1 * d;
 			va -= f;
 			vb += f;
 		}
@@ -3605,8 +3605,8 @@ void b2ParticleSystem::SolveTensile(const b2TimeStep& step)
 			int32 a = contact.GetIndexA();
 			int32 b = contact.GetIndexB();
 			float32 w = contact.GetWeight();
-			b2Vec2 n = contact.GetNormal();
-			b2Vec2 weightedNormal = (1 - w) * w * n;
+			Vec2 n = contact.GetNormal();
+			Vec2 weightedNormal = (1 - w) * w * n;
 			m_accumulation2Buffer[a] -= weightedNormal;
 			m_accumulation2Buffer[b] += weightedNormal;
 		}
@@ -3625,13 +3625,13 @@ void b2ParticleSystem::SolveTensile(const b2TimeStep& step)
 			int32 a = contact.GetIndexA();
 			int32 b = contact.GetIndexB();
 			float32 w = contact.GetWeight();
-			b2Vec2 n = contact.GetNormal();
+			Vec2 n = contact.GetNormal();
 			float32 h = m_weightBuffer[a] + m_weightBuffer[b];
-			b2Vec2 s = m_accumulation2Buffer[b] - m_accumulation2Buffer[a];
+			Vec2 s = m_accumulation2Buffer[b] - m_accumulation2Buffer[a];
 			float32 fn = b2Min(
 					pressureStrength * (h - 2) + normalStrength * b2Dot(s, n),
 					maxVelocityVariation) * w;
-			b2Vec2 f = fn * n;
+			Vec2 f = fn * n;
 			m_velocityBuffer.data[a] -= f;
 			m_velocityBuffer.data[b] += f;
 		}
@@ -3650,10 +3650,10 @@ void b2ParticleSystem::SolveViscous()
 			b2Body* b = contact.body;
 			float32 w = contact.weight;
 			float32 m = contact.mass;
-			b2Vec2 p = m_positionBuffer.data[a];
-			b2Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
+			Vec2 p = m_positionBuffer.data[a];
+			Vec2 v = b->GetLinearVelocityFromWorldPoint(p) -
 					   m_velocityBuffer.data[a];
-			b2Vec2 f = viscousStrength * m * w * v;
+			Vec2 f = viscousStrength * m * w * v;
 			m_velocityBuffer.data[a] += GetParticleInvMass() * f;
 			b->ApplyLinearImpulse(-f, p, true);
 		}
@@ -3666,8 +3666,8 @@ void b2ParticleSystem::SolveViscous()
 			int32 a = contact.GetIndexA();
 			int32 b = contact.GetIndexB();
 			float32 w = contact.GetWeight();
-			b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
-			b2Vec2 f = viscousStrength * w * v;
+			Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
+			Vec2 f = viscousStrength * w * v;
 			m_velocityBuffer.data[a] += f;
 			m_velocityBuffer.data[b] -= f;
 		}
@@ -3688,8 +3688,8 @@ void b2ParticleSystem::SolveRepulsive(const b2TimeStep& step)
 			if (m_groupBuffer[a] != m_groupBuffer[b])
 			{
 				float32 w = contact.GetWeight();
-				b2Vec2 n = contact.GetNormal();
-				b2Vec2 f = repulsiveStrength * w * n;
+				Vec2 n = contact.GetNormal();
+				Vec2 f = repulsiveStrength * w * n;
 				m_velocityBuffer.data[a] -= f;
 				m_velocityBuffer.data[b] += f;
 			}
@@ -3711,8 +3711,8 @@ void b2ParticleSystem::SolvePowder(const b2TimeStep& step)
 			{
 				int32 a = contact.GetIndexA();
 				int32 b = contact.GetIndexB();
-				b2Vec2 n = contact.GetNormal();
-				b2Vec2 f = powderStrength * (w - minWeight) * n;
+				Vec2 n = contact.GetNormal();
+				Vec2 f = powderStrength * (w - minWeight) * n;
 				m_velocityBuffer.data[a] -= f;
 				m_velocityBuffer.data[b] += f;
 			}
@@ -3733,9 +3733,9 @@ void b2ParticleSystem::SolveSolid(const b2TimeStep& step)
 		if (m_groupBuffer[a] != m_groupBuffer[b])
 		{
 			float32 w = contact.GetWeight();
-			b2Vec2 n = contact.GetNormal();
+			Vec2 n = contact.GetNormal();
 			float32 h = m_depthBuffer[a] + m_depthBuffer[b];
-			b2Vec2 f = ejectionStrength * h * w * n;
+			Vec2 f = ejectionStrength * h * w * n;
 			m_velocityBuffer.data[a] -= f;
 			m_velocityBuffer.data[b] += f;
 		}
@@ -4342,13 +4342,13 @@ void b2ParticleSystem::SetFlagsBuffer(uint32* buffer, int32 capacity)
 	SetUserOverridableBuffer(&m_flagsBuffer, buffer, capacity);
 }
 
-void b2ParticleSystem::SetPositionBuffer(b2Vec2* buffer,
+void b2ParticleSystem::SetPositionBuffer(Vec2* buffer,
 												 int32 capacity)
 {
 	SetUserOverridableBuffer(&m_positionBuffer, buffer, capacity);
 }
 
-void b2ParticleSystem::SetVelocityBuffer(b2Vec2* buffer,
+void b2ParticleSystem::SetVelocityBuffer(Vec2* buffer,
 												 int32 capacity)
 {
 	SetUserOverridableBuffer(&m_velocityBuffer, buffer, capacity);
@@ -4416,7 +4416,7 @@ void b2ParticleSystem::SetGroupFlags(
 	*oldFlags = newFlags;
 }
 
-static inline bool IsSignificantForce(const b2Vec2& force)
+static inline bool IsSignificantForce(const Vec2& force)
 {
 	return force.x != 0 || force.y != 0;
 }
@@ -4436,7 +4436,7 @@ inline void b2ParticleSystem::PrepareForceBuffer()
 }
 
 void b2ParticleSystem::ApplyForce(int32 firstIndex, int32 lastIndex,
-								  const b2Vec2& force)
+								  const Vec2& force)
 {
 	// Ensure we're not trying to apply force to particles that can't move,
 	// such as wall particles.
@@ -4450,7 +4450,7 @@ void b2ParticleSystem::ApplyForce(int32 firstIndex, int32 lastIndex,
 #endif
 
 	// Early out if force does nothing (optimization).
-	const b2Vec2 distributedForce = force / (float32)(lastIndex - firstIndex);
+	const Vec2 distributedForce = force / (float32)(lastIndex - firstIndex);
 	if (IsSignificantForce(distributedForce))
 	{
 		PrepareForceBuffer();
@@ -4463,7 +4463,7 @@ void b2ParticleSystem::ApplyForce(int32 firstIndex, int32 lastIndex,
 	}
 }
 
-void b2ParticleSystem::ParticleApplyForce(int32 index, const b2Vec2& force)
+void b2ParticleSystem::ParticleApplyForce(int32 index, const Vec2& force)
 {
 	if (IsSignificantForce(force) &&
 		ForceCanBeApplied(m_flagsBuffer.data[index]))
@@ -4474,11 +4474,11 @@ void b2ParticleSystem::ParticleApplyForce(int32 index, const b2Vec2& force)
 }
 
 void b2ParticleSystem::ApplyLinearImpulse(int32 firstIndex, int32 lastIndex,
-										  const b2Vec2& impulse)
+										  const Vec2& impulse)
 {
 	const float32 numParticles = (float32)(lastIndex - firstIndex);
 	const float32 totalMass = numParticles * GetParticleMass();
-	const b2Vec2 velocityDelta = impulse / totalMass;
+	const Vec2 velocityDelta = impulse / totalMass;
 	for (int32 i = firstIndex; i < lastIndex; i++)
 	{
 		m_velocityBuffer.data[i] += velocityDelta;
@@ -4507,7 +4507,7 @@ void b2ParticleSystem::QueryAABB(b2QueryCallback* callback,
 	for (const Proxy* proxy = firstProxy; proxy < lastProxy; ++proxy)
 	{
 		int32 i = proxy->index;
-		const b2Vec2& p = m_positionBuffer.data[i];
+		const Vec2& p = m_positionBuffer.data[i];
 		if (aabb.lowerBound.x < p.x && p.x < aabb.upperBound.x &&
 			aabb.lowerBound.y < p.y && p.y < aabb.upperBound.y)
 		{
@@ -4529,8 +4529,8 @@ void b2ParticleSystem::QueryShapeAABB(b2QueryCallback* callback,
 }
 
 void b2ParticleSystem::RayCast(b2RayCastCallback* callback,
-							   const b2Vec2& point1,
-							   const b2Vec2& point2) const
+							   const Vec2& point1,
+							   const Vec2& point2) const
 {
 	if (m_proxyBuffer.GetCount() == 0)
 	{
@@ -4543,13 +4543,13 @@ void b2ParticleSystem::RayCast(b2RayCastCallback* callback,
 	// solving the following equation:
 	// ((1-t)*point1+t*point2-position)^2=diameter^2
 	// where t is a potential fraction
-	b2Vec2 v = point2 - point1;
+	Vec2 v = point2 - point1;
 	float32 v2 = b2Dot(v, v);
 	InsideBoundsEnumerator enumerator = GetInsideBoundsEnumerator(aabb);
 	int32 i;
 	while ((i = enumerator.GetNext()) >= 0)
 	{
-		b2Vec2 p = point1 - m_positionBuffer.data[i];
+		Vec2 p = point1 - m_positionBuffer.data[i];
 		float32 pv = b2Dot(p, v);
 		float32 p2 = b2Dot(p, p);
 		float32 determinant = pv * pv - v2 * (p2 - m_squaredDiameter);
@@ -4570,7 +4570,7 @@ void b2ParticleSystem::RayCast(b2RayCastCallback* callback,
 					continue;
 				}
 			}
-			b2Vec2 n = p + t * v;
+			Vec2 n = p + t * v;
 			n.Normalize();
 			float32 f = callback->ReportParticle(this, i, point1 + t * v, n, t);
 			fraction = b2Min(fraction, f);
@@ -4590,8 +4590,8 @@ float32 b2ParticleSystem::ComputeCollisionEnergy() const
 		const b2ParticleContact& contact = m_contactBuffer[k];
 		int32 a = contact.GetIndexA();
 		int32 b = contact.GetIndexB();
-		b2Vec2 n = contact.GetNormal();
-		b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
+		Vec2 n = contact.GetNormal();
+		Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
 		float32 vn = b2Dot(v, n);
 		if (vn < 0)
 		{

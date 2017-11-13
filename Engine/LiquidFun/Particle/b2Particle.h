@@ -28,7 +28,7 @@ class b2ParticleGroup;
 /// @file
 
 /// The particle type. Can be combined with the | operator.
-enum b2ParticleFlag
+enum ParticleFlag
 {
 	/// Water particle.
 	b2_waterParticle = 0,
@@ -290,7 +290,7 @@ struct b2ParticleDef
 	void SetColor(int32 r, int32 g, int32 b, int32 a);
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 
-	/// \brief Specifies the type of particle (see #b2ParticleFlag).
+	/// \brief Specifies the type of particle (see #ParticleFlag).
 	///
 	/// A particle may be more than one type.
 	/// Multiple types are chained by logical sums, for example:
@@ -298,10 +298,10 @@ struct b2ParticleDef
 	uint32 flags;
 
 	/// The world position of the particle.
-	b2Vec2 position;
+	Vec2 position;
 
 	/// The linear velocity of the particle in world co-ordinates.
-	b2Vec2 velocity;
+	Vec2 velocity;
 
 	/// The color of the particle.
 	b2ParticleColor color;

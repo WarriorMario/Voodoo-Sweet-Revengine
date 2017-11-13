@@ -21,6 +21,8 @@
 #include "Game.h"
 #include "MainWindow.h"
 #include "Vec3.h"
+#include "Vec2.h"
+#include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
 #include "Graphsicks\FontManager.h"
@@ -31,14 +33,17 @@ b2BodyDef test0;
 b2BodyDef test1;
 b2FixtureDef testf0;
 b2FixtureDef testf1;
+Handle<PhysicsObject> test;
 Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   :
   godWindow(godWindow),
   playerWindow(playerWindow),
   gfx(godWindow, playerWindow),
-  world(b2Vec2(0, 9.81f)),
-  renderer(Renderer(gfx))
+  renderer(Renderer(gfx)),
+  arena()
 {
+  test = arena.Create<PhysicsObject>();
+  arena.physx.CreateDebugDraw(gfx);
 	FontManager font;
 
   godWindow.SetFocused();
@@ -66,42 +71,44 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   testf0.shape = &circle;
   //   testf0.friction = 0.5f;
   //   testf0.density = 1.0f;
-  //   b->SetTransform(b2Vec2(i,i%5),0);
+  //   b->SetTransform(Vec2(i,i%5),0);
   //   b->CreateFixture( &testf0 );
   //}
-  for(int i = 1; i < 80; ++i)
-  {
-    temp = world.CreateBody(&test1);
-    testf1.shape = &circle;
-    testf1.friction = 0.5f;
-    testf1.density = 1.0f;
-    temp->SetTransform(b2Vec2(i * 10, 590), 0);
-    temp->CreateFixture(&testf1);
-    temp = world.CreateBody(&test1);
-    testf1.shape = &circle;
-    testf1.friction = 0.5f;
-    testf1.density = 1.0f;
-    temp->SetTransform(b2Vec2(i * 10, 0), 0);
-    temp->CreateFixture(&testf1);
-  }
-  for(int i = 1; i < 80; ++i)
-  {
-    temp = world.CreateBody(&test1);
-    testf1.shape = &circle;
-    testf1.friction = 0.5f;
-    testf1.density = 1.0f;
-    temp->SetTransform(b2Vec2(10, i * 10), 0);
-    temp->CreateFixture(&testf1);
-    temp = world.CreateBody(&test1);
-    testf1.shape = &circle;
-    testf1.friction = 0.5f;
-    testf1.density = 1.0f;
-    temp->SetTransform(b2Vec2(790, i * 10), 0);
-    temp->CreateFixture(&testf1);
-  }
-  const b2ParticleSystemDef particleSystemDef;
-  particleSystem = world.CreateParticleSystem(&particleSystemDef);
-  particleSystem->SetRadius(3);
+  //for(int i = 1; i < 80; ++i)
+  //{
+  //  temp = world.CreateBody(&test1);
+  //  testf1.shape = &circle;
+  //  testf1.friction = 0.5f;
+  //  testf1.density = 1.0f;
+  //  temp->SetTransform(Vec2(i * 10, 590), 0);
+  //  temp->CreateFixture(&testf1);
+  //  
+  //  temp = world.CreateBody(&test1);
+  //  testf1.shape = &circle;
+  //  testf1.friction = 0.5f;
+  //  testf1.density = 1.0f;
+  //  temp->SetTransform(Vec2(i * 10, 0), 0);
+  //  temp->CreateFixture(&testf1);
+  //}
+  //for(int i = 1; i < 80; ++i)
+  //{
+  //  temp = world.CreateBody(&test1);
+  //  testf1.shape = &circle;
+  //  testf1.friction = 0.5f;
+  //  testf1.density = 1.0f;
+  //  temp->SetTransform(Vec2(10, i * 10), 0);
+  //  temp->CreateFixture(&testf1);
+  //  temp = world.CreateBody(&test1);
+  //  testf1.shape = &circle;
+  //  testf1.friction = 0.5f;
+  //  testf1.density = 1.0f;
+  //  temp->SetTransform(Vec2(790, i * 10), 0);
+  //  temp->CreateFixture(&testf1);
+  //}
+
+  //const b2ParticleSystemDef particleSystemDef;
+  //particleSystem = world.CreateParticleSystem(&particleSystemDef);
+  //particleSystem->SetRadius(3);
   //for ( int i = 0; i < 100000; ++i )
   //{
   //   b2ParticleDef pd;
@@ -140,72 +147,77 @@ void Game::UpdateModel()
   }
   if(godWindow.mouse.LeftIsPressed() == true)
   {
-	  tri_buff[0] = Triangle(
-		  Vec2(300, 300),
-		  Vec2(300, 200),
-		  Vec2(400, 200),
-		  Vec2(0.0f, 0.0f),
-		  Vec2(0.0f, 0.0f),
-		  Vec2(0.0f, 0.0f));
-	  tri_buff[1] = Triangle(
-		  Vec2(350, 300),
-		  Vec2(400, 200),
-		  Vec2(400, 300),
-		  Vec2(0.0f, 0.0f),
-		  Vec2(0.0f, 0.0f),
-		  Vec2(0.0f, 0.0f));
+    tri_buff[0] = Triangle(
+      Vec2(300, 300),
+      Vec2(300, 200),
+      Vec2(400, 200),
+      Vec2(0.0f, 0.0f),
+      Vec2(0.0f, 0.0f),
+      Vec2(0.0f, 0.0f));
+    tri_buff[1] = Triangle(
+      Vec2(350, 300),
+      Vec2(400, 200),
+      Vec2(400, 300),
+      Vec2(0.0f, 0.0f),
+      Vec2(0.0f, 0.0f),
+      Vec2(0.0f, 0.0f));
 
-	  BackgroundShader testASDASD;
-	  testASDASD.const_data.color = Colors::Yellow;
+    BackgroundShader testASDASD;
+    testASDASD.const_data.color = Colors::Yellow;
     testASDASD.prim_data[0] = {300, 300, 0.0, 0.0f};
     testASDASD.prim_data[1] = {300, 200, 1.0f, 0.0f};
     testASDASD.prim_data[2] = {400, 200, 0.5f, 1.0f};
 
     ForegroundShader fg_tri;
     fg_tri.const_data.color = Colors::Red;
-    fg_tri.prim_data[0] = {-50 + (float)godWindow.mouse.GetPosX() , (float)godWindow.mouse.GetPosY()+ 50, 0.0, 0.0f};
+    fg_tri.prim_data[0] = {-50 + (float)godWindow.mouse.GetPosX() , (float)godWindow.mouse.GetPosY() + 50, 0.0, 0.0f};
     fg_tri.prim_data[1] = {-50 + (float)godWindow.mouse.GetPosX(),(float)godWindow.mouse.GetPosY() - 50, 1.0f, 0.0f};
     fg_tri.prim_data[2] = {50 + (float)godWindow.mouse.GetPosX(), (float)godWindow.mouse.GetPosY() - 50, 0.5f, 1.0f};
-	  //BackgroundShader asdsa;
-	  //asdsa.const_data.color = Colors::Blue;
-	  //asdsa.prim_data[0] = tri_buff[1].p[0];
-	  //asdsa.prim_data[1] = tri_buff[1].p[1];
-	  //asdsa.prim_data[2] = tri_buff[1].p[2];
+    //BackgroundShader asdsa;
+    //asdsa.const_data.color = Colors::Blue;
+    //asdsa.prim_data[0] = tri_buff[1].p[0];
+    //asdsa.prim_data[1] = tri_buff[1].p[1];
+    //asdsa.prim_data[2] = tri_buff[1].p[2];
 
 
-	  renderer.AddDrawCommand(testASDASD);
-	  renderer.AddDrawCommand(fg_tri);
+    renderer.AddDrawCommand(testASDASD);
+    renderer.AddDrawCommand(fg_tri);
     b2ParticleDef pd;
-    pd.flags = b2_waterParticle;
-    pd.color.Set(0, 0, 255, 255);
-    pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
-    int tempIndex = particleSystem->CreateParticle(pd);
+    
+    //pd.flags = b2_waterParticle;
+    //pd.color.Set(0, 0, 255, 255);
+    //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
+    //int tempIndex = particleSystem->CreateParticle(pd);
   }
   if(godWindow.mouse.RightIsPressed() == true)
   {
-    char buff[125];
-    sprintf(buff, "%d\n", particleSystem->GetParticleCount());
-    OutputDebugStringA(buff);
+    auto particle = arena.Create<ParticleObject>();
+    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()) / PHYSICS_SCALE);
+   
   }
-  world.Step(1.0f / 60.0f, 1, 1);
+  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY())/PHYSICS_SCALE);
+  arena.Update();
 }
 
 void Game::ComposeFrame()
 {
   PROFILE_SCOPE("Game::ComposeFrame");
 
-  for(b2Body* current = world.GetBodyList(); current != nullptr; current = current->GetNext())
-  {
-    gfx.DrawClippedLineCircle(5, *(Vec2*)&current->GetPosition(), 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
-  }
-  for(int i = 0; i < particleSystem->GetParticleCount(); ++i)
-  {
-    gfx.DrawClippedLineCircle(3, *(Vec2*)&particleSystem->GetPositionBuffer()[i], 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
-  }
+  
+  //for(b2Body* current = arena.physx.world.GetBodyList(); current != nullptr; current = current->GetNext())
+  //{
+  //  gfx.DrawClippedLineCircle(5, *(Vec2*)&current->GetPosition(), 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+  //}
+  //for(int i = 0; i < particleSystem->GetParticleCount(); ++i)
+  //{
+  //  gfx.DrawClippedLineCircle(3, *(Vec2*)&particleSystem->GetPositionBuffer()[i], 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+  //}
+  arena.Draw(renderer);
   renderer.Render();
-//  Rasterizer rasterizer;
-  //Shader shader(gfx);
-  //rasterizer.RasterizeCells(renderer.grid.cells, tri_buff, shader,
-  //  renderer.grid.CELL_WIDTH, renderer.grid.CELL_HEIGHT,
-  //  renderer.grid.WIDTH, renderer.grid.HEIGHT);
+  arena.physx.DebugDraw();
+  //  Rasterizer rasterizer;
+    //Shader shader(gfx);
+    //rasterizer.RasterizeCells(renderer.grid.cells, tri_buff, shader,
+    //  renderer.grid.CELL_WIDTH, renderer.grid.CELL_HEIGHT,
+    //  renderer.grid.WIDTH, renderer.grid.HEIGHT);
 }

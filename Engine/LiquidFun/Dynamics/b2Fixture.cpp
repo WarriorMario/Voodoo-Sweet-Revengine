@@ -167,7 +167,7 @@ void b2Fixture::Synchronize(b2BroadPhase* broadPhase, const b2Transform& transfo
 	
 		proxy->aabb.Combine(aabb1, aabb2);
 
-		b2Vec2 displacement = transform2.p - transform1.p;
+		Vec2 displacement = transform2.p - transform1.p;
 
 		broadPhase->MoveProxy(proxy->proxyId, proxy->aabb, displacement);
 	}
@@ -266,7 +266,7 @@ void b2Fixture::Dump(int32 bodyIndex)
 		{
 			b2PolygonShape* s = (b2PolygonShape*)m_shape;
 			b2Log("    b2PolygonShape shape;\n");
-			b2Log("    b2Vec2 vs[%d];\n", b2_maxPolygonVertices);
+			b2Log("    Vec2 vs[%d];\n", b2_maxPolygonVertices);
 			for (int32 i = 0; i < s->m_count; ++i)
 			{
 				b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s->m_vertices[i].x, s->m_vertices[i].y);
@@ -279,7 +279,7 @@ void b2Fixture::Dump(int32 bodyIndex)
 		{
 			b2ChainShape* s = (b2ChainShape*)m_shape;
 			b2Log("    b2ChainShape shape;\n");
-			b2Log("    b2Vec2 vs[%d];\n", s->m_count);
+			b2Log("    Vec2 vs[%d];\n", s->m_count);
 			for (int32 i = 0; i < s->m_count; ++i)
 			{
 				b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s->m_vertices[i].x, s->m_vertices[i].y);

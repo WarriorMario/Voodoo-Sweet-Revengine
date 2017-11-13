@@ -2,7 +2,7 @@
 #include "Rasterizer.h"
 #include "VTuple.h"
 #include "VArray.h"
-#include "VMove.h"
+#include "VTraits.h"
 #include "Shader.h"
 
 class Graphics;
@@ -24,8 +24,11 @@ public:
       };
       grid.PlaceTriangleInCell(points, i);
     }
+    if(commands.size() != 0)
+    {
       rasterizer.RasterizeCells(grid, commands);
       commands.clear();
+    }
   }
 
   Array<Shader> commands;
@@ -37,18 +40,15 @@ class Renderer
 {
   template<typename... Shaders>
   using Passes = Tuple<RenderPass<Shaders>...>;
-  //using Passes = Tuple<RenderPass<BackgroundShader>>;
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t<I == sizeof...(Types), void>
-    ApplyPasses(Tuple<Types...>&, Args&&...)
-  {}
-  template<size_t I = 0, typename... Types, typename... Args>
-  typename std::enable_if_t < I<sizeof...(Types), void>
-    ApplyPasses(Tuple<Types...>& tuple, Args&&... args)
+
+  struct PassApplyer
   {
-    Get<I>(tuple).Apply(args...);
-    ApplyPasses<I + 1, Types...>(tuple, args...);
-  }
+    template<typename T, typename... Args>
+    void operator()(T& pass, Args&&... args)
+    {
+      pass.Apply(Forward<Args>(args)...);
+    }
+  };
 
 public:
 	Renderer(Graphics& gfx);

@@ -173,10 +173,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\PhysicsShape.h" />
+    <ClInclude Include="Gameplay\Framework\Arena.h" />
     <ClInclude Include="Assets\Assets.h" />
     <ClInclude Include="Assets\Audio.h" />
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
+    <ClInclude Include="Physics\DebugDraw.h" />
+    <ClInclude Include="Physics\PhysicsConstants.h" />
+    <ClInclude Include="Utility\DirectoryWatch.h" />
     <ClInclude Include="FreeType\freetype\config\ftconfig.h" />
     <ClInclude Include="FreeType\freetype\config\ftheader.h" />
     <ClInclude Include="FreeType\freetype\config\ftmodule.h" />
@@ -267,6 +273,11 @@
     <ClInclude Include="FreeType\freetype\tttables.h" />
     <ClInclude Include="FreeType\freetype\tttags.h" />
     <ClInclude Include="FreeType\freetype\ttunpat.h" />
+    <ClInclude Include="FreeType\ft2build.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\ArenaBaseObject.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\ArenaObject.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\Handle.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\PhysicsObject.h" />
     <ClInclude Include="Graphsicks\FontManager.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftconfig.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\config\ftheader.h" />
@@ -359,12 +370,15 @@
     <ClInclude Include="Lib\FreeType\Headers\freetype\tttags.h" />
     <ClInclude Include="Lib\FreeType\Headers\freetype\ttunpat.h" />
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h" />
+    <ClInclude Include="Physics\Body.h" />
+    <ClInclude Include="Physics\Physics.h" />
+    <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utility\Logging.h" />
     <ClInclude Include="Utility\ProfileOutput.h" />
     <ClInclude Include="Utility\Profiling.h" />
     <ClInclude Include="Utility\Timer.h" />
-    <ClInclude Include="VMove.h" />
+    <ClInclude Include="VTraits.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Graphsicks\PostProcessor.h" />
     <ClInclude Include="Graphsicks\Rasterizer.h" />
@@ -457,6 +471,10 @@
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphsicks\FontManager.cpp" />
+    <ClCompile Include="Gameplay\Framework\Arena.cpp" />
+    <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />
+    <ClCompile Include="Gameplay\Framework\Objects\ParticleObject.cpp" />
+    <ClCompile Include="Gameplay\Framework\Objects\PhysicsObject.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
@@ -518,6 +536,10 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Physics\DebugDraw.cpp" />
+    <ClCompile Include="StbImage\stb_image.cpp" />
+    <ClCompile Include="Utility\DirectoryWatch.cpp" />
+    <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>

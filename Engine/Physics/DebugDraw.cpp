@@ -1,0 +1,48 @@
+#include "DebugDraw.h"
+#include "Graphsicks\Graphics.h"
+#include "PhysicsConstants.h"
+
+void PhysicsDebugDraw::DrawPolygon(const Vec2 * vertices, int32 vertexCount, const b2Color & color)
+{
+  // Loop vertices
+  for(int i = 0; i < vertexCount - 1; ++i)
+  {
+    gfx.DrawLineClip(PHYSICS_SCALE*vertices[i], PHYSICS_SCALE*vertices[i + 1], Color(color.r * 255, color.g * 255, color.b * 255), RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+  }
+  gfx.DrawLineClip(PHYSICS_SCALE*vertices[vertexCount-1], PHYSICS_SCALE*vertices[0], Color(color.r * 255, color.g * 255, color.b * 255), RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+}
+
+void PhysicsDebugDraw::DrawSolidPolygon(const Vec2 * vertices, int32 vertexCount, const b2Color & color)
+{
+  DrawPolygon(vertices, vertexCount, color);
+}
+
+void PhysicsDebugDraw::DrawCircle(const Vec2 & center, float32 radius, const b2Color & color)
+{
+  // Temp we need a faster and colour thing here
+  gfx.DrawClippedLineCircle(PHYSICS_SCALE*radius, PHYSICS_SCALE*center, 8, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+}
+
+void PhysicsDebugDraw::DrawSolidCircle(const Vec2 & center, float32 radius, const Vec2 & axis, const b2Color & color)
+{
+  DrawCircle(center, radius, color);
+}
+
+void PhysicsDebugDraw::DrawParticles(const Vec2 * centers, float32 radius, const b2ParticleColor * colors, int32 count)
+{
+  for(int i = 0; i < count; ++i)
+  {
+    // Temp we need a faster and colour thing here
+    gfx.DrawClippedLineCircle(PHYSICS_SCALE*radius, PHYSICS_SCALE*centers[i], 8, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+  }
+}
+
+void PhysicsDebugDraw::DrawSegment(const Vec2 & p1, const Vec2 & p2, const b2Color & color)
+{
+  gfx.DrawLineClip(PHYSICS_SCALE*p1, PHYSICS_SCALE*p2, Color(color.r * 255, color.g * 255, color.b * 255), RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+}
+
+void PhysicsDebugDraw::DrawTransform(const b2Transform & xf)
+{
+  gfx.DrawClippedLineCircle(5, PHYSICS_SCALE*xf.p, 4, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
+}

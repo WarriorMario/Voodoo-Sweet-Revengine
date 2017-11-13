@@ -5,6 +5,7 @@ Categories
 [LIBRARY]  - 3rd party library files
 [ENGINE]   - Engine related work
 [GRAPHICS] - Graphics related work
+[PHYSICS]  - Physics related work
 [SOUND]	   - Sound related work
 [PLATFORM] - OS related work
 [CODE]     - For floris

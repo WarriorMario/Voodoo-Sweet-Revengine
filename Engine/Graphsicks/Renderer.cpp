@@ -13,7 +13,7 @@ void Renderer::Render()
 	// rasterizer cells
 	//  shade cells
 
-	ApplyPasses(passes, grid, rasterizer);
+  ForEach(passes, PassApplyer(), grid, rasterizer);
 	grid.UnPackBuffer(gfx.god_window_buffer);
 	grid.Clear();
 }

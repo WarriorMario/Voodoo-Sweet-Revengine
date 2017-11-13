@@ -1,6 +1,7 @@
 #pragma once
 #include "ChiliMath.h"
 #include <cassert>
+#include <cstring>
 
 #ifndef INFINITY
 #define INFINITY FLT_MAX
@@ -33,4 +34,23 @@ template <typename T>
 inline T Max(T a, T b)
 {
 	return a > b ? a : b;
+}
+inline void ZeroMem(void* dest, size_t size)
+{
+  memset(dest, 0, size);
+}
+template<typename T, size_t count>
+constexpr size_t CountOf(const T(&arr)[count])
+{
+  return count;
+}
+template<typename T, size_t count, typename V>
+inline bool RangeEquals(const T(&arr)[count], const V& comparison)
+{
+  bool val = false;
+  for(int i = 0; i < count; ++i)
+  {
+    val |= (arr[i] == comparison);
+  }
+  return val;
 }
