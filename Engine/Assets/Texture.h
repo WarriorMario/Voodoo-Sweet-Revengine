@@ -65,7 +65,7 @@ public:
     {
       if(texels)
       {
-        delete texels;
+        delete[] texels;
       }
     }
 
@@ -80,10 +80,10 @@ public:
 
   Color Sample(float u, float v)
   {
-    auto data = GetData<Texture>();
-    const int tx = (int)(data->width * (u - FLT_EPSILON));
-    const int ty = (int)(data->height * (v - FLT_EPSILON));
-    return data->texels[ty * data->width + tx];
+    auto& data = GetData<Texture>();
+    const int tx = (int)(data.width * (u - FLT_EPSILON));
+    const int ty = (int)(data.height * (v - FLT_EPSILON));
+    return data.texels[ty * data.width + tx];
   }
 
 private:

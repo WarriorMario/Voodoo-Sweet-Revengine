@@ -98,9 +98,9 @@ protected:
   }
 
   template<typename Resource>
-  const typename Resource::Data* GetData()
+  const typename Resource::Data& GetData() const
   {
-    return (const typename Resource::Data*)data;
+    return *((const typename Resource::Data*)data);
   }
 
 private:
