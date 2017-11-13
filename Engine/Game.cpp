@@ -186,13 +186,13 @@ void Game::UpdateModel()
     //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
     //int tempIndex = particleSystem->CreateParticle(pd);
   }
+
   if(godWindow.mouse.RightIsPressed() == true)
   {
     auto particle = arena.Create<ParticleObject>();
-    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()) / PHYSICS_SCALE);
-   
+    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
   }
-  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY())/PHYSICS_SCALE);
+  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY()));
   arena.Update();
 }
 
