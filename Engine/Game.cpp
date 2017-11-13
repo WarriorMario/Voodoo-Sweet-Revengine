@@ -142,6 +142,7 @@ void Game::UpdateModel()
 {
   PROFILE_SCOPE("Game::UpdateModel");
 
+  arena.Update();
   if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
   {
     godWindow.Kill();
@@ -189,16 +190,19 @@ void Game::UpdateModel()
     //pd.color.Set(0, 0, 255, 255);
     //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
     //int tempIndex = particleSystem->CreateParticle(pd);
-    fart.Play();
+    //fart.Play();
   }
-
-  if(godWindow.mouse.RightIsPressed() == true)
+  static size_t count = 0;
+  if(godWindow.mouse.RightIsPressed() == true )
   {
-    auto particle = arena.Create<ParticleObject>();
-    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
+    count++;
+    if(count % 20)
+    {
+      auto particle = arena.Create<ParticleObject>();
+      particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
+    }
   }
   test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY()));
-  arena.Update();
 }
 
 void Game::ComposeFrame()
