@@ -24,8 +24,11 @@ public:
       };
       grid.PlaceTriangleInCell(points, i);
     }
+    if(commands.size() != 0)
+    {
       rasterizer.RasterizeCells(grid, commands);
       commands.clear();
+    }
   }
 
   Array<Shader> commands;

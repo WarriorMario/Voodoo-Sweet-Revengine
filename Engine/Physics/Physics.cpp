@@ -1,5 +1,6 @@
 #include "Physics.h"
 #include "DebugDraw.h"
+#include "Gameplay\Framework\Objects\ParticleObject.h"
 
 Physics::Physics()
   :
@@ -30,6 +31,7 @@ Physics::Physics()
   particle_system_def.lifetimeGranularity = 1.0f / 60.0f;
   particle_system = world.CreateParticleSystem(&particle_system_def);
 
+  ParticleObjectBase::system = particle_system;
   static CircleShape shape;
   shape.m_radius = 3;
 

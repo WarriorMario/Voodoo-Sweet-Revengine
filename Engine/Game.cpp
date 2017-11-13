@@ -209,6 +209,7 @@ void Game::ComposeFrame()
   //{
   //  gfx.DrawClippedLineCircle(3, *(Vec2*)&particleSystem->GetPositionBuffer()[i], 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
   //}
+  arena.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
   //  Rasterizer rasterizer;

@@ -37,8 +37,8 @@ public:
   void CreateDebugDraw(class Graphics& gfx);
   void DebugDraw();
 
-  b2ParticleSystem* particle_system;
 private:
+  b2ParticleSystem* particle_system;
   World world;
   Map<StringRef, Shape*> shapes;
   Array<BodyDef> body_defs;

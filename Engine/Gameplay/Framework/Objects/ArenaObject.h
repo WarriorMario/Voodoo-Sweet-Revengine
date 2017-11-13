@@ -27,6 +27,8 @@ public:
   {}
   void Update()
   {}
+  void Draw(class Renderer& renderer)
+  {}
 
   int test;
 };
@@ -38,6 +40,8 @@ public:
     : TemplateBase("GameObject")
   {}
   void Update()
+  {}
+  void Draw(class Renderer& renderer)
   {}
 
 };

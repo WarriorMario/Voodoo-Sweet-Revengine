@@ -76,6 +76,11 @@ public:
     UpdateGroup(objectGroups);
     physx.Update();
   }
+
+  void Draw(class Renderer& renderer)
+  {
+    DrawGroup(objectGroups,renderer);
+  }
   Physics physx;
 private:
   // class Input& input;
@@ -100,17 +105,21 @@ private:
     UpdateGroup<I + 1, Types...>(tuple, args...);
   }
 
-  //
-  //template<size_t I = 0, typename... Types, typename... Args>
-  //typename std::enable_if_t<I == sizeof...(Types), void>
-  //  InitGroups(Tuple<Array<RefCounter<Types>>...>&, Args&&...)
-  //{}
-  //template<size_t I = 0, typename... Types, typename... Args>
-  //typename std::enable_if_t < I<sizeof...(Types), void>
-  //  InitGroups(Tuple<Array<RefCounter<Types>>...>& tuple, Args&&... args)
-  //{
-  //  InitGroups<I + 1, Types...>(tuple, args...);
-  //}
+  template<size_t I = 0, typename... Types, typename... Args>
+  typename std::enable_if_t<I == sizeof...(Types), void>
+    DrawGroup(Tuple<Types...>&, Args&&...)
+  {}
+  template<size_t I = 0, typename... Types, typename... Args>
+  typename std::enable_if_t < I<sizeof...(Types), void>
+    DrawGroup(Tuple<Types...>& tuple, Args&&... args)
+  {
+    auto& group = Get<I>(tuple);
+    for(int i = 0; i < group.size(); ++i)
+    {
+      group[i].Draw(args...);
+    }
+    DrawGroup<I + 1, Types...>(tuple, args...);
+  }
 
 
 

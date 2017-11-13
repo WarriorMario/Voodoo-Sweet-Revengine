@@ -20,6 +20,7 @@ public:
   void SetShape(Shape* new_shape);
   void SetFixtureDefinition(const FixtureDef& definition);
   void Update();
+  void Draw(class Renderer& renderer);
 
 private:
   Body body;

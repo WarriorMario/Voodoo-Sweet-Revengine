@@ -1,6 +1,8 @@
 #include "PhysicsObject.h"
 #include "..\Arena.h"
 #include "Physics\Physics.h"
+#include "Graphsicks\Renderer.h"
+
 PhysicsObject::PhysicsObject()
   :
   TemplateBase("Physics Object"),
@@ -37,3 +39,6 @@ void PhysicsObject::Update()
 {
 
 }
+
+void PhysicsObject::Draw(Renderer& renderer)
+{}
