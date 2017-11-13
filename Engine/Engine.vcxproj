@@ -180,6 +180,7 @@
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
+    <ClInclude Include="Gameplay\Framework\States.h" />
     <ClInclude Include="Physics\DebugDraw.h" />
     <ClInclude Include="Physics\PhysicsConstants.h" />
     <ClInclude Include="Utility\DirectoryWatch.h" />
