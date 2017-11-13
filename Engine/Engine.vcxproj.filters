@@ -924,6 +924,9 @@
     <ClInclude Include="Gameplay\Framework\States.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -1149,6 +1152,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -28,6 +28,7 @@
 #include "Triangle.h"
 #include "Gameplay\Framework\Arena.h"
 #include "Assets\Assets.h"
+#include "Gameplay\Player.h"
 
 class Game
 {
@@ -50,7 +51,7 @@ private:
 	Renderer renderer;
 	Triangle tri_buff[2];
   Arena arena;
-  Audio fart;
+  Player player;
 	/********************************/
 	/*  User Variables              */
 	/********************************/
