@@ -51,10 +51,14 @@ public:
 
   void PlaceTriangleInCell(Vec2 points[3], int primitive_index)
   {
-	  int maxX = Max(Max(points[0].x, points[1].x), points[2].x);
-	  int maxY = Min(Min(points[0].y, points[1].y), points[2].y);
-	  int minX = Min(Min(points[0].x, points[1].x), points[2].x);
-	  int minY = Max(Max(points[0].y, points[1].y), points[2].y);
+	  int maxX = Min(Max(Max(points[0].x, points[1].x), points[2].x), (float)Graphics::ScreenWidth-1);
+	  int maxY = Min(Min(Min(points[0].y, points[1].y), points[2].y), (float)Graphics::ScreenHeight-1);
+	  int minX = Max(Min(Min(points[0].x, points[1].x), points[2].x),0.0f);
+	  int minY = Max(Max(Max(points[0].y, points[1].y), points[2].y),0.0f);
+    //int maxX = Max(Max(points[0].x, points[1].x), points[2].x);
+    //int maxY = Min(Min(points[0].y, points[1].y), points[2].y);
+    //int minX = Min(Min(points[0].x, points[1].x), points[2].x);
+    //int minY = Max(Max(points[0].y, points[1].y), points[2].y);
 	  PlaceAABBInCell(RectI(minY, maxY, minX, maxX), primitive_index, primitive_index);
   }
 
