@@ -25,6 +25,7 @@
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
+#include "Graphsicks\FontManager.h"
 
 b2Body* b;
 b2Body* temp;
@@ -43,6 +44,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 {
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
+	FontManager font;
+
   godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
   verts[0] = Vec3(50, 100, 1);
