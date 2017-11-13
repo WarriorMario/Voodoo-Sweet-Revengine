@@ -180,6 +180,8 @@
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
+    <ClInclude Include="Gameplay\Framework\States.h" />
+    <ClInclude Include="Gameplay\Player.h" />
     <ClInclude Include="Physics\DebugDraw.h" />
     <ClInclude Include="Physics\PhysicsConstants.h" />
     <ClInclude Include="Sound.h" />
@@ -477,6 +479,7 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Graphsicks\FontManager.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />

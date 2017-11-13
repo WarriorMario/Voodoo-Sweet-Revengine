@@ -1,6 +1,8 @@
 #pragma once
-#include "Sound.h"
+
 #include "Resource.h"
+#include "Sound.h"
+
 // ****************************************************************************
 class Audio : public Resource<Audio>
 {
@@ -26,8 +28,8 @@ public:
 
   void Play(float frequency_mod = 1.0f, float volume = 1.0f)
   {
-    Data* data = (Data*)const_cast<void*>( reinterpret_cast<const void*>(GetData<Audio>()));
-    data->sound.Play(frequency_mod, volume);
+    auto& data = (*(Data*)const_cast<void*>(reinterpret_cast<const void*>(&GetData<Audio>())));
+    data.sound.Play(frequency_mod, volume);
   }
 
 private:
