@@ -27,6 +27,7 @@
 #include "Graphsicks\Renderer.h"
 #include "Triangle.h"
 #include "Gameplay\Framework\Arena.h"
+#include "Assets\Assets.h"
 
 class Game
 {
@@ -49,6 +50,7 @@ private:
 	Renderer renderer;
 	Triangle tri_buff[2];
   Arena arena;
+  Audio fart;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

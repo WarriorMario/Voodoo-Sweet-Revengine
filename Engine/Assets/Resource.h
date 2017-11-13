@@ -81,7 +81,7 @@ protected:
     else
     {
       T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
-      ZeroMem(tmp_data, sizeof(T::Data));
+      ZeroMem(tmp_data, sizeof(T::Data));// This only works for POD types
       if(!Load(filename, *tmp_data))
       {
         delete tmp_data;

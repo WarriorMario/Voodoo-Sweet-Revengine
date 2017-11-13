@@ -40,7 +40,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   playerWindow(playerWindow),
   gfx(godWindow, playerWindow),
   renderer(Renderer(gfx)),
-  arena()
+  arena(),
+   fart("fart0.wav")
 {
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
@@ -188,6 +189,7 @@ void Game::UpdateModel()
     //pd.color.Set(0, 0, 255, 255);
     //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
     //int tempIndex = particleSystem->CreateParticle(pd);
+    fart.Play();
   }
 
   if(godWindow.mouse.RightIsPressed() == true)
