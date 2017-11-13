@@ -332,3 +332,5 @@ __pycache__/
 # End of https://www.gitignore.io/api/c++,visualstudio
 /Engine/FramebufferVS.shh
 /Engine/FramebufferPS.shh
+/Engine/GameLog.txt
+/Engine/EngineLog.txt

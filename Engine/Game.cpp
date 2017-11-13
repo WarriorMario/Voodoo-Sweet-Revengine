@@ -23,6 +23,7 @@
 #include "Vec3.h"
 
 #include "Utility\ProfileOutput.h"
+#include "Graphsicks\FontManager.h"
 
 b2Body* b;
 b2Body* temp;
@@ -38,6 +39,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   world(b2Vec2(0, 9.81f)),
   renderer(Renderer(gfx))
 {
+	FontManager font;
+
   godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
   verts[0] = Vec3(50, 100, 1);
