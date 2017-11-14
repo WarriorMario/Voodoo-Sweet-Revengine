@@ -2,6 +2,7 @@
 #include "..\Arena.h"
 #include "Physics\Physics.h"
 #include "Graphsicks\Renderer.h"
+#include "Physics\PhysicsConstants.h"
 
 PhysicsObject::PhysicsObject()
   :
@@ -12,7 +13,7 @@ PhysicsObject::PhysicsObject()
 
 void PhysicsObject::SetPosition(const Vec2& pos)
 {
-  body.body->SetTransform(pos, body.body->GetAngle());
+  body.body->SetTransform(pos/PHYSICS_SCALE, body.body->GetAngle());
 }
 
 void PhysicsObject::SetShape(Shape * new_shape)

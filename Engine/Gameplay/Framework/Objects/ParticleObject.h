@@ -7,7 +7,22 @@ public:
   static class b2ParticleSystem* system;
 };
 
-class ParticleObject : public ArenaObject<ParticleObject>, private ParticleObjectBase
+class ParticleHandle : private ParticleObjectBase
+{
+public:
+  ParticleHandle(size_t handle)
+    :
+    handle(handle)
+  {}
+
+  void SetPosition(struct Vec2& pos);
+  Vec2 GetPosition();
+
+private:
+  size_t handle;
+};
+
+class ParticleObject : public ArenaObject<ParticleObject>
 {
 public:
   ParticleObject();
@@ -16,5 +31,5 @@ public:
   void Update();
   void Draw(class Renderer& gfx);
 private:
-  size_t handle;
+  ParticleHandle handle;
 };

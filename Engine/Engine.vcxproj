@@ -103,7 +103,7 @@
     <Link />
     <Link>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -122,7 +122,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -146,7 +146,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +169,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -181,8 +181,15 @@
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
+    <ClInclude Include="Gameplay\Framework\States.h" />
+    <ClInclude Include="Gameplay\Player.h" />
+    <ClInclude Include="Input\ButtonCodes.h" />
+    <ClInclude Include="Input\Controller.h" />
+    <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Physics\DebugDraw.h" />
     <ClInclude Include="Physics\PhysicsConstants.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="STB\stb_rect_pack.h" />
     <ClInclude Include="STB\stb_truetype.h" />
     <ClInclude Include="Utility\DirectoryWatch.h" />
@@ -470,10 +477,16 @@
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="VTuple.h" />
+    <ClInclude Include="XAudio\audiodefs.h" />
+    <ClInclude Include="XAudio\comdecl.h" />
+    <ClInclude Include="XAudio\XAudio2.h" />
+    <ClInclude Include="XAudio\XAudio2fx.h" />
+    <ClInclude Include="XAudio\xma2defs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Graphsicks\FontManager.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />
@@ -482,6 +495,8 @@
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
+    <ClCompile Include="Input\Controller.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2BroadPhase.cpp" />
     <ClCompile Include="LiquidFun\Collision\b2CollideCircle.cpp" />
@@ -541,6 +556,8 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Physics\DebugDraw.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="STB\stb_image.cpp" />
     <ClCompile Include="STB\stb_rect_pack.cpp" />
     <ClCompile Include="STB\std_truetype.cpp" />

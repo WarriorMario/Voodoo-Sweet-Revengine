@@ -40,19 +40,14 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   playerWindow(playerWindow),
   gfx(godWindow, playerWindow),
   renderer(Renderer(gfx)),
-  arena()
+  arena(),
+  player(renderer),
+  input(godWindow.kbd,godWindow.mouse)
 {
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
 
   godWindow.SetFocused();
-  Vec3* verts = new Vec3[6];
-  verts[0] = Vec3(50, 100, 1);
-  verts[1] = Vec3(100, 52, 1);
-  verts[2] = Vec3(10, 55, 1);
-  verts[3] = Vec3(50, 100, 1);
-  verts[4] = Vec3(100, 52, 1);
-  verts[5] = Vec3(10, 55, 100);
 
   test0.type = b2_dynamicBody; //this will be a dynamic body
   test0.position.Set(110, 20); //set the starting position
@@ -124,7 +119,7 @@ void Game::Go()
 {
   ProfilerLogHandler pf_output;
   ProfileSample::output_handler = &pf_output;
-
+  input.Poll();
   {
     PROFILE_SCOPE("Game::Go");
 
@@ -141,83 +136,34 @@ void Game::UpdateModel()
 {
   PROFILE_SCOPE("Game::UpdateModel");
 
-  if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
+  arena.Update();
+  if(input.IsPressed(ButtonCode::ESC) == true)
   {
     godWindow.Kill();
   }
-  if(godWindow.mouse.LeftIsPressed() == true)
+  
+  player.Update();
+  player.Input(godWindow.kbd);
+
+  static size_t count = 0;
+  if(input.IsPressed(ButtonCode::GAMEPAD_A,1) == true )
   {
-    tri_buff[0] = Triangle(
-      Vec2(300, 300),
-      Vec2(300, 200),
-      Vec2(400, 200),
-      Vec2(0.0f, 0.0f),
-      Vec2(0.0f, 0.0f),
-      Vec2(0.0f, 0.0f));
-    tri_buff[1] = Triangle(
-      Vec2(350, 300),
-      Vec2(400, 200),
-      Vec2(400, 300),
-      Vec2(0.0f, 0.0f),
-      Vec2(0.0f, 0.0f),
-      Vec2(0.0f, 0.0f));
-
-    BackgroundShader testASDASD;
-    testASDASD.const_data.color = Colors::Yellow;
-    testASDASD.prim_data[0] = {300, 300, 0.0, 0.0f};
-    testASDASD.prim_data[1] = {300, 200, 1.0f, 0.0f};
-    testASDASD.prim_data[2] = {400, 200, 0.5f, 1.0f};
-
-    ForegroundShader fg_tri;
-    fg_tri.const_data.color = Colors::Red;
-    fg_tri.prim_data[0] = {-50 + (float)godWindow.mouse.GetPosX() , (float)godWindow.mouse.GetPosY() + 50, 0.0, 0.0f};
-    fg_tri.prim_data[1] = {-50 + (float)godWindow.mouse.GetPosX(),(float)godWindow.mouse.GetPosY() - 50, 1.0f, 0.0f};
-    fg_tri.prim_data[2] = {50 + (float)godWindow.mouse.GetPosX(), (float)godWindow.mouse.GetPosY() - 50, 0.5f, 1.0f};
-    //BackgroundShader asdsa;
-    //asdsa.const_data.color = Colors::Blue;
-    //asdsa.prim_data[0] = tri_buff[1].p[0];
-    //asdsa.prim_data[1] = tri_buff[1].p[1];
-    //asdsa.prim_data[2] = tri_buff[1].p[2];
-
-
-    renderer.AddDrawCommand(testASDASD);
-    renderer.AddDrawCommand(fg_tri);
-    b2ParticleDef pd;
-    
-    //pd.flags = b2_waterParticle;
-    //pd.color.Set(0, 0, 255, 255);
-    //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
-    //int tempIndex = particleSystem->CreateParticle(pd);
+    count++;
+    if(count % 20)
+    {
+      auto particle = arena.Create<ParticleObject>();
+      particle->SetPosition(input.MousePos());
+    }
   }
-  if(godWindow.mouse.RightIsPressed() == true)
-  {
-    auto particle = arena.Create<ParticleObject>();
-    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()) / PHYSICS_SCALE);
-   
-  }
-  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY())/PHYSICS_SCALE);
-  arena.Update();
+  test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()
 {
   PROFILE_SCOPE("Game::ComposeFrame");
 
-  
-  //for(b2Body* current = arena.physx.world.GetBodyList(); current != nullptr; current = current->GetNext())
-  //{
-  //  gfx.DrawClippedLineCircle(5, *(Vec2*)&current->GetPosition(), 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
-  //}
-  //for(int i = 0; i < particleSystem->GetParticleCount(); ++i)
-  //{
-  //  gfx.DrawClippedLineCircle(3, *(Vec2*)&particleSystem->GetPositionBuffer()[i], 12, RectF(0, Graphics::ScreenHeight - 1, 0, Graphics::ScreenWidth - 1));
-  //}
   arena.Draw(renderer);
+  player.Draw();
   renderer.Render();
   arena.physx.DebugDraw();
-  //  Rasterizer rasterizer;
-    //Shader shader(gfx);
-    //rasterizer.RasterizeCells(renderer.grid.cells, tri_buff, shader,
-    //  renderer.grid.CELL_WIDTH, renderer.grid.CELL_HEIGHT,
-    //  renderer.grid.WIDTH, renderer.grid.HEIGHT);
 }

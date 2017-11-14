@@ -14,7 +14,7 @@ ParticleObject::ParticleObject()
 
 void ParticleObject::SetPosition(Vec2& pos)
 {
-  system->GetPositionBuffer()[handle] = pos;
+  handle.SetPosition(pos / PHYSICS_SCALE);
 }
 
 void ParticleObject::Update()
@@ -22,7 +22,7 @@ void ParticleObject::Update()
 
 void ParticleObject::Draw(Renderer & gfx)
 {
-  Vec2 pos = system->GetPositionBuffer()[handle]*PHYSICS_SCALE;
+  Vec2 pos = handle.GetPosition();
   BackgroundShader testASDASD;
   testASDASD.const_data.color = Colors::Yellow;
   testASDASD.prim_data[0] = {10 + pos.x, 10 + pos.y, 0.0, 0.0f};
@@ -31,4 +31,14 @@ void ParticleObject::Draw(Renderer & gfx)
   gfx.AddDrawCommand(testASDASD);
 
 
+}
+
+void ParticleHandle::SetPosition(Vec2 & pos)
+{
+  system->GetPositionBuffer()[handle] = pos;
+}
+
+Vec2 ParticleHandle::GetPosition()
+{
+  return system->GetPositionBuffer()[handle] * PHYSICS_SCALE;
 }

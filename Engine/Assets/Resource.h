@@ -81,7 +81,7 @@ protected:
     else
     {
       T::Data* tmp_data = (T::Data*)::operator new(sizeof(T::Data));
-      ZeroMem(tmp_data, sizeof(T::Data));
+      ZeroMem(tmp_data, sizeof(T::Data));// This only works for POD types
       if(!Load(filename, *tmp_data))
       {
         delete tmp_data;
@@ -98,9 +98,9 @@ protected:
   }
 
   template<typename Resource>
-  const typename Resource::Data* GetData()
+  const typename Resource::Data& GetData() const
   {
-    return (const typename Resource::Data*)data;
+    return *((const typename Resource::Data*)data);
   }
 
 private:
