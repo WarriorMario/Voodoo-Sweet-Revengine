@@ -136,9 +136,9 @@ void ProfileSample::Output()
         curr_sample.max_pc = percentage;
       }
 
-      //output_handler->ShowSample(
-      //  curr_sample
-      //);
+      output_handler->ShowSample(
+        curr_sample
+      );
 
       // reset sample for next use
       curr_sample.call_count = 0;
