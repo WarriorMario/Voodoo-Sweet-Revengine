@@ -17,7 +17,7 @@ Input::Input(Keyboard & kbd, Mouse & mouse)
 
 bool Input::IsPressed(ButtonCode code, int device_ID)
 {
-  switch (code)
+  switch(code)
   {
     case ButtonCode::LEFT_MOUSE:
     {
@@ -45,15 +45,24 @@ Vec2 Input::GetAxis(AxisCode code, int device_ID)
 {
   switch(code)
   {
-    case AxisCode::Left:
+    case AxisCode::LEFT:
     {
       return controllers[device_ID].LeftStick();
     }
-    case AxisCode::Right:
+    case AxisCode::RIGHT:
     {
       return controllers[device_ID].RightStick();
     }
+    case AxisCode::TRIGGER:
+    {
+      return controllers[device_ID].Trigger();
+    }
   }
+}
+
+Vec2 Input::MousePos()
+{
+  return Vec2(mouse.GetPosX(),mouse.GetPosY());
 }
 
 void Input::Poll()

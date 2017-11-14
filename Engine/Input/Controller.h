@@ -11,6 +11,7 @@ public:
   bool ButtonIsPressed(size_t code);
   Vec2 LeftStick();
   Vec2 RightStick();
+  Vec2 Trigger();
 public:
   XINPUT_GAMEPAD controller;
   char trigger_button_threshold = 200;

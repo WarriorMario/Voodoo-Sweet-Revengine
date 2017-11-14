@@ -146,16 +146,16 @@ void Game::UpdateModel()
   player.Input(godWindow.kbd);
 
   static size_t count = 0;
-  if(input.IsPressed(ButtonCode::RIGHT_MOUSE) == true )
+  if(input.IsPressed(ButtonCode::GAMEPAD_A,1) == true )
   {
     count++;
     if(count % 20)
     {
       auto particle = arena.Create<ParticleObject>();
-      particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
+      particle->SetPosition(input.MousePos());
     }
   }
-  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY()));
+  test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()

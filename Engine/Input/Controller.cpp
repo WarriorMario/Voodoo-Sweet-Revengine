@@ -33,12 +33,17 @@ bool Controller::ButtonIsPressed(size_t code)
 
 Vec2 Controller::LeftStick()
 {
-  return Vec2();
+  return Vec2(controller.sThumbLX, controller.sThumbLY) / 32768.0f;
 }
 
 Vec2 Controller::RightStick()
 {
-  return Vec2();
+  return Vec2(controller.sThumbRX, controller.sThumbRY) / 32768.0f;
+}
+
+Vec2 Controller::Trigger()
+{
+  return Vec2(controller.bLeftTrigger, controller.bRightTrigger) / 255.f;
 }
 
 

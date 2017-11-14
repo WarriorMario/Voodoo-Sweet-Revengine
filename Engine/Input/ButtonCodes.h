@@ -48,6 +48,7 @@ enum class ButtonCode
 
 enum class AxisCode
 {
-  Left,
-  Right
+  LEFT,
+  RIGHT,
+  TRIGGER
 };
