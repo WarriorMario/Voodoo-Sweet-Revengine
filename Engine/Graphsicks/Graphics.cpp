@@ -269,12 +269,12 @@ Graphics::Graphics( HWNDKey& key, HWNDKey& key2 )
 	// create and fill vertex buffer with quad for rendering frame
 	const FSQVertex vertices[] =
 	{
-		{ -1.0f,1.0f,0.5f,0.0f,0.0f },
-		{ 1.0f,1.0f,0.5f,1.0f,0.0f },
-		{ 1.0f,-1.0f,0.5f,1.0f,1.0f },
-		{ -1.0f,1.0f,0.5f,0.0f,0.0f },
-		{ 1.0f,-1.0f,0.5f,1.0f,1.0f },
-		{ -1.0f,-1.0f,0.5f,0.0f,1.0f },
+    {-1.0f,1.0f,0.5f,0.0f,1.0f},
+    {1.0f,1.0f,0.5f,1.0f,1.0f},
+    {1.0f,-1.0f,0.5f,1.0f,0.0f},
+    {-1.0f,1.0f,0.5f,0.0f,1.0f},
+    {1.0f,-1.0f,0.5f,1.0f,0.0f},
+    {-1.0f,-1.0f,0.5f,0.0f,0.0f},
 	};
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
