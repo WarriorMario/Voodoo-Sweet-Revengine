@@ -29,6 +29,7 @@
 #include "Gameplay\Framework\Arena.h"
 #include "Assets\Assets.h"
 #include "Gameplay\Player.h"
+#include "Input\Input.h"
 
 class Game
 {
@@ -52,6 +53,7 @@ private:
 	Triangle tri_buff[2];
   Arena arena;
   Player player;
+  Input input;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

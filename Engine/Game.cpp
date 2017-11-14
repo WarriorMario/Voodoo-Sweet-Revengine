@@ -41,7 +41,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   gfx(godWindow, playerWindow),
   renderer(Renderer(gfx)),
   arena(),
-  player(renderer)
+  player(renderer),
+  input(godWindow.kbd,godWindow.mouse)
 {
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
@@ -118,7 +119,7 @@ void Game::Go()
 {
   ProfilerLogHandler pf_output;
   ProfileSample::output_handler = &pf_output;
-
+  input.Poll();
   {
     PROFILE_SCOPE("Game::Go");
 
@@ -136,7 +137,7 @@ void Game::UpdateModel()
   PROFILE_SCOPE("Game::UpdateModel");
 
   arena.Update();
-  if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
+  if(input.IsPressed(ButtonCode::ESC) == true)
   {
     godWindow.Kill();
   }
@@ -144,18 +145,8 @@ void Game::UpdateModel()
   player.Update();
   player.Input(godWindow.kbd);
 
-  if(godWindow.mouse.LeftIsPressed() == true)
-  {
-    b2ParticleDef pd;
-    
-    //pd.flags = b2_waterParticle;
-    //pd.color.Set(0, 0, 255, 255);
-    //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
-    //int tempIndex = particleSystem->CreateParticle(pd);
-    //fart.Play();
-  }
   static size_t count = 0;
-  if(godWindow.mouse.RightIsPressed() == true )
+  if(input.IsPressed(ButtonCode::RIGHT_MOUSE) == true )
   {
     count++;
     if(count % 20)
