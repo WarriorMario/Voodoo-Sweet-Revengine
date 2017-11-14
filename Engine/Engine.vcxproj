@@ -557,7 +557,6 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Physics\DebugDraw.cpp" />
     <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="STB\stb_image.cpp" />
     <ClCompile Include="STB\stb_rect_pack.cpp" />
     <ClCompile Include="STB\std_truetype.cpp" />

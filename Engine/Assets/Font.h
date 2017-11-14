@@ -93,11 +93,11 @@ public:
     assert(text.size() < TEXT_QUAD_BUFF_SIZE);
 
     // get your data
-    auto data = GetData<Font>();
+    auto& data = GetData<Font>();
 
     // get the font atlas, load if necessary
-    auto res = data->font_atlas_map.find((int)(point_size));
-    (res != data->font_atlas_map.end()) ?
+    auto res = data.font_atlas_map.find((int)(point_size));
+    (res != data.font_atlas_map.end()) ?
       text_render_data.atlas = res->second :
       text_render_data.atlas = LoadFontAtlas(point_size);
 
@@ -138,7 +138,7 @@ public:
 private:
   friend bool Load(StringRef filename, Data& data)
   {
-    if(LoadFileBinary(filename.data(), &data.font_file) == false)
+    if(FileIO::LoadFileBinary(filename.data(), &data.font_file) == false)
     {
       return false;
     }
@@ -155,7 +155,7 @@ private:
   FontAtlas LoadFontAtlas(int point_size)
   {
     // get your data
-    auto data = GetData<Font>();
+    auto& data = GetData<Font>();
     
     // the return value
     FontAtlas font_atlas;
@@ -165,7 +165,7 @@ private:
     unsigned char* mono_bitmaps[NUM_BASE_CHARS];
 
     // get the scale that stb_truetype can use
-    float scale = stbtt_ScaleForPixelHeight(&data->stb_font, (float)point_size);
+    float scale = stbtt_ScaleForPixelHeight(&data.stb_font, (float)point_size);
 
     // keep track of the amount of pixels
     size_t tot_size = 0;
@@ -173,7 +173,7 @@ private:
     // use stb_truetype to rasterize all of the glyphs for me
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
-      mono_bitmaps[i] = stbtt_GetGlyphBitmap(&data->stb_font, 0.0f, scale, BASE_CHAR[i],
+      mono_bitmaps[i] = stbtt_GetGlyphBitmap(&data.stb_font, 0.0f, scale, BASE_CHAR[i],
         &w_h_ox_oy[i][0], &w_h_ox_oy[i][1], &w_h_ox_oy[i][2], &w_h_ox_oy[i][3]);
 
       tot_size += w_h_ox_oy[i][0] + w_h_ox_oy[i][1];
@@ -215,7 +215,7 @@ private:
     }
     
     // place the font atlas in the map
-    data->font_atlas_map[point_size] = font_atlas;
+    data.font_atlas_map[point_size] = font_atlas;
 
     // return the filled out font atlas
     return font_atlas;

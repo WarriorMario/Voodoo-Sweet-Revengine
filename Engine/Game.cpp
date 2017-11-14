@@ -25,7 +25,6 @@
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
-#include "Graphsicks\FontManager.h"
 
 b2Body* b;
 b2Body* temp;
