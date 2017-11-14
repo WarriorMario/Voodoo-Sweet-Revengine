@@ -91,7 +91,7 @@ public:
         x0 += dx;
     }
 #else
-      int y0i = y0;
+      int y0i = (int)y0;
       if(y0i < 0)
       {
         x0 -= dx*y0i;// Maybe keep it as a float and do floor?
@@ -99,7 +99,7 @@ public:
       }
 #endif
       y_min = Min(y_min, y0i);
-      int y1i = y1 + 1;
+      int y1i = (int)(y1 + 1);
       if(y1i > y_max)
       {
         y_max = y1i;

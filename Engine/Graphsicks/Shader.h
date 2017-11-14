@@ -44,7 +44,7 @@ struct BackgroundShader
   }
   Color Shade(const PixelData& pixel_data)
   {
-    return Color(pixel_data.u * 255.f, pixel_data.v * 255.f, 0);
+    return Color((unsigned char)(pixel_data.u * 255.f), (unsigned char)(pixel_data.v * 255.f), 0);
   }
 };
 
@@ -94,7 +94,7 @@ struct ForegroundShader
 
     Color t = const_data.texture->Sample(pixel_data.u, pixel_data.v);
     float a = t.GetA() / 255.f;
-    return Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
+    return Color((unsigned char)(t.GetR() * i * a), (unsigned char)(t.GetG() * i  * a), (unsigned char)(t.GetB() * i * a));
   }
 };
 
@@ -137,6 +137,6 @@ struct UIShader
 
     float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
     i = Max(i, 0.f);
-    return Color(i * 255.f, i * 255.f, i * 255.f);
+    return Color((unsigned char)(i * 255.f), (unsigned char)(i * 255.f), (unsigned char)(i * 255.f));
   }
 };
