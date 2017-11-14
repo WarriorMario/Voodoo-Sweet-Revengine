@@ -87,6 +87,7 @@ ProfileSample::~ProfileSample()
 
   if(parent_index != -1)
   {
+    assert(parent_index < MAX_PROFILER_SAMPLES);
     samples[parent_index].child_time += time_taken;
   }
   else
@@ -102,7 +103,7 @@ ProfileSample::~ProfileSample()
 // ****************************************************************************
 void ProfileSample::Output()
 {
-  assert(output_handler && "Profiler has not output handler set");
+  assert(output_handler && "Profiler has no output handler set");
 
   output_handler->BeginOutput();
 
@@ -135,14 +136,9 @@ void ProfileSample::Output()
         curr_sample.max_pc = percentage;
       }
 
-      output_handler->ShowSample(
-        curr_sample.min_pc,
-        curr_sample.average_pc,
-        curr_sample.max_pc,
-        curr_sample.call_count,
-        curr_sample.tag,
-        curr_sample.parent_count
-      );
+      //output_handler->ShowSample(
+      //  curr_sample
+      //);
 
       // reset sample for next use
       curr_sample.call_count = 0;
