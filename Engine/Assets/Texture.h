@@ -2,7 +2,7 @@
 
 #include "Resource.h"
 #include "Colors.h"
-#include "StbImage/stb_image.h"
+#include "STB/stb_image.h"
 
 // ****************************************************************************
 // Converts in_pixels to Color format

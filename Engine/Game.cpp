@@ -44,7 +44,6 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 {
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
-	FontManager font;
 
   godWindow.SetFocused();
   Vec3* verts = new Vec3[6];
@@ -118,6 +117,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
+  
 }
 
 void Game::Go()

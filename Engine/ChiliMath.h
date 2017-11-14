@@ -59,7 +59,7 @@ inline float Rad2Def(float rad)
 }
 inline float Log2(float x)
 {
-	return log(x) * INV_LOG2;
+	return logf(x) * INV_LOG2;
 }
 inline int Log2int(float x)
 {

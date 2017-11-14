@@ -489,9 +489,9 @@ void Graphics::DrawLine( Vec2 p0, Vec2 p1, Color c )
    float x0 = p0.x;
    float x1 = p1.x;
    float dx = ( p1.x - p0.x ) / ( p1.y - p0.y );
-   for( int i = y0; i < y1; ++i )
+   for( int i = (int)y0; i < (int)y1; ++i )
    {
-      PutPixel( x0, i, Colors::White );
+      PutPixel( (int)x0, i, Colors::White );
       x0 += dx;
    }
 }

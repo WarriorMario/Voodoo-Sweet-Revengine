@@ -42,9 +42,10 @@ struct BackgroundShader
     res.v = p0.v * t0 + p1.v * t1 + p2.v * t2;
     return res;
   }
+
   Color Shade(const PixelData& pixel_data)
   {
-    return Color(pixel_data.u * 255.f, pixel_data.v * 255.f, 0);
+    return Color((unsigned char)(pixel_data.u * 255.f), (unsigned char)(pixel_data.v * 255.f), (unsigned char)(0));
   }
 };
 
@@ -90,7 +91,7 @@ struct ForegroundShader
 
     float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
     i = Max(i, 0.f);
-    return Color(i * 255.f, i * 255.f, i * 255.f);
+    return Color((unsigned char)(i * 255.f), (unsigned char)(i * 255.f), (unsigned char)(i * 255.f));
   }
 };
 
@@ -133,6 +134,6 @@ struct UIShader
 
 		float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
 		i = Max(i, 0.f);
-		return Color(i * 255.f, i * 255.f, i * 255.f);
+		return Color((unsigned char)(i * 255.f), (unsigned char)(i * 255.f), (unsigned char)(i * 255.f));
 	}
 };

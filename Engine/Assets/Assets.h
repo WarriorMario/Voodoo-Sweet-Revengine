@@ -118,7 +118,8 @@ private:
 // ****************************************************************************
 #include "Texture.h"
 #include "Audio.h"
+#include "Font.h"
 
 // This has to be defined here so resource headers can use it.
 // All resource types that will be used have to be added here.
-using Assets = AssetsImpl<Audio, Texture>;
+using Assets = AssetsImpl<Audio, Texture, Font>;
