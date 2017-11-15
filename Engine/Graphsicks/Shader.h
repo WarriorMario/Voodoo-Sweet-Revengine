@@ -105,9 +105,6 @@ struct UIShader
   struct ConstData
   {
     Color color;
-    Color* pixels;
-    int width, height;
-
   };
   struct PixelData
   {
@@ -132,12 +129,15 @@ struct UIShader
   }
   Color Shade(const PixelData& pixel_data)
   {
-    int tex_pixel_idx = pixel_data.u * const_data.width + // x offset
-      const_data.width * (pixel_data.v * const_data.height); // y offset in texture
+    const float lx = 200.f;
+    const float ly = 200.f;
+    const float ldist = 300.f;
 
-    Color final_pixel = const_data.color * Color(const_data.pixels[tex_pixel_idx]);
-    final_pixel.ApplyAlphaTheWrongWay();
+    const float dx = pixel_data.x - lx;
+    const float dy = pixel_data.y - ly;
 
-    return final_pixel;
+    float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
+    i = Max(i, 0.f);
+    return Color(i * 255.f, i * 255.f, i * 255.f);
   }
 };

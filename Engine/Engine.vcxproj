@@ -180,7 +180,6 @@
     <ClInclude Include="Assets\Audio.h" />
     <ClInclude Include="Assets\Resource.h" />
     <ClInclude Include="Assets\Texture.h" />
-    <ClInclude Include="Gameplay\Framework\Objects\FontRenderObject.h" />
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
     <ClInclude Include="Gameplay\Framework\States.h" />
     <ClInclude Include="Gameplay\Player.h" />
@@ -487,7 +486,6 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Gameplay\Framework\Objects\FontRenderObject.cpp" />
     <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Graphsicks\FontManager.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />

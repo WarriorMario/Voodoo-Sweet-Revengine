@@ -17,7 +17,6 @@ public:
 
     ~Data()
     {
-      sound.~Sound();
     }
     Sound sound;
   };

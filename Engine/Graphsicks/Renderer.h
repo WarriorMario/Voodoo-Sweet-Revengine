@@ -64,6 +64,6 @@ public:
 private:
   Rasterizer rasterizer;
   Graphics& gfx;
-  Passes<BackgroundShader, ForegroundShader, UIShader> passes;
+  Passes<BackgroundShader, ForegroundShader> passes;
 };
 
