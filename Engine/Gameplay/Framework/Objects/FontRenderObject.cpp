@@ -43,7 +43,7 @@ void FontRenderObject::Update()
 void FontRenderObject::Draw(Renderer & renderer)
 {
   auto line = font->RenderLine("Hello world!", point_size, start_x, start_y);
-  
+
   for(int i = 0; i < line.num_quads; ++i)
   {
     UIShader shader;
@@ -53,14 +53,14 @@ void FontRenderObject::Draw(Renderer & renderer)
     shader.const_data.height = line.text_quads[i].glyph_height;
 
     float min_x = line.text_quads[i].min_x,
-          min_y = line.text_quads[i].min_y,
-          max_x = line.text_quads[i].max_x,
-          max_y = line.text_quads[i].max_y;
-    
+      min_y = line.text_quads[i].min_y,
+      max_x = line.text_quads[i].max_x,
+      max_y = line.text_quads[i].max_y;
+
     float min_u = line.text_quads[i].min_u,
-          min_v = line.text_quads[i].min_v,
-          max_u = line.text_quads[i].max_u,
-          max_v = line.text_quads[i].max_v;
+      min_v = line.text_quads[i].min_v,
+      max_u = line.text_quads[i].max_u,
+      max_v = line.text_quads[i].max_v;
 
     // first triangle      x      y      u      v
     shader.prim_data[0] = {min_x, min_y, min_u, min_v};
