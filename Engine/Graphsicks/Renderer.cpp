@@ -1,5 +1,4 @@
 #include "Renderer.h"
-
 Renderer::Renderer(Graphics & graphics)
 	:
 	gfx(graphics)

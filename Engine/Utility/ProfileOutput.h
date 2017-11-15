@@ -36,7 +36,7 @@ void ProfilerLogHandler::ShowSample(ProfileSample::Sample& sample)
   sprintf_s(avg, "%5.1f", sample.average_pc);
   sprintf_s(min, "%5.1f", sample.min_pc);
   sprintf_s(max, "%5.1f", sample.max_pc);
-  sprintf_s(ms, "%5.1f", sample.total_time);
+  sprintf_s(ms, "%5.1f", sample.total_time * 1000.0f);
   sprintf_s(num, "%3d", sample.call_count);
 
   char indented_tag[256] = "";

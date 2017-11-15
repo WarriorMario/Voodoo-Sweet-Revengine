@@ -116,7 +116,7 @@ void ProfileSample::Output()
       float sample_time, percentage;
 
       // calculate percentage time spent on the sample itself (excluding children)
-      sample_time = curr_sample.total_time;// -curr_sample._child_time;
+      sample_time = curr_sample.total_time -curr_sample.child_time;
       percentage = (sample_time / (root_end - root_begin)) * 100.f;
 
       // add and recalculate average

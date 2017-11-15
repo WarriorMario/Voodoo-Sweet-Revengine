@@ -1,6 +1,34 @@
 #include "VArray.h"
 #include "ScreenGrid.h"
 #include "Graphics.h"
+#include "Threading\Job_Manager.h"
+#include "Utility\Profiling.h"
+class Rasterizer;
+
+template<typename Shader>
+struct RasterizeCellData
+{
+  RasterizeCellData()
+  {}
+  RasterizeCellData(Rasterizer& raster, ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
+    :
+    rasterizer(&raster),
+    grid(&grid),
+    cell(&cell),
+    commands(&commands),
+    cell_x(cell_x),
+    cell_y(cell_y)
+  {
+
+  }
+  Rasterizer* rasterizer;
+  ScreenGrid* grid;
+  ScreenGridCell* cell;
+  Array<Shader>* commands;
+  int cell_x;
+  int cell_y;
+};
+
 
 class Rasterizer
 {
@@ -13,16 +41,43 @@ public:
   template<typename Shader>
   void RasterizeCells(ScreenGrid& grid, Array<Shader>& commands)
   {
+    PROFILE_SCOPE("Render::RenderPass::RasterizeCells");
+#if 0
+    static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
+    int job_id = 0;
     for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
     {
       for(int x = 0; x < ScreenGrid::WIDTH; ++x)
       {
-        RasterizeCell(grid, grid.cells[y * ScreenGrid::WIDTH + x], commands,
+        ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+        if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+        {
+          continue;
+        }
+        job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+        Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
+        JM_SubmitJob(JM_Get(), &s);
+        ++job_id;
+      }
+    }
+    JM_Sync(JM_Get());
+#else    
+    for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
+    {
+      for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+      {
+        ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+        if(cell.num_indices == 0)
+        {
+          continue;
+        }
+        RasterizeCell(grid, cell, commands,
           x, y);
       }
     }
+#endif
   }
-private:
+
 
   template<typename Shader>
   void RasterizeCell(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
@@ -59,3 +114,11 @@ private:
     }
   }
 };
+
+
+template<typename Shader>
+void RasterizeThreadedCell(void* data)
+{
+  RasterizeCellData<Shader>* real_data = (RasterizeCellData<Shader>*)data;
+  real_data->rasterizer->RasterizeCell(*real_data->grid, *real_data->cell, *real_data->commands, real_data->cell_x, real_data->cell_y);
+}

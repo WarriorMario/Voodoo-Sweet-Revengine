@@ -30,6 +30,7 @@
 #include "Assets\Assets.h"
 #include "Gameplay\Player.h"
 #include "Input\Input.h"
+#include "Threading\Job_Manager.h"
 
 class Game
 {

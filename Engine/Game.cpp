@@ -27,6 +27,7 @@
 #include "Utility\ProfileOutput.h"
 #include "Graphsicks\FontManager.h"
 
+
 b2Body* b;
 b2Body* temp;
 b2BodyDef test0;
@@ -44,6 +45,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   player(renderer),
   input(godWindow.kbd,godWindow.mouse)
 {
+  JM_Get() = JM_AllocJobManager();
+  JM_InitJobManager(JM_Get(), 8);
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
 	FontManager font;
@@ -122,14 +125,21 @@ void Game::Go()
   input.Poll();
   {
     PROFILE_SCOPE("Game::Go");
+    {
+      PROFILE_SCOPE("Game::Go::BeginFrame");
+      gfx.BeginFrame();
 
-    gfx.BeginFrame();
+    }
     UpdateModel();
     ComposeFrame();
-    gfx.EndFrame();
+    
+    {
+      PROFILE_SCOPE("Game::Go::EndFrame");
+      gfx.EndFrame();
+    }
   }
-
   ProfileSample::Output();
+
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
