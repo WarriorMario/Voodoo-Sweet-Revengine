@@ -132,8 +132,12 @@ struct UIShader
   }
   Color Shade(const PixelData& pixel_data)
   {
-    int tex_pixel_idx = pixel_data.u * const_data.width + // x offset
-      const_data.width * (pixel_data.v * const_data.height); // y offset in texture
+    int idx_y = pixel_data.v * (float)const_data.height;
+    int idx_x = pixel_data.u * (float)const_data.width;
+    int tex_pixel_idx = idx_x + idx_y * const_data.width;
+
+    assert(tex_pixel_idx >= 0 && tex_pixel_idx < (const_data.width * const_data.height) &&
+    "The pixel you are trying to access is out of bounds");
 
     Color final_pixel = const_data.color * Color(const_data.pixels[tex_pixel_idx]);
     final_pixel.ApplyAlphaTheWrongWay();

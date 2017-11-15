@@ -31,7 +31,7 @@ struct FontAtlas
   }
 
   Color* pixels[NUM_BASE_CHARS];
-  unsigned int w_h_ox_oy[NUM_BASE_CHARS][4];
+  int w_h_ox_oy[NUM_BASE_CHARS][4];
   size_t tot_pixels;
 };
 
@@ -140,22 +140,30 @@ public:
       text_render_data.text_quads[i].max_u = 0.9999f;
       text_render_data.text_quads[i].max_v = 0.0f;
 
+      // store the data in variables with shorter names
+      int width    = text_render_data.atlas.w_h_ox_oy[idx][0],
+          height   = text_render_data.atlas.w_h_ox_oy[idx][1],
+          offset_x = text_render_data.atlas.w_h_ox_oy[idx][2],
+          offset_y = text_render_data.atlas.w_h_ox_oy[idx][3];
+
       // set min values
-      text_render_data.text_quads[i].min_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
-      text_render_data.text_quads[i].min_y = cur_y;// + text_render_data.atlas.w_h_ox_oy[idx][3];
+      text_render_data.text_quads[i].min_x = cur_x;// + offset_x;
+      text_render_data.text_quads[i].min_y = cur_y;// + offset_y;
 
       // update cur_x (and cur_y in the future)
       cur_x += text_render_data.atlas.w_h_ox_oy[idx][0];
 
       // set the max values
-      text_render_data.text_quads[i].max_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
-      text_render_data.text_quads[i].max_y = cur_y// + text_render_data.atlas.w_h_ox_oy[idx][3]
-        + text_render_data.atlas.w_h_ox_oy[idx][1];
+      text_render_data.text_quads[i].max_x = cur_x         ;// + offset_x;
+      text_render_data.text_quads[i].max_y = cur_y + height;// + offset_y;
 
       // set the glyph's texture data
       text_render_data.text_quads[i].glyph_pixels = text_render_data.atlas.pixels[idx];
-      text_render_data.text_quads[i].glyph_width = text_render_data.atlas.w_h_ox_oy[idx][0];
-      text_render_data.text_quads[i].glyph_height = text_render_data.atlas.w_h_ox_oy[idx][1];
+      text_render_data.text_quads[i].glyph_width = width;
+      text_render_data.text_quads[i].glyph_height = height;
+
+      // ensure a spacing of 16 pixels between the letters for testing purposes
+      cur_x += 16;
     }
 
     // update the num_quads value
