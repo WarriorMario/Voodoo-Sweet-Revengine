@@ -39,43 +39,63 @@ public:
   //  int cell_width, int cell_height,
   //  int grid_width, int grid_height);
   template<typename Shader>
-  void RasterizeCells(ScreenGrid& grid, Array<Shader>& commands)
+  void RasterizeCells(ScreenGrid& grid, Array<Shader>& commands, bool debug = false)
   {
     PROFILE_SCOPE("Render::RenderPass::RasterizeCells");
+    if(debug == true)
+    {
+
 #if 0
-    static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
-    int job_id = 0;
-    for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
-    {
-      for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+      static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
+      int job_id = 0;
+      for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
       {
-        ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
-        if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+        for(int x = 0; x < ScreenGrid::WIDTH; ++x)
         {
-          continue;
+          ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+          if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+          {
+            continue;
+          }
+          job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+          Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
+          JM_SubmitJob(JM_Get(), &s);
+          ++job_id;
         }
-        job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
-        Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
-        JM_SubmitJob(JM_Get(), &s);
-        ++job_id;
       }
-    }
-    JM_Sync(JM_Get());
+      JM_Sync(JM_Get());
 #else    
-    for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
-    {
-      for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+      for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
       {
-        ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
-        if(cell.num_indices == 0)
+        for(int x = 0; x < ScreenGrid::WIDTH; ++x)
         {
-          continue;
+          ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+          if(cell.num_indices == 0)
+          {
+            continue;
+          }
+          RasterizeCellDebugNumTriangles(grid, cell, commands,
+            x, y);
         }
-        RasterizeCell(grid, cell, commands,
-          x, y);
+      }
+#endif
+    }
+    else
+    {
+      for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
+      {
+        for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+        {
+          ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+          if(cell.num_indices == 0)
+          {
+            continue;
+          }
+          RasterizeCell(grid, cell, commands,
+            x, y);
+        }
       }
     }
-#endif
   }
 
 
@@ -112,7 +132,28 @@ public:
         }
       }
     }
+    cell.num_indices = 0;
   }
+
+  template<typename Shader>
+  void RasterizeCellDebugNumTriangles(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
+  {
+    int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
+
+    for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y)
+    {
+      for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x)
+      {
+        for(int j = 0; j < cell.num_indices; ++j)
+        {
+          float redness = (float)cell.num_indices / (sizeof(cell.indices)/sizeof(int));
+          cell.buff[y*ScreenGrid::CELL_WIDTH + x] = Color((redness)*255.0f, (1.0f - redness)*255.0f, 0);
+        }
+      }
+    }
+    cell.num_indices = 0;
+  }
+
 };
 
 

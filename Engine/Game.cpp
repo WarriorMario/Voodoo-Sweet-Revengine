@@ -25,7 +25,11 @@
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
-
+#ifdef NDEBUG
+constexpr size_t num_cores = 8;
+#else
+constexpr size_t num_cores = 1;
+#endif
 
 b2Body* b;
 b2Body* temp;
@@ -45,8 +49,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   input(godWindow.kbd,godWindow.mouse)
 {
   JM_Get() = JM_AllocJobManager();
-  JM_InitJobManager(JM_Get(), 8);
-  test = arena.Create<PhysicsObject>();
+  JM_InitJobManager(JM_Get(), num_cores);
+  //test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
 
   godWindow.SetFocused();
@@ -157,7 +161,7 @@ void Game::UpdateModel()
   frame_counter.Update();
 
   static size_t count = 0;
-  if(input.IsPressed(ButtonCode::GAMEPAD_A,1) == true )
+  if(input.IsPressed(ButtonCode::RIGHT_MOUSE) == true )
   {
     count++;
     if(count % 20)
@@ -166,7 +170,7 @@ void Game::UpdateModel()
       particle->SetPosition(input.MousePos());
     }
   }
-  test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
+  //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()

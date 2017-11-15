@@ -96,7 +96,7 @@ public:
       }
       float dx = (end.x - start.x) / (end.y - start.y);
       // Clip with optimisations
-#if 0
+#if 1
       int y0i = y0;
       for(; y0i < 0; ++y0i)
       {
@@ -118,26 +118,29 @@ public:
       }
       if(y1i >= height)
       {
-        y_max = height - 1;
+        y_max = height;
         y1i = height - 1;
       }
       x0 += ((float)(y0i)-y0) * dx;
       for(int i = y0i; i <= y1i; ++i)
       {
         v_start[i] = Min((int)(x0 - 0.5f), v_start[i]);
-        v_end[i] = Max((int)(x0), v_end[i]);
+        v_end[i] = Max((int)(x0 + 1.0f), v_end[i]);
         x0 += dx;
       }
   }
 
     for(; y_min < y_max; ++y_min)
     {
-      for(int x = Max(v_start[y_min], 0); x <= Min(v_end[y_min], width - 1); ++x)
+      for(int x = Max(v_start[y_min], 0); x < Min(v_end[y_min], width); ++x)
       {
         ScreenGridCell& cell = cells[y_min * width + x];
         assert(cell.num_indices < _countof(cell.indices) && "Cell indices out of bounds");
-        cell.indices[cell.num_indices] = primitive_index;
-        ++cell.num_indices;
+        if(cell.num_indices < _countof(cell.indices))
+        {
+          cell.indices[cell.num_indices] = primitive_index;
+          ++cell.num_indices;
+        }
       }
     }
   }
@@ -204,10 +207,10 @@ public:
   void Clear()
   {
     PROFILE_SCOPE("Render::Grid::Clear");
-    for(int i = 0; i < NUM_CELLS; ++i)// Seperate array from cells for more perf if needed
-    {
-      cells[i].num_indices = 0;
-    }
+    //for(int i = 0; i < NUM_CELLS; ++i)// Seperate array from cells for more perf if needed
+    //{
+    //  cells[i].num_indices = 0;
+    //}
     // Multithread clear
     memset(buff, 0, sizeof(Color)*ScreenGrid::RESOLUTION_X * ScreenGrid::RESOLUTION_Y);
   }
