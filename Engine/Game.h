@@ -31,6 +31,7 @@
 #include "Gameplay\Player.h"
 #include "Input\Input.h"
 #include "Gameplay\Framework\Objects\FontRenderObject.h"
+#include "Threading\Job_Manager.h"
 
 class Game
 {

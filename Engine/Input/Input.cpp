@@ -31,11 +31,11 @@ bool Input::IsPressed(ButtonCode code, int device_ID)
     {
       if((size_t)code > 255)
       {
-        controllers[device_ID].ButtonIsPressed((size_t)code);
+        return controllers[device_ID].ButtonIsPressed((size_t)code);
       }
       else
       {
-        kbd.KeyIsPressed((size_t)code);
+        return kbd.KeyIsPressed((unsigned char)code);
       }
     }
   }
@@ -62,7 +62,7 @@ Vec2 Input::GetAxis(AxisCode code, int device_ID)
 
 Vec2 Input::MousePos()
 {
-  return Vec2(mouse.GetPosX(),mouse.GetPosY());
+  return Vec2((float)mouse.GetPosX(),(float)mouse.GetPosY());
 }
 
 void Input::Poll()

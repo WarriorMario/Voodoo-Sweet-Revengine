@@ -106,7 +106,7 @@ LRESULT MainWindow::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam )
 		int y = HIWORD( lParam );
 		if( x > 0 && x < Graphics::ScreenWidth && y > 0 && y < Graphics::ScreenHeight )
 		{
-			mouse.OnMouseMove( x,y );
+			mouse.OnMouseMove( x, Graphics::ScreenHeight - y );
 			if( !mouse.IsInWindow() )
 			{
 				SetCapture( hWnd );
@@ -121,7 +121,7 @@ LRESULT MainWindow::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam )
 				x = std::min( int( Graphics::ScreenWidth ) - 1,x );
 				y = std::max( 0,y );
 				y = std::min( int( Graphics::ScreenHeight ) - 1,y );
-				mouse.OnMouseMove( x,y );
+				mouse.OnMouseMove( x, Graphics::ScreenHeight - y );
 			}
 			else
 			{

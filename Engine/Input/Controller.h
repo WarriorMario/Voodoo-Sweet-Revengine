@@ -14,7 +14,7 @@ public:
   Vec2 Trigger();
 public:
   XINPUT_GAMEPAD controller;
-  char trigger_button_threshold = 200;
+  unsigned char trigger_button_threshold = 200;
 
   size_t ID;
 };

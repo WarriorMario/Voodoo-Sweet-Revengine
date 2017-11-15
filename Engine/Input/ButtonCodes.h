@@ -1,6 +1,6 @@
 #pragma once
 
-enum class ButtonCode
+enum class ButtonCode : size_t
 {
   // Keyboard
   ENTER = 0x0D,

@@ -5,7 +5,7 @@ void Controller::Poll()
   XINPUT_STATE state = {};
 
   // Simply get the state of the controller from XInput.
-  DWORD dwResult = XInputGetState(ID, &state);
+  DWORD dwResult = XInputGetState((DWORD)ID, &state);
 
   if(dwResult == ERROR_SUCCESS)
   {

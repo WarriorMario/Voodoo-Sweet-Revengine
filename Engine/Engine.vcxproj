@@ -193,6 +193,7 @@
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="STB\stb_rect_pack.h" />
     <ClInclude Include="STB\stb_truetype.h" />
+    <ClInclude Include="Threading\Job_Manager.h" />
     <ClInclude Include="Utility\DirectoryWatch.h" />
     <ClInclude Include="FreeType\freetype\config\ftconfig.h" />
     <ClInclude Include="FreeType\freetype\config\ftheader.h" />
@@ -496,6 +497,7 @@
     <ClCompile Include="Gameplay\Framework\Objects\PhysicsObject.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
+    <ClCompile Include="Graphsicks\ScreenGrid.cpp" />
     <ClCompile Include="Graphsicks\Shader.cpp" />
     <ClCompile Include="Input\Controller.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -562,6 +564,7 @@
     <ClCompile Include="STB\stb_image.cpp" />
     <ClCompile Include="STB\stb_rect_pack.cpp" />
     <ClCompile Include="STB\std_truetype.cpp" />
+    <ClCompile Include="Threading\Job_Manager.cpp" />
     <ClCompile Include="Utility\DirectoryWatch.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
