@@ -154,6 +154,7 @@ void Game::UpdateModel()
   player.Update();
   player.Input(godWindow.kbd); 
   font_render_object.Update();
+  frame_counter.Update();
 
   static size_t count = 0;
   if(input.IsPressed(ButtonCode::GAMEPAD_A,1) == true )
@@ -175,6 +176,7 @@ void Game::ComposeFrame()
   arena.Draw(renderer);
   player.Draw();
   font_render_object.Draw(renderer);
+  frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
 }

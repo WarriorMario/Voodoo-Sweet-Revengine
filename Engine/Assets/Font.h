@@ -136,21 +136,21 @@ public:
 
       // set the uv values
       text_render_data.text_quads[i].min_u = 0.0f;
-      text_render_data.text_quads[i].min_v = 0.0f;
-      text_render_data.text_quads[i].max_u = 1.0f;
-      text_render_data.text_quads[i].max_v = 1.0f;
+      text_render_data.text_quads[i].min_v = 0.9999f;
+      text_render_data.text_quads[i].max_u = 0.9999f;
+      text_render_data.text_quads[i].max_v = 0.0f;
 
       // set min values
       text_render_data.text_quads[i].min_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
-      text_render_data.text_quads[i].min_y = cur_y + text_render_data.atlas.w_h_ox_oy[idx][3];
+      text_render_data.text_quads[i].min_y = cur_y;// + text_render_data.atlas.w_h_ox_oy[idx][3];
 
       // update cur_x (and cur_y in the future)
       cur_x += text_render_data.atlas.w_h_ox_oy[idx][0];
 
       // set the max values
       text_render_data.text_quads[i].max_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
-      text_render_data.text_quads[i].max_y = cur_y + text_render_data.atlas.w_h_ox_oy[idx][3] +
-        +text_render_data.atlas.w_h_ox_oy[idx][1];
+      text_render_data.text_quads[i].max_y = cur_y// + text_render_data.atlas.w_h_ox_oy[idx][3]
+        + text_render_data.atlas.w_h_ox_oy[idx][1];
 
       // set the glyph's texture data
       text_render_data.text_quads[i].glyph_pixels = text_render_data.atlas.pixels[idx];
