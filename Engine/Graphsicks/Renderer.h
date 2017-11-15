@@ -26,7 +26,7 @@ public:
     }
     if(commands.size() != 0)
     {
-      rasterizer.RasterizeCells(grid, commands);
+      rasterizer.RasterizeCells(grid, commands,false);
       commands.clear();
     }
   }

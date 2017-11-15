@@ -25,9 +25,9 @@ void ParticleObject::Draw(Renderer & gfx)
   Vec2 pos = handle.GetPosition();
   BackgroundShader testASDASD;
   testASDASD.const_data.color = Colors::Yellow;
-  testASDASD.prim_data[0] = {10 + pos.x, 10 + pos.y, 0.0, 0.0f};
-  testASDASD.prim_data[1] = {10 + pos.x, 00 + pos.y, 1.0f, 0.0f};
-  testASDASD.prim_data[2] = {20 + pos.x, 00 + pos.y, 0.5f, 1.0f};
+  testASDASD.prim_data[0] = {100 + pos.x, 100 + pos.y, 0.0, 0.0f};
+  testASDASD.prim_data[1] = {100 + pos.x, 00 + pos.y, 1.0f, 0.0f};
+  testASDASD.prim_data[2] = {200 + pos.x, 00 + pos.y, 0.5f, 1.0f};
   gfx.AddDrawCommand(testASDASD);
 
 
