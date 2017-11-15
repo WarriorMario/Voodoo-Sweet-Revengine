@@ -9,3 +9,4 @@ Categories
 [SOUND]	   - Sound related work
 [PLATFORM] - OS related work
 [CODE]     - For floris
+[ASSETS]   - Changes in asset files
