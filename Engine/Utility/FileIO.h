@@ -15,7 +15,9 @@ public:
   static bool LoadFileBinary(StringRef file_name, File* file_out)
   {
     // open the file
-    std::ifstream file(file_name.data(), std::ios::in | std::ios::binary | std::ios::ate);
+    std::ifstream file;
+    
+    file.open(file_name.data(), std::ios::in | std::ios::binary | std::ios::ate);
 
     // check if the file is open
     if(file.is_open())

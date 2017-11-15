@@ -30,6 +30,7 @@
 #include "Assets\Assets.h"
 #include "Gameplay\Player.h"
 #include "Input\Input.h"
+#include "Gameplay\Framework\Objects\FontRenderObject.h"
 
 class Game
 {
@@ -54,6 +55,7 @@ private:
   Arena arena;
   Player player;
   Input input;
+  FontRenderObject font_render_object;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

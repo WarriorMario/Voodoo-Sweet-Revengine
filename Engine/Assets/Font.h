@@ -7,32 +7,32 @@
 #include "VTraits.h"
 #include "VMap.h"
 
-/*
-TODO
-  load file data
-  load font using stb
-  get all (?) glyphs
-  create font atlas
-  save as texture
-*/
-
-static constexpr char BASE_CHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,-=+\\/()*&^@#!_><?%~:;\"'_";
+static constexpr char BASE_CHAR[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,-=+\\/()*&^@#!_><?%~:;\"'_";
 static constexpr size_t NUM_BASE_CHARS = CountOf(BASE_CHAR);
 static constexpr size_t TEXT_QUAD_BUFF_SIZE = 256;
 static constexpr int WHITE = 255 << 16 | 255 << 8 | 255;
 
 struct FontAtlas
 {
-  ~FontAtlas()
+  FontAtlas()
   {
+    tot_pixels = 0;
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
-      delete[] pixels;
+      pixels[i] = nullptr;
+    }
+  }
+  void Clear()
+  {
+    delete[] pixels[0];
+    for(int i = 0; i < NUM_BASE_CHARS; ++i)
+    {
+      pixels[i] = nullptr;
     }
   }
 
-  unsigned int* pixels[NUM_BASE_CHARS];
-  unsigned int width_height[NUM_BASE_CHARS][2];
+  Color* pixels[NUM_BASE_CHARS];
+  unsigned int w_h_ox_oy[NUM_BASE_CHARS][4];
   size_t tot_pixels;
 };
 
@@ -40,7 +40,7 @@ struct TextRenderData
 {
   struct GlyphQuad
   {
-    unsigned int* glyph_pixels;
+    Color* glyph_pixels;
     unsigned int glyph_width, glyph_height;
 
     int min_x, min_y, max_x, max_y;
@@ -49,6 +49,7 @@ struct TextRenderData
 
   GlyphQuad text_quads[TEXT_QUAD_BUFF_SIZE];
   FontAtlas atlas;
+  size_t num_quads;
 };
 
 // ****************************************************************************
@@ -71,6 +72,17 @@ public:
       {
         delete[] font_file.data;
       }
+
+      std::map<int, FontAtlas>::iterator it;
+
+      // free the data of everything in the map
+      for(it = font_atlas_map.begin(); it != font_atlas_map.end(); it++)
+      {
+        it->second.Clear();
+      }
+
+      // clear the map itself
+      font_atlas_map.clear();
     }
 
     // file data
@@ -79,6 +91,7 @@ public:
     // the stb font
     stbtt_fontinfo stb_font;
 
+    // map of all the font atlasses we currently have
     mutable Map<int, FontAtlas> font_atlas_map;
   };
 
@@ -87,7 +100,7 @@ public:
     : Base(filename)
   {}
 
-  TextRenderData RenderLine(StringRef text, float point_size, int start_x, int start_y)
+  TextRenderData RenderLine(StringRef text, int point_size, int start_x, int start_y, int space_size = 30)
   {
     TextRenderData text_render_data;
     assert(text.size() < TEXT_QUAD_BUFF_SIZE);
@@ -96,21 +109,32 @@ public:
     auto& data = GetData<Font>();
 
     // get the font atlas, load if necessary
-    auto res = data.font_atlas_map.find((int)(point_size));
-    (res != data.font_atlas_map.end()) ?
-      text_render_data.atlas = res->second :
+    std::map<int, FontAtlas>::iterator iter = data.font_atlas_map.find(point_size);
+    if(iter != data.font_atlas_map.end())
+    {
+      text_render_data.atlas = iter->second;
+    }
+    else
+    {
       text_render_data.atlas = LoadFontAtlas(point_size);
+    }
 
     int cur_x = start_x, cur_y = start_y;
 
     // per letter
     for(int i = 0; i < text.size(); ++i)
     {
+      // offset the rest of the characters if the current char is a space
+      if(text[i] == ' ')
+      {
+        cur_x += space_size;
+      }
+
       // get the index of the char
       int idx = GetIndexInBaseChar(text[i]);
 
       // create a quad to be drawn
-
+    
       // set the uv values
       text_render_data.text_quads[i].min_u = 0.0f;
       text_render_data.text_quads[i].min_v = 0.0f;
@@ -118,26 +142,35 @@ public:
       text_render_data.text_quads[i].max_v = 1.0f;
 
       // set min values
-      text_render_data.text_quads[i].min_x = cur_x;
-      text_render_data.text_quads[i].min_y = cur_y;
+      text_render_data.text_quads[i].min_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
+      text_render_data.text_quads[i].min_y = cur_y + text_render_data.atlas.w_h_ox_oy[idx][3];
 
       // update cur_x (and cur_y in the future)
-      cur_x += text_render_data.atlas.width_height[i][0];
+      cur_x += text_render_data.atlas.w_h_ox_oy[idx][0];
 
       // set the max values
-      text_render_data.text_quads[i].max_x = cur_x;
-      text_render_data.text_quads[i].max_y = cur_y + text_render_data.atlas.width_height[i][1];
+      text_render_data.text_quads[i].max_x = cur_x + text_render_data.atlas.w_h_ox_oy[idx][2];
+      text_render_data.text_quads[i].max_y = cur_y + text_render_data.atlas.w_h_ox_oy[idx][3] +
+        + text_render_data.atlas.w_h_ox_oy[idx][1];
 
       // set the glyph's texture data
-      text_render_data.text_quads[i].glyph_pixels = text_render_data.atlas.pixels[i];
-      text_render_data.text_quads[i].glyph_width = text_render_data.atlas.width_height[i][0];
-      text_render_data.text_quads[i].glyph_height = text_render_data.atlas.width_height[i][1];
+      text_render_data.text_quads[i].glyph_pixels = text_render_data.atlas.pixels[idx];
+      text_render_data.text_quads[i].glyph_width = text_render_data.atlas.w_h_ox_oy[idx][0];
+      text_render_data.text_quads[i].glyph_height = text_render_data.atlas.w_h_ox_oy[idx][1];
     }
+
+    // update the num_quads value
+    text_render_data.num_quads = text.size();
+
+    // return happily
+    return text_render_data;
   }
 
 private:
   friend bool Load(StringRef filename, Data& data)
   {
+    (new(&data.font_atlas_map) std::map<int, FontAtlas>());
+
     if(FileIO::LoadFileBinary(filename.data(), &data.font_file) == false)
     {
       return false;
@@ -149,6 +182,7 @@ private:
       return true; // load was succesful
     }
 
+
     return false;
   }
 
@@ -156,7 +190,7 @@ private:
   {
     // get your data
     auto& data = GetData<Font>();
-    
+
     // the return value
     FontAtlas font_atlas;
 
@@ -173,22 +207,22 @@ private:
     // use stb_truetype to rasterize all of the glyphs for me
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
-      mono_bitmaps[i] = stbtt_GetGlyphBitmap(&data.stb_font, 0.0f, scale, BASE_CHAR[i],
+      mono_bitmaps[i] = stbtt_GetCodepointBitmap(&data.stb_font, 0.0f, scale, BASE_CHAR[i],
         &w_h_ox_oy[i][0], &w_h_ox_oy[i][1], &w_h_ox_oy[i][2], &w_h_ox_oy[i][3]);
 
-      tot_size += w_h_ox_oy[i][0] + w_h_ox_oy[i][1];
+      tot_size += w_h_ox_oy[i][0] * w_h_ox_oy[i][1];
     }
 
     // allocate memory for the font textures
     font_atlas.tot_pixels = tot_size;
-    font_atlas.pixels[0] = new unsigned int[tot_size * sizeof(unsigned int)];
+    font_atlas.pixels[0] = new Color[tot_size * sizeof(Color)];
 
     /////////////////////////////////////////////////////////////
     // align all textures underneath each other. 
     /////////////////////////////////////////////////////////////
 
     // get the initial pixel
-    unsigned int* p = font_atlas.pixels[0];
+    Color* p = font_atlas.pixels[0];
     // for all glyphs we'll use
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
@@ -197,8 +231,10 @@ private:
 
       // set the appropriate font atlas values
       font_atlas.pixels[i] = p;
-      font_atlas.width_height[i][0] = w_h_ox_oy[i][0];
-      font_atlas.width_height[i][1] = w_h_ox_oy[i][1];
+      font_atlas.w_h_ox_oy[i][0] = w_h_ox_oy[i][0];
+      font_atlas.w_h_ox_oy[i][1] = w_h_ox_oy[i][1];
+      font_atlas.w_h_ox_oy[i][2] = w_h_ox_oy[i][2];
+      font_atlas.w_h_ox_oy[i][3] = w_h_ox_oy[i][3];
 
       // loop through all of the pixels
       for(int y = 0; y < w_h_ox_oy[i][1]; ++y)
@@ -213,7 +249,7 @@ private:
         }
       }
     }
-    
+
     // place the font atlas in the map
     data.font_atlas_map[point_size] = font_atlas;
 
@@ -223,7 +259,7 @@ private:
 
 
   // get the char in the index
-  /* 
+  /*
   TODO (Floris) optimize this, might become a bottleneck. probably not though.
   */
   inline int GetIndexInBaseChar(char c)
