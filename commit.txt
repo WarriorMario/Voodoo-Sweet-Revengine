@@ -10,3 +10,4 @@ Categories
 [PLATFORM] - OS related work
 [CODE]     - For floris
 [ASSETS]   - Changes in asset files
+[GAMEPLAY] - gameplay and gameplay system changes
