@@ -30,6 +30,7 @@
 #include "Assets\Assets.h"
 #include "Gameplay\Player.h"
 #include "Input\Input.h"
+#include "Gameplay\Framework\Objects\FontRenderObject.h"
 #include "Threading\Job_Manager.h"
 
 class Game
@@ -52,6 +53,7 @@ private:
 	b2ParticleSystem* particleSystem;
 	Renderer renderer;
 	Triangle tri_buff[2];
+  FontRenderObject font_render_object;
   Arena arena;
   Player player;
   Input input;
