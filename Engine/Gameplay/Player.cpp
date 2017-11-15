@@ -202,8 +202,8 @@ Player::Player(Renderer& renderer)
   sprites{"Images/idle.png", "Images/move.png", "Images/run.png", "Images/jump.png"},
   flip_sprite(false)
 {
-  width = 150.f;
-  height = 75.f;
-  x = 200.f;
-  y = 350.f;
+  width = 1920.f;
+  height = 1080.f;
+  x = 1920.f * 0.5f;
+  y = 1080.f * 0.5f;
 }

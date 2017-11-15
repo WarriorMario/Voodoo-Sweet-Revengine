@@ -6,7 +6,7 @@
 class Rasterizer;
 
 template<typename Shader>
-struct RasterizeCellData
+struct alignas(128) RasterizeCellData
 {
   RasterizeCellData()
   {}
@@ -45,26 +45,6 @@ public:
     if(debug == true)
     {
 
-#if 0
-      static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
-      int job_id = 0;
-      for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
-      {
-        for(int x = 0; x < ScreenGrid::WIDTH; ++x)
-        {
-          ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
-          if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
-          {
-            continue;
-          }
-          job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
-          Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
-          JM_SubmitJob(JM_Get(), &s);
-          ++job_id;
-        }
-      }
-      JM_Sync(JM_Get());
-#else    
       for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
       {
         for(int x = 0; x < ScreenGrid::WIDTH; ++x)
@@ -78,13 +58,48 @@ public:
             x, y);
         }
       }
-#endif
     }
     else
     {
-      for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
+
+#if 1
+      static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
+      int job_id = 0;
+	  for (int y = 0; y < ScreenGrid::HEIGHT; y+=1)
+	  {
+		  for (int x = 0; x < ScreenGrid::WIDTH; x+=1)
+		  {
+			  ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+			  if (cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+			  {
+				  continue;
+			  }
+			  job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+			  Job s = { RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id]) };
+			  JM_SubmitJob(JM_Get(), &s);
+			  ++job_id;
+		  }
+	  }
+    //for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
+    //{
+    //  for(int x = 1; x < ScreenGrid::WIDTH; x+=2)
+    //  {
+    //    ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+    //    if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+    //    {
+    //      continue;
+    //    }
+    //    job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+    //    Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
+    //    JM_SubmitJob(JM_Get(), &s);
+    //    ++job_id;
+    //  }
+    //}
+      JM_Sync(JM_Get());
+#else    
+      for(int y = 0; y < ScreenGrid::HEIGHT; y+=1)
       {
-        for(int x = 0; x < ScreenGrid::WIDTH; ++x)
+        for(int x = 0; x < ScreenGrid::WIDTH; x+=1)
         {
           ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
           if(cell.num_indices == 0)
@@ -95,6 +110,20 @@ public:
             x, y);
         }
       }
+	  //for (int y = 0; y < ScreenGrid::HEIGHT; ++y)
+	  //{
+		//  for (int x = 1; x < ScreenGrid::WIDTH; x+=2)
+		//  {
+		//	  ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+		//	  if (cell.num_indices == 0)
+		//	  {
+		//		  continue;
+		//	  }
+		//	  RasterizeCell(grid, cell, commands,
+		//		  x, y);
+		//  }
+	  //}
+#endif
     }
   }
 

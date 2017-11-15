@@ -220,7 +220,7 @@ public:
 };
 
 // ****************************************************************************
-using ScreenGrid = ScreenGridImpl<60, 135, 32, 8>;
+using ScreenGrid = ScreenGridImpl<30, 135, 64, 8>;
 //using ScreenGrid = ScreenGridImpl<25, 75, 32, 8>;
-//using ScreenGrid = ScreenGridImpl<30, 15, 64, 64>;
+//using ScreenGrid = ScreenGridImpl<15, 15, 128, 64>;
 //using ScreenGrid = ScreenGridImpl<15, 17, 128, 64>;

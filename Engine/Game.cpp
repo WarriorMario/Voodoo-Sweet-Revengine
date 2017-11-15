@@ -26,7 +26,7 @@
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
-constexpr size_t num_cores = 8;
+constexpr size_t num_cores = 4;
 #else
 constexpr size_t num_cores = 1;
 #endif
@@ -118,7 +118,14 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
-  
+  for(int x = 0; x < 50; ++x)
+  {
+    for(int y = 0; y < 50; ++y)
+    {
+      //auto particle = arena.Create<ParticleObject>();
+      //particle->SetPosition(Vec2(x*20, y * 20));
+    }
+  }
 }
 
 void Game::Go()

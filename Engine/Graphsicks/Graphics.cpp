@@ -470,7 +470,7 @@ void Graphics::EndFrame()
     {
       PROFILE_SCOPE("Game::Go::EndFrame::PlayerWindow::FlipBuffers");
       // flip back/front buffers
-      if(FAILED(hr = pSwapChain2->Present(1u, 0u)))
+      if(FAILED(hr = pSwapChain2->Present(0u, 0u)))
       {
         if(hr == DXGI_ERROR_DEVICE_REMOVED)
         {
