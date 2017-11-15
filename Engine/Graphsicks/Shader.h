@@ -42,6 +42,7 @@ struct BackgroundShader
     res.v = p0.v * t0 + p1.v * t1 + p2.v * t2;
     return res;
   }
+
   Color Shade(const PixelData& pixel_data)
   {
     return Color((unsigned char)(pixel_data.u * 255.f), (unsigned char)(pixel_data.v * 255.f), 0);

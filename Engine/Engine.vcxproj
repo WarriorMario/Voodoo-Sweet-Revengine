@@ -173,6 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\Font.h" />
     <ClInclude Include="Assets\PhysicsShape.h" />
     <ClInclude Include="Gameplay\Framework\Arena.h" />
     <ClInclude Include="Assets\Assets.h" />
@@ -189,6 +190,8 @@
     <ClInclude Include="Physics\PhysicsConstants.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="STB\stb_rect_pack.h" />
+    <ClInclude Include="STB\stb_truetype.h" />
     <ClInclude Include="Threading\Job_Manager.h" />
     <ClInclude Include="Utility\DirectoryWatch.h" />
     <ClInclude Include="FreeType\freetype\config\ftconfig.h" />
@@ -380,8 +383,9 @@
     <ClInclude Include="Lib\FreeType\Headers\ft2build.h" />
     <ClInclude Include="Physics\Body.h" />
     <ClInclude Include="Physics\Physics.h" />
-    <ClInclude Include="StbImage\stb_image.h" />
+    <ClInclude Include="STB\stb_image.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Utility\FileIO.h" />
     <ClInclude Include="Utility\Logging.h" />
     <ClInclude Include="Utility\ProfileOutput.h" />
     <ClInclude Include="Utility\Profiling.h" />
@@ -555,7 +559,9 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Physics\DebugDraw.cpp" />
     <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="StbImage\stb_image.cpp" />
+    <ClCompile Include="STB\stb_image.cpp" />
+    <ClCompile Include="STB\stb_rect_pack.cpp" />
+    <ClCompile Include="STB\std_truetype.cpp" />
     <ClCompile Include="Threading\Job_Manager.cpp" />
     <ClCompile Include="Utility\DirectoryWatch.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />

@@ -25,7 +25,6 @@
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
-#include "Graphsicks\FontManager.h"
 
 
 b2Body* b;
@@ -49,7 +48,6 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   JM_InitJobManager(JM_Get(), 8);
   test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
-	FontManager font;
 
   godWindow.SetFocused();
 
@@ -116,6 +114,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
+  
 }
 
 void Game::Go()
