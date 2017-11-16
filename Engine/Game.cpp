@@ -26,7 +26,7 @@
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
-constexpr size_t num_cores = 4;
+constexpr size_t num_cores = 8;
 #else
 constexpr size_t num_cores = 1;
 #endif
@@ -38,13 +38,17 @@ b2BodyDef test1;
 b2FixtureDef testf0;
 b2FixtureDef testf1;
 Handle<PhysicsObject> test;
+void FlorisThisIsHowSimpleUIIs()
+{
+  int that = 0;
+}
 Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   :
   godWindow(godWindow),
   playerWindow(playerWindow),
   gfx(godWindow, playerWindow),
   renderer(Renderer(gfx)),
-  arena(),
+  arena(input),
   player(renderer),
   input(godWindow.kbd,godWindow.mouse)
 {
@@ -53,6 +57,9 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
 
+  //arena.Create<FontRenderObject>();
+  arena.Create<UIButtonObject>()->Initialize(RectF(0,50,0,50), FlorisThisIsHowSimpleUIIs, Colors::White,Colors::Yellow ,Colors::Green );
+ 
   godWindow.SetFocused();
 
   test0.type = b2_dynamicBody; //this will be a dynamic body
@@ -118,14 +125,14 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
-  for(int x = 0; x < 50; ++x)
-  {
-    for(int y = 0; y < 50; ++y)
-    {
-      //auto particle = arena.Create<ParticleObject>();
-      //particle->SetPosition(Vec2(x*20, y * 20));
-    }
-  }
+  //for(int x = 0; x < 50; ++x)
+  //{
+  //  for(int y = 0; y < 50; ++y)
+  //  {
+  //    auto particle = arena.Create<ParticleObject>();
+  //    particle->SetPosition(Vec2(x*20, y * 20));
+  //  }
+  //}
 }
 
 void Game::Go()
@@ -164,7 +171,6 @@ void Game::UpdateModel()
   
   player.Update();
   player.Input(godWindow.kbd); 
-  font_render_object.Update();
   frame_counter.Update();
 
   static size_t count = 0;
@@ -185,9 +191,8 @@ void Game::ComposeFrame()
   PROFILE_SCOPE("Game::ComposeFrame");
 
   arena.Draw(renderer);
-  player.Draw();
-  font_render_object.Draw(renderer);
-  frame_counter.Draw(renderer);
+  //player.Draw();
+  //frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
 }
