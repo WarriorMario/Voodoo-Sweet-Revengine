@@ -29,11 +29,13 @@ struct BackgroundShader
   {
     Color color;
   };
+
   struct PixelData
   {
     float x, y;
     float u, v;
   };
+
   ConstData const_data;
   PixelData prim_data[3];
 
@@ -62,6 +64,7 @@ struct ForegroundShader
     Color color;
     Texture* texture;
   };
+
   struct PixelData
   {
     float x, y;
@@ -109,10 +112,10 @@ struct UIShader
   struct ConstData
   {
     Color color;
-    Color* pixels;
+    unsigned char* alpha_values;
     int width, height;
-
   };
+
   struct PixelData
   {
     float x, y;
@@ -142,9 +145,10 @@ struct UIShader
     assert(tex_pixel_idx >= 0 && tex_pixel_idx < (const_data.width * const_data.height) &&
     "The pixel you are trying to access is out of bounds");
 
-    Color final_pixel = const_data.color * Color(const_data.pixels[tex_pixel_idx]);
-    final_pixel.ApplyAlphaTheRightWay(pixel);
+    Color final_pixel = ((*(int*)&const_data.color) & 0x00ffffff) |
+      ((int)const_data.alpha_values[tex_pixel_idx] << 24);
 
+    final_pixel.ApplyAlphaTheRightWay(pixel);
     pixel = final_pixel;
   }
 };

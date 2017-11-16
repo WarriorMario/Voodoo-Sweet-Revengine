@@ -35,7 +35,7 @@ void FontRenderObject::Update()
   }
 
 #if 1
-  point_size = sinf((frames / 100.0f) * PI) * max_size_diff + orig_point_size;
+  //point_size = sinf((frames / 100.0f) * PI) * max_size_diff + orig_point_size;
   frames++;
 #endif
 }
@@ -48,7 +48,7 @@ void FontRenderObject::Draw(Renderer & renderer)
   {
     UIShader shader;
     shader.const_data.color = Colors::White;
-    shader.const_data.pixels = line.text_quads[i].glyph_pixels;
+    shader.const_data.alpha_values = line.text_quads[i].glyph_alpha_values;
     shader.const_data.width = line.text_quads[i].glyph_width;
     shader.const_data.height = line.text_quads[i].glyph_height;
 

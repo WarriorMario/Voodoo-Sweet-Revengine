@@ -52,8 +52,8 @@ void FrameCounter::Update()
 void FrameCounter::Draw(Renderer & renderer)
 {
   String text[2];
-  text[0] = "FPS on average : " + std::to_string(fps);
-  text[1] = "Time this frame: " + std::to_string(this_frame_time);
+  text[0] = "Frames per Second: " + std::to_string(fps);
+  text[1] = "Seconds per Frame: " + std::to_string(this_frame_time);
   for(int i = 0; i < 2; ++i)
   {
     auto line = font->RenderLine(text[i], point_size, pos_x, pos_y - i * 50);
@@ -62,7 +62,7 @@ void FrameCounter::Draw(Renderer & renderer)
     {
       UIShader shader;
       shader.const_data.color = Colors::White;
-      shader.const_data.pixels = line.text_quads[i].glyph_pixels;
+      shader.const_data.alpha_values = line.text_quads[i].glyph_alpha_values;
       shader.const_data.width = line.text_quads[i].glyph_width;
       shader.const_data.height = line.text_quads[i].glyph_height;
 

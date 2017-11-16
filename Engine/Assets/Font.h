@@ -15,31 +15,31 @@ struct FontAtlas
 {
   FontAtlas()
   {
-    tot_pixels = 0;
+    tot_alpha_values = 0;
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
-      pixels[i] = nullptr;
+      alpha_values[i] = nullptr;
     }
   }
   void Clear()
   {
-    delete[] pixels[0];
+    delete[] alpha_values[0];
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
-      pixels[i] = nullptr;
+      alpha_values[i] = nullptr;
     }
   }
 
-  Color* pixels[NUM_BASE_CHARS];
+  unsigned char* alpha_values[NUM_BASE_CHARS];
   int w_h_ox_oy[NUM_BASE_CHARS][4];
-  size_t tot_pixels;
+  size_t tot_alpha_values;
 };
 
 struct TextRenderData
 {
   struct GlyphQuad
   {
-    Color* glyph_pixels;
+    unsigned char* glyph_alpha_values;
     unsigned int glyph_width, glyph_height;
 
     int min_x, min_y, max_x, max_y;
@@ -158,7 +158,7 @@ public:
       text_render_data.text_quads[i].max_y = cur_y + height;// + offset_y;
 
       // set the glyph's texture data
-      text_render_data.text_quads[i].glyph_pixels = text_render_data.atlas.pixels[idx];
+      text_render_data.text_quads[i].glyph_alpha_values = text_render_data.atlas.alpha_values[idx];
       text_render_data.text_quads[i].glyph_width = width;
       text_render_data.text_quads[i].glyph_height = height;
 
@@ -221,15 +221,16 @@ private:
     }
 
     // allocate memory for the font textures
-    font_atlas.tot_pixels = tot_size;
-    font_atlas.pixels[0] = new Color[tot_size * sizeof(Color)];
+    font_atlas.tot_alpha_values = tot_size;
+    font_atlas.alpha_values[0] = new unsigned char[tot_size * sizeof(unsigned char)];
 
     /////////////////////////////////////////////////////////////
     // align all textures underneath each other. 
     /////////////////////////////////////////////////////////////
 
-    // get the initial pixel
-    Color* p = font_atlas.pixels[0];
+    // get the initial alpha value
+    unsigned char* p = font_atlas.alpha_values[0];
+
     // for all glyphs we'll use
     for(int i = 0; i < NUM_BASE_CHARS; ++i)
     {
@@ -237,24 +238,18 @@ private:
       size_t idx_glyph_tex = 0;
 
       // set the appropriate font atlas values
-      font_atlas.pixels[i] = p;
+      font_atlas.tot_alpha_values = w_h_ox_oy[i][0] * w_h_ox_oy[i][1];
+      font_atlas.alpha_values[i] = p;
       font_atlas.w_h_ox_oy[i][0] = w_h_ox_oy[i][0];
       font_atlas.w_h_ox_oy[i][1] = w_h_ox_oy[i][1];
       font_atlas.w_h_ox_oy[i][2] = w_h_ox_oy[i][2];
       font_atlas.w_h_ox_oy[i][3] = w_h_ox_oy[i][3];
 
-      // loop through all of the pixels
-      for(int y = 0; y < w_h_ox_oy[i][1]; ++y)
-      {
-        for(int x = 0; x < w_h_ox_oy[i][0]; ++x, ++idx_glyph_tex)
-        {
-          // per pixel, calculate the final value (mono value for alpha, white for the rest)
-          *p = mono_bitmaps[i][idx_glyph_tex] << 24 | WHITE;
+      // copy over the alpha values
+      memcpy(p, mono_bitmaps[i], font_atlas.tot_alpha_values * sizeof(unsigned char));
 
-          // increment the pointer after the pixel to move on to the next one
-          p++;
-        }
-      }
+      // offset the pointer to the next glyph
+      p += font_atlas.tot_alpha_values;
     }
 
     // place the font atlas in the map
@@ -267,7 +262,8 @@ private:
 
   // get the char in the index
   /*
-  TODO (Floris) optimize this, might become a bottleneck. probably not though.
+  TODO (Floris) optimize this, waste of performance.
+  sort, binary search?
   */
   inline int GetIndexInBaseChar(char c)
   {
