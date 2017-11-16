@@ -16,6 +16,13 @@
 //   the final pixel color using the passed pixel data.
 
 // ****************************************************************************
+
+struct InterpData
+{
+  float t0, t1, t2;
+  int x, y;
+};
+
 struct BackgroundShader
 {
   struct ConstData
@@ -30,22 +37,20 @@ struct BackgroundShader
   ConstData const_data;
   PixelData prim_data[3];
 
-  PixelData Interpolate(float t0, float t1, float t2)
+  void Interpolate(const InterpData& interp_data, PixelData& res)
   {
-    PixelData res;
     const auto& p0 = prim_data[0];
     const auto& p1 = prim_data[1];
     const auto& p2 = prim_data[2];
-    res.x = p0.x * t0 + p1.x * t1 + p2.x * t2;
-    res.y = p0.y * t0 + p1.y * t1 + p2.y * t2;
-    res.u = p0.u * t0 + p1.u * t1 + p2.u * t2;
-    res.v = p0.v * t0 + p1.v * t1 + p2.v * t2;
-    return res;
+    res.x = interp_data.x;
+    res.y = interp_data.y;
+    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
+    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
   }
 
-  Color Shade(const PixelData& pixel_data)
+  void Shade(const PixelData& pixel_data, Color& pixel)
   {
-    return const_data.color;// Color((unsigned char)(pixel_data.u * 255.f), (unsigned char)(pixel_data.v * 255.f), 0);
+    pixel = const_data.color;
   }
 };
 
@@ -67,21 +72,20 @@ struct ForegroundShader
   ConstData const_data;
   PixelData prim_data[3];
 
-  PixelData Interpolate(float t0, float t1, float t2)
+  void Interpolate(const InterpData& interp_data, PixelData& res)
   {
-    PixelData res;
     const auto& p0 = prim_data[0];
     const auto& p1 = prim_data[1];
     const auto& p2 = prim_data[2];
-    res.x = p0.x * t0 + p1.x * t1 + p2.x * t2;
-    res.y = p0.y * t0 + p1.y * t1 + p2.y * t2;
-    res.u = p0.u * t0 + p1.u * t1 + p2.u * t2;
-    res.v = p0.v * t0 + p1.v * t1 + p2.v * t2;
-    res.nx = p0.nx * t0 + p1.nx * t1 + p2.nx * t2;
-    res.ny = p0.ny * t0 + p1.ny * t1 + p2.ny * t2;
-    return res;
+    res.x = interp_data.x;
+    res.y = interp_data.y;
+    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
+    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
+    res.nx = p0.nx * interp_data.t0 + p1.nx * interp_data.t1 + p2.nx * interp_data.t2;
+    res.ny = p0.ny * interp_data.t0 + p1.ny * interp_data.t1 + p2.ny * interp_data.t2;
   }
-  Color Shade(const PixelData& pixel_data)
+
+  void Shade(const PixelData& pixel_data, Color& pixel)
   {
     const float lx = 200.f;
     const float ly = 200.f;
@@ -95,7 +99,7 @@ struct ForegroundShader
 
     Color t = const_data.texture->Sample(pixel_data.u, pixel_data.v);
     float a = t.GetA() / 255.f;
-    return Color((unsigned char)(t.GetR() * i * a), (unsigned char)(t.GetG() * i  * a), (unsigned char)(t.GetB() * i * a));
+    pixel = Color((unsigned char)(t.GetR() * i * a), (unsigned char)(t.GetG() * i  * a), (unsigned char)(t.GetB() * i * a));
   }
 };
 
@@ -118,19 +122,18 @@ struct UIShader
   ConstData const_data;
   PixelData prim_data[3];
 
-  PixelData Interpolate(float t0, float t1, float t2)
+  void Interpolate(const InterpData& interp_data, PixelData& res)
   {
-    PixelData res;
     const auto& p0 = prim_data[0];
     const auto& p1 = prim_data[1];
     const auto& p2 = prim_data[2];
-    res.x = p0.x * t0 + p1.x * t1 + p2.x * t2;
-    res.y = p0.y * t0 + p1.y * t1 + p2.y * t2;
-    res.u = p0.u * t0 + p1.u * t1 + p2.u * t2;
-    res.v = p0.v * t0 + p1.v * t1 + p2.v * t2;
-    return res;
+    res.x = interp_data.x;
+    res.y = interp_data.y;
+    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
+    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
   }
-  Color Shade(const PixelData& pixel_data)
+
+  void Shade(const PixelData& pixel_data, Color& pixel)
   {
     int idx_y = pixel_data.v * (float)const_data.height;
     int idx_x = pixel_data.u * (float)const_data.width;
@@ -140,8 +143,8 @@ struct UIShader
     "The pixel you are trying to access is out of bounds");
 
     Color final_pixel = const_data.color * Color(const_data.pixels[tex_pixel_idx]);
-    final_pixel.ApplyAlphaTheWrongWay();
+    final_pixel.ApplyAlphaTheRightWay(pixel);
 
-    return final_pixel;
+    pixel = final_pixel;
   }
 };
