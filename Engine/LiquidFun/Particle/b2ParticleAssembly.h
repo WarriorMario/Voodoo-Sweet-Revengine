@@ -33,7 +33,7 @@ struct FindContactCheck
 struct FindContactInput
 {
     uint32 proxyIndex;
-    Vec2 position;
+    b2Vec2 position;
 };
 
 enum { NUM_V32_SLOTS = 4 };
@@ -42,7 +42,7 @@ enum { NUM_V32_SLOTS = 4 };
 extern "C" {
 #endif
 
-extern int CalculateTags_Simd(const Vec2* positions,
+extern int CalculateTags_Simd(const b2Vec2* positions,
                               int count,
                               const float& inverseDiameter,
                               uint32* outTags);

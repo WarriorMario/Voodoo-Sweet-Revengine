@@ -20,8 +20,7 @@
  ******************************************************************************************/
 #include "Game.h"
 #include "MainWindow.h"
-#include "Vec3.h"
-#include "Vec2.h"
+#include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
@@ -135,7 +134,6 @@ void Game::UpdateModel()
 {
   PROFILE_SCOPE("Game::UpdateModel");
 
-
   if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
   {
     godWindow.Kill();
@@ -171,4 +169,5 @@ void Game::ComposeFrame()
   player.Draw();
   renderer.Render();
   arena.physx.DebugDraw();
+
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "ArenaObject.h"
+#include "MatrixDef.h"
 
 class ParticleObjectBase
 {
@@ -15,7 +16,7 @@ public:
     handle(handle)
   {}
 
-  void SetPosition(struct Vec2& pos);
+  void SetPosition(Vec2& pos);
   Vec2 GetPosition();
 
 private:
@@ -27,7 +28,7 @@ class ParticleObject : public ArenaObject<ParticleObject>
 public:
   ParticleObject();
 
-  void SetPosition(struct Vec2& pos);
+  void SetPosition(Vec2& pos);
   void Update();
   void Draw(class Renderer& gfx);
 private:

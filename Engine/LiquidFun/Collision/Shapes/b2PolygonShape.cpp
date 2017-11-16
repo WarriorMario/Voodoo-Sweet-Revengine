@@ -42,7 +42,7 @@ void b2PolygonShape::SetAsBox(float32 hx, float32 hy)
 	m_centroid.SetZero();
 }
 
-void b2PolygonShape::SetAsBox(float32 hx, float32 hy, const Vec2& center, float32 angle)
+void b2PolygonShape::SetAsBox(float32 hx, float32 hy, const b2Vec2& center, float32 angle)
 {
 	m_count = 4;
 	m_vertices[0].Set(-hx, -hy);
@@ -72,16 +72,16 @@ int32 b2PolygonShape::GetChildCount() const
 	return 1;
 }
 
-static Vec2 ComputeCentroid(const Vec2* vs, int32 count)
+static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 {
 	b2Assert(count >= 3);
 
-	Vec2 c; c.Set(0.0f, 0.0f);
+	b2Vec2 c; c.Set(0.0f, 0.0f);
 	float32 area = 0.0f;
 
 	// pRef is the reference point for forming triangles.
 	// It's location doesn't change the result (except for rounding error).
-	Vec2 pRef(0.0f, 0.0f);
+	b2Vec2 pRef(0.0f, 0.0f);
 #if 0
 	// This code would put the reference point inside the polygon.
 	for (int32 i = 0; i < count; ++i)
@@ -96,12 +96,12 @@ static Vec2 ComputeCentroid(const Vec2* vs, int32 count)
 	for (int32 i = 0; i < count; ++i)
 	{
 		// Triangle vertices.
-		Vec2 p1 = pRef;
-		Vec2 p2 = vs[i];
-		Vec2 p3 = i + 1 < count ? vs[i+1] : vs[0];
+		b2Vec2 p1 = pRef;
+		b2Vec2 p2 = vs[i];
+		b2Vec2 p3 = i + 1 < count ? vs[i+1] : vs[0];
 
-		Vec2 e1 = p2 - p1;
-		Vec2 e2 = p3 - p1;
+		b2Vec2 e1 = p2 - p1;
+		b2Vec2 e2 = p3 - p1;
 
 		float32 D = b2Cross(e1, e2);
 
@@ -118,7 +118,7 @@ static Vec2 ComputeCentroid(const Vec2* vs, int32 count)
 	return c;
 }
 
-void b2PolygonShape::Set(const Vec2* vertices, int32 count)
+void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 {
 	b2Assert(3 <= count && count <= b2_maxPolygonVertices);
 	if (count < 3)
@@ -130,11 +130,11 @@ void b2PolygonShape::Set(const Vec2* vertices, int32 count)
 	int32 n = b2Min(count, b2_maxPolygonVertices);
 
 	// Perform welding and copy vertices into local buffer.
-	Vec2 ps[b2_maxPolygonVertices];
+	b2Vec2 ps[b2_maxPolygonVertices];
 	int32 tempCount = 0;
 	for (int32 i = 0; i < n; ++i)
 	{
-		Vec2 v = vertices[i];
+		b2Vec2 v = vertices[i];
 
 		bool unique = true;
 		for (int32 j = 0; j < tempCount; ++j)
@@ -194,8 +194,8 @@ void b2PolygonShape::Set(const Vec2* vertices, int32 count)
 				continue;
 			}
 
-			Vec2 r = ps[ie] - ps[hull[m]];
-			Vec2 v = ps[j] - ps[hull[m]];
+			b2Vec2 r = ps[ie] - ps[hull[m]];
+			b2Vec2 v = ps[j] - ps[hull[m]];
 			float32 c = b2Cross(r, v);
 			if (c < 0.0f)
 			{
@@ -231,7 +231,7 @@ void b2PolygonShape::Set(const Vec2* vertices, int32 count)
 	{
 		int32 i1 = i;
 		int32 i2 = i + 1 < m ? i + 1 : 0;
-		Vec2 edge = m_vertices[i2] - m_vertices[i1];
+		b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
 		b2Assert(edge.LengthSquared() > b2_epsilon * b2_epsilon);
 		m_normals[i] = b2Cross(edge, 1.0f);
 		m_normals[i].Normalize();
@@ -241,9 +241,9 @@ void b2PolygonShape::Set(const Vec2* vertices, int32 count)
 	m_centroid = ComputeCentroid(m_vertices, m);
 }
 
-bool b2PolygonShape::TestPoint(const b2Transform& xf, const Vec2& p) const
+bool b2PolygonShape::TestPoint(const b2Transform& xf, const b2Vec2& p) const
 {
-	Vec2 pLocal = b2MulT(xf.q, p - xf.p);
+	b2Vec2 pLocal = b2MulT(xf.q, p - xf.p);
 
 	for (int32 i = 0; i < m_count; ++i)
 	{
@@ -257,13 +257,13 @@ bool b2PolygonShape::TestPoint(const b2Transform& xf, const Vec2& p) const
 	return true;
 }
 
-void b2PolygonShape::ComputeDistance(const b2Transform& xf, const Vec2& p, float32* distance, Vec2* normal, int32 childIndex) const
+void b2PolygonShape::ComputeDistance(const b2Transform& xf, const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const
 {
 	B2_NOT_USED(childIndex);
 
-	Vec2 pLocal = b2MulT(xf.q, p - xf.p);
+	b2Vec2 pLocal = b2MulT(xf.q, p - xf.p);
 	float32 maxDistance = -FLT_MAX;
-	Vec2 normalForMaxDistance = pLocal;
+	b2Vec2 normalForMaxDistance = pLocal;
 
 	for (int32 i = 0; i < m_count; ++i)
 	{
@@ -277,11 +277,11 @@ void b2PolygonShape::ComputeDistance(const b2Transform& xf, const Vec2& p, float
 
 	if (maxDistance > 0)
 	{
-		Vec2 minDistance = normalForMaxDistance;
+		b2Vec2 minDistance = normalForMaxDistance;
 		float32 minDistance2 = maxDistance * maxDistance;
 		for (int32 i = 0; i < m_count; ++i)
 		{
-			Vec2 distance = pLocal - m_vertices[i];
+			b2Vec2 distance = pLocal - m_vertices[i];
 			float32 distance2 = distance.LengthSquared();
 			if (minDistance2 > distance2)
 			{
@@ -307,9 +307,9 @@ bool b2PolygonShape::RayCast(b2RayCastOutput* output, const b2RayCastInput& inpu
 	B2_NOT_USED(childIndex);
 
 	// Put the ray into the polygon's frame of reference.
-	Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
-	Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
-	Vec2 d = p2 - p1;
+	b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
+	b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
+	b2Vec2 d = p2 - p1;
 
 	float32 lower = 0.0f, upper = input.maxFraction;
 
@@ -377,17 +377,17 @@ void b2PolygonShape::ComputeAABB(b2AABB* aabb, const b2Transform& xf, int32 chil
 {
 	B2_NOT_USED(childIndex);
 
-	Vec2 lower = b2Mul(xf, m_vertices[0]);
-	Vec2 upper = lower;
+	b2Vec2 lower = b2Mul(xf, m_vertices[0]);
+	b2Vec2 upper = lower;
 
 	for (int32 i = 1; i < m_count; ++i)
 	{
-		Vec2 v = b2Mul(xf, m_vertices[i]);
+		b2Vec2 v = b2Mul(xf, m_vertices[i]);
 		lower = b2Min(lower, v);
 		upper = b2Max(upper, v);
 	}
 
-	Vec2 r(m_radius, m_radius);
+	b2Vec2 r(m_radius, m_radius);
 	aabb->lowerBound = lower - r;
 	aabb->upperBound = upper + r;
 }
@@ -420,13 +420,13 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 
 	b2Assert(m_count >= 3);
 
-	Vec2 center; center.Set(0.0f, 0.0f);
+	b2Vec2 center; center.Set(0.0f, 0.0f);
 	float32 area = 0.0f;
 	float32 I = 0.0f;
 
 	// s is the reference point for forming triangles.
 	// It's location doesn't change the result (except for rounding error).
-	Vec2 s(0.0f, 0.0f);
+	b2Vec2 s(0.0f, 0.0f);
 
 	// This code would put the reference point inside the polygon.
 	for (int32 i = 0; i < m_count; ++i)
@@ -440,8 +440,8 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 	for (int32 i = 0; i < m_count; ++i)
 	{
 		// Triangle vertices.
-		Vec2 e1 = m_vertices[i] - s;
-		Vec2 e2 = i + 1 < m_count ? m_vertices[i+1] - s : m_vertices[0] - s;
+		b2Vec2 e1 = m_vertices[i] - s;
+		b2Vec2 e2 = i + 1 < m_count ? m_vertices[i+1] - s : m_vertices[0] - s;
 
 		float32 D = b2Cross(e1, e2);
 
@@ -481,8 +481,8 @@ bool b2PolygonShape::Validate() const
 	{
 		int32 i1 = i;
 		int32 i2 = i < m_count - 1 ? i1 + 1 : 0;
-		Vec2 p = m_vertices[i1];
-		Vec2 e = m_vertices[i2] - p;
+		b2Vec2 p = m_vertices[i1];
+		b2Vec2 e = m_vertices[i2] - p;
 
 		for (int32 j = 0; j < m_count; ++j)
 		{
@@ -491,7 +491,7 @@ bool b2PolygonShape::Validate() const
 				continue;
 			}
 
-			Vec2 v = m_vertices[j] - p;
+			b2Vec2 v = m_vertices[j] - p;
 			float32 c = b2Cross(e, v);
 			if (c < 0.0f)
 			{

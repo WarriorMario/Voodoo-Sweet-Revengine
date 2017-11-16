@@ -31,7 +31,7 @@ public:
 	b2EdgeShape();
 
 	/// Set this as an isolated edge.
-	void Set(const Vec2& v1, const Vec2& v2);
+	void Set(const b2Vec2& v1, const b2Vec2& v2);
 
 	/// Implement b2Shape.
 	b2Shape* Clone(b2BlockAllocator* allocator) const;
@@ -40,10 +40,10 @@ public:
 	int32 GetChildCount() const;
 
 	/// @see b2Shape::TestPoint
-	bool TestPoint(const b2Transform& transform, const Vec2& p) const;
+	bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;
 
 	// @see b2Shape::ComputeDistance
-	void ComputeDistance(const b2Transform& xf, const Vec2& p, float32* distance, Vec2* normal, int32 childIndex) const;
+	void ComputeDistance(const b2Transform& xf, const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const;
 
 	/// Implement b2Shape.
 	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
@@ -62,10 +62,10 @@ public:
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 
 	/// These are the edge vertices
-	Vec2 m_vertex1, m_vertex2;
+	b2Vec2 m_vertex1, m_vertex2;
 
 	/// Optional adjacent vertices. These are used for smooth collision.
-	Vec2 m_vertex0, m_vertex3;
+	b2Vec2 m_vertex0, m_vertex3;
 	bool m_hasVertex0, m_hasVertex3;
 };
 
@@ -86,7 +86,7 @@ inline void b2EdgeShape::Set(float32 vx1,
 														 float32 vy1,
 														 float32 vx2,
 														 float32 vy2) {
-	Set(Vec2(vx1, vy1), Vec2(vx2, vy2));
+	Set(b2Vec2(vx1, vy1), b2Vec2(vx2, vy2));
 }
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 

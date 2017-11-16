@@ -1,5 +1,6 @@
 #pragma once
 #include "LiquidFun\Common\b2Draw.h"
+#include "MatrixDef.h"
 
 class PhysicsDebugDraw : public b2Draw
 {

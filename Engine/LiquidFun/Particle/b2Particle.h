@@ -298,10 +298,10 @@ struct b2ParticleDef
 	uint32 flags;
 
 	/// The world position of the particle.
-	Vec2 position;
+	b2Vec2 position;
 
 	/// The linear velocity of the particle in world co-ordinates.
-	Vec2 velocity;
+	b2Vec2 velocity;
 
 	/// The color of the particle.
 	b2ParticleColor color;
