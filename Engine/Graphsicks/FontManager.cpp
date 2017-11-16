@@ -3,7 +3,6 @@
 
 FontManager::FontManager()
 {
-
 }
 
 FontManager::~FontManager()

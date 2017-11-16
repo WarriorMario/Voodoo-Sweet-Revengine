@@ -16,7 +16,7 @@ public:
   {
     for(int i = 0; i < commands.size(); ++i)
     {
-      auto& pd = commands[i].prim_data;
+      auto pd = commands[i].GetPrimData();
       Vec2 points[3] = {
         {pd[0].x, pd[0].y}, 
         {pd[1].x, pd[1].y}, 
@@ -26,7 +26,7 @@ public:
     }
     if(commands.size() != 0)
     {
-      rasterizer.RasterizeCells(grid, commands);
+      rasterizer.RasterizeCells(grid, commands,false);
       commands.clear();
     }
   }
@@ -64,6 +64,6 @@ public:
 private:
   Rasterizer rasterizer;
   Graphics& gfx;
-  Passes<BackgroundShader, ForegroundShader> passes;
+  Passes<BackgroundShader, ForegroundShader, UIShader> passes;
 };
 

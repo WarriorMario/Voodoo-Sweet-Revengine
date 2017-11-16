@@ -23,14 +23,15 @@ void ParticleObject::Update()
 void ParticleObject::Draw(Renderer & gfx)
 {
   Vec2 pos = handle.GetPosition();
-  BackgroundShader testASDASD;
-  testASDASD.const_data.color = Colors::Yellow;
-  testASDASD.prim_data[0] = {10 + pos.x, 10 + pos.y, 0.0, 0.0f};
-  testASDASD.prim_data[1] = {10 + pos.x, 00 + pos.y, 1.0f, 0.0f};
-  testASDASD.prim_data[2] = {20 + pos.x, 00 + pos.y, 0.5f, 1.0f};
+  BackgroundShader::PrimData vertices[3];
+  vertices[0] = {100 + pos.x, 100 + pos.y, 0.0, 0.0f};
+  vertices[1] = {100 + pos.x, 00 + pos.y, 1.0f, 0.0f};
+  vertices[2] = {200 + pos.x, 00 + pos.y, 0.5f, 1.0f};
+
+  BackgroundShader testASDASD = BackgroundShader(
+    vertices[0], vertices[1], vertices[2], Colors::Yellow);
+
   gfx.AddDrawCommand(testASDASD);
-
-
 }
 
 void ParticleHandle::SetPosition(Vec2 & pos)

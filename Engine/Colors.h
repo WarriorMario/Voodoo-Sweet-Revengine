@@ -91,13 +91,39 @@ public:
 	{
 		dword = (dword & 0xFFFFFF00u) | b;
 	}
+
+  Color operator*(const Color& rhs)
+  {
+    Color res;
+    res.SetA((GetA() * rhs.GetA()) / 256);
+    res.SetR((GetR() * rhs.GetR()) / 256);
+    res.SetG((GetG() * rhs.GetG()) / 256);
+    res.SetB((GetB() * rhs.GetB()) / 256);
+    return res;
+  }
+
+  void ApplyAlphaTheWrongWay()
+  {
+    SetR((GetA() * GetR()) / 256);
+    SetG((GetA() * GetG()) / 256);
+    SetB((GetA() * GetB()) / 256);
+  }
+
+  void ApplyAlphaTheRightWay(Color origin)
+  {
+    int origin_value = 255 - GetA();
+    int my_value = GetA();
+    SetR(((origin.GetR() * origin_value) + (my_value * GetR())) / 256);
+    SetG(((origin.GetG() * origin_value) + (my_value * GetG())) / 256);
+    SetB(((origin.GetB() * origin_value) + (my_value * GetB())) / 256);
+  }
 };
 
 namespace Colors
 {
 	static constexpr Color MakeRGB( unsigned char r,unsigned char g,unsigned char b )
 	{
-		return (r << 16) | (g << 8) | b;
+		return (255 << 24 | r << 16) | (g << 8) | b;
 	}
 	static constexpr Color White = MakeRGB( 255u,255u,255u );
 	static constexpr Color Black = MakeRGB( 0u,0u,0u );

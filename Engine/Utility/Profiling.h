@@ -6,16 +6,6 @@
 #define MAX_PROFILER_SAMPLES 1024
 
 // ****************************************************************************
-class ProfilerOutputHandler
-{
-public:
-  virtual void BeginOutput() = 0;
-  virtual void ShowSample(float min_pc, float avg_pc, float max_pc, int call_count, StringRef tag, int parent_count) = 0;
-  virtual void EndOutput() = 0;
-
-};
-
-// ****************************************************************************
 class ProfileSample
 {
 public:
@@ -25,7 +15,7 @@ public:
   static void Output();
   static void ResetSample(StringRef tag);
   static void ResetAll();
-  static ProfilerOutputHandler* output_handler;
+  static class ProfilerOutputHandler* output_handler;
 
 protected:
   int sample_index;
@@ -35,10 +25,11 @@ protected:
 
   float GetTime()
   {
-    return (float)Timer::Time() / 1000.f;
+    return (float)Timer::Time();
   }
 
-  static struct Sample
+public:
+  struct Sample
   {
     Sample()
       : is_valid(false)
@@ -63,7 +54,9 @@ protected:
     float min_pc;
     float max_pc;
     size_t data_count; // number of times values have been stored since creation/reset
-  } samples[MAX_PROFILER_SAMPLES];
+  };
+protected:
+  static Sample  samples[MAX_PROFILER_SAMPLES];
 
   static int last_opened_sample;
   static int open_sample_count;
@@ -73,3 +66,13 @@ protected:
 
 // ****************************************************************************
 #define PROFILE_SCOPE(tag) ProfileSample Sample##__LINE__(tag)
+
+// ****************************************************************************
+class ProfilerOutputHandler
+{
+public:
+  virtual void BeginOutput() = 0;
+  virtual void ShowSample(ProfileSample::Sample& sample) = 0;
+  virtual void EndOutput() = 0;
+
+};

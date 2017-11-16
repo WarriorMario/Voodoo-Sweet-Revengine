@@ -24,7 +24,11 @@
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
-#include "Graphsicks\FontManager.h"
+#ifdef NDEBUG
+constexpr size_t num_cores = 8;
+#else
+constexpr size_t num_cores = 1;
+#endif
 
 b2Body* b;
 b2Body* temp;
@@ -40,11 +44,13 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   gfx(godWindow, playerWindow),
   renderer(Renderer(gfx)),
   arena(),
-  player(renderer)
+  player(renderer),
+  input(godWindow.kbd,godWindow.mouse)
 {
-  test = arena.Create<PhysicsObject>();
+  JM_Get() = JM_AllocJobManager();
+  JM_InitJobManager(JM_Get(), num_cores);
+  //test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
-	FontManager font;
 
   godWindow.SetFocused();
 
@@ -75,7 +81,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //  testf1.density = 1.0f;
   //  temp->SetTransform(Vec2(i * 10, 590), 0);
   //  temp->CreateFixture(&testf1);
-  //  
+  //
   //  temp = world.CreateBody(&test1);
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
@@ -111,54 +117,66 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //   int tempIndex = particleSystem->CreateParticle( pd );
   //}
 
+  for(int x = 0; x < 50; ++x)
+  {
+    for(int y = 0; y < 50; ++y)
+    {
+      //auto particle = arena.Create<ParticleObject>();
+      //particle->SetPosition(Vec2(x*20, y * 20));
+    }
+  }
 }
 
 void Game::Go()
 {
   ProfilerLogHandler pf_output;
   ProfileSample::output_handler = &pf_output;
-
+  input.Poll();
   {
     PROFILE_SCOPE("Game::Go");
+    {
+      PROFILE_SCOPE("Game::Go::BeginFrame");
+      gfx.BeginFrame();
 
-    gfx.BeginFrame();
+    }
     UpdateModel();
     ComposeFrame();
-    gfx.EndFrame();
-  }
 
-  ProfileSample::Output();
+    {
+      PROFILE_SCOPE("Game::Go::EndFrame");
+      gfx.EndFrame();
+    }
+  }
+  //ProfileSample::Output();
+
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
 {
   PROFILE_SCOPE("Game::UpdateModel");
 
-  if(godWindow.kbd.KeyIsPressed(VK_ESCAPE) == true)
+  arena.Update();
+  if(input.IsPressed(ButtonCode::ESC) == true)
   {
     godWindow.Kill();
   }
   
   player.Update();
   player.Input(godWindow.kbd);
+  font_render_object.Update();
+  frame_counter.Update();
 
-  if(godWindow.mouse.LeftIsPressed() == true)
+  static size_t count = 0;
+  if(input.IsPressed(ButtonCode::RIGHT_MOUSE) == true )
   {
-    b2ParticleDef pd;
-    
-    //pd.flags = b2_waterParticle;
-    //pd.color.Set(0, 0, 255, 255);
-    //pd.position.Set(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY());
-    //int tempIndex = particleSystem->CreateParticle(pd);
+    count++;
+    if(count % 20)
+    {
+      auto particle = arena.Create<ParticleObject>();
+      particle->SetPosition(input.MousePos());
+    }
   }
-
-  if(godWindow.mouse.RightIsPressed() == true)
-  {
-    auto particle = arena.Create<ParticleObject>();
-    particle->SetPosition(Vec2(godWindow.mouse.GetPosX(), godWindow.mouse.GetPosY()));
-  }
-  test->SetPosition(Vec2(godWindow.mouse.GetPosX() + 100, godWindow.mouse.GetPosY()));
-  arena.Update();
+  //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()
@@ -167,6 +185,8 @@ void Game::ComposeFrame()
 
   arena.Draw(renderer);
   player.Draw();
+  font_render_object.Draw(renderer);
+  frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
 

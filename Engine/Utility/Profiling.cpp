@@ -87,6 +87,7 @@ ProfileSample::~ProfileSample()
 
   if(parent_index != -1)
   {
+    assert(parent_index < MAX_PROFILER_SAMPLES);
     samples[parent_index].child_time += time_taken;
   }
   else
@@ -102,7 +103,7 @@ ProfileSample::~ProfileSample()
 // ****************************************************************************
 void ProfileSample::Output()
 {
-  assert(output_handler && "Profiler has not output handler set");
+  assert(output_handler && "Profiler has no output handler set");
 
   output_handler->BeginOutput();
 
@@ -115,7 +116,7 @@ void ProfileSample::Output()
       float sample_time, percentage;
 
       // calculate percentage time spent on the sample itself (excluding children)
-      sample_time = curr_sample.total_time;// -curr_sample._child_time;
+      sample_time = curr_sample.total_time -curr_sample.child_time;
       percentage = (sample_time / (root_end - root_begin)) * 100.f;
 
       // add and recalculate average
@@ -136,12 +137,7 @@ void ProfileSample::Output()
       }
 
       output_handler->ShowSample(
-        curr_sample.min_pc,
-        curr_sample.average_pc,
-        curr_sample.max_pc,
-        curr_sample.call_count,
-        curr_sample.tag,
-        curr_sample.parent_count
+        curr_sample
       );
 
       // reset sample for next use
