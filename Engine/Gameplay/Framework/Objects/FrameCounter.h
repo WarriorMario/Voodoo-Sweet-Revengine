@@ -3,7 +3,7 @@
 #include "Utility\Timer.h"
 
 class Font;
-static constexpr int FRAMES_TO_MEASURE_OVER = 8;
+static constexpr int FRAMES_TO_MEASURE_OVER = 1000;
 static constexpr double INV_FRAMES_TO_MEASURE_OVER = 1.0 / (double)FRAMES_TO_MEASURE_OVER;
 
 class FrameCounter : public ArenaObject<FrameCounter>
@@ -21,8 +21,10 @@ private:
   int point_size;
   int frame_idx;
   double this_frame_time;
+  int average_fps;
   int fps;
   double past_frame_times[FRAMES_TO_MEASURE_OVER];
   double average_time;
+  bool has_filled_completely;
   Timer timer;
 };

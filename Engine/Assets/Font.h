@@ -99,7 +99,7 @@ public:
     : Base(filename)
   {}
 
-  TextRenderData RenderLine(StringRef text, int point_size, int start_x, int start_y, int space_size = 30)
+  TextRenderData RenderLine(StringRef text, int point_size, int start_x, int start_y, int space_size = 10)
   {
     TextRenderData text_render_data;
     assert(text.size() < TEXT_QUAD_BUFF_SIZE);
@@ -163,7 +163,7 @@ public:
       text_render_data.text_quads[i].glyph_height = height;
 
       // ensure a spacing of 16 pixels between the letters for testing purposes
-      cur_x += 16;
+      cur_x += 8;
     }
 
     // update the num_quads value

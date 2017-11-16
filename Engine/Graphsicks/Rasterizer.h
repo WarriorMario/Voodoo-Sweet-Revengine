@@ -132,7 +132,6 @@ public:
   {
     int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
 
-#if 1
     for(int i = 0; i < cell.num_indices; ++i)
     {
       auto& cmd = commands[cell.indices[i]];
@@ -153,7 +152,7 @@ public:
       int t0_row = (start_x - d[1].x) * a12 - (start_y - d[1].y) * (d[1].x - d[2].x);
       int t1_row = (start_x - d[2].x) * a20 - (start_y - d[2].y) * (d[2].x - d[0].x);
       int t2_row = (start_x - d[0].x) * a01 - (start_y - d[0].y) * (d[0].x - d[1].x);
-
+      Color* cur_color = cell.buff;
       for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y, ++pix_y)
       {
         int t0 = t0_row;
@@ -161,7 +160,7 @@ public:
         int t2 = t2_row;
         pix_x = start_x;
 
-        for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x, ++pix_x)
+        for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x, ++pix_x, ++cur_color)
         {
           const bool is_inside = (t0 | t1 | t2) >= 0;
           if(is_inside == true)
@@ -170,7 +169,7 @@ public:
             const InterpData interp = {t0 * prarea, t1 * prarea, t2 * prarea, pix_x, pix_y};
             Shader::PixelData id;
             cmd.Interpolate(interp, id);
-            cmd.Shade(id, cell.buff[y*ScreenGrid::CELL_WIDTH + x]);
+            cmd.Shade(id, *cur_color);
           }
 
           // one step to the right
@@ -185,36 +184,6 @@ public:
         t2_row += b01;
       }
     }
-#else
-    for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y)
-    {
-      for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x)
-      {
-        for(int i = 0; i < cell.num_indices; ++i)
-        {
-          auto& cmd = commands[cell.indices[i]];
-          auto* d = cmd.prim_data;
-          Vec2 p = Vec2((float)(x + start_x), (float)(y + start_y));
-
-          const float t0 = (p.x - d[1].x) * (d[2].y - d[1].y) - (p.y - d[1].y) * (d[2].x - d[1].x);
-          const float t1 = (p.x - d[2].x) * (d[0].y - d[2].y) - (p.y - d[2].y) * (d[0].x - d[2].x);
-          const float t2 = (p.x - d[0].x) * (d[1].y - d[0].y) - (p.y - d[0].y) * (d[1].x - d[0].x);
-          const bool is_inside = (t0 <= 0) & (t1 <= 0) & (t2 <= 0);
-          if(is_inside == true)
-          {
-            const Vec2 A(d[1].x - d[0].x, d[1].y - d[0].y);
-            const Vec2 B(d[2].x - d[0].x, d[2].y - d[0].y);
-            const float prarea = -1.f / (A.x * B.y - A.y * B.x);
-
-            // Determine interpolated values
-            InterpData interp = {t0 * prarea, t1 * prarea, t2 * prarea, (int)p.x, (int)p.y};
-            auto id = cmd.Interpolate(interp);
-            cell.buff[y*ScreenGrid::CELL_WIDTH + x] = cmd.Shade(id);
-          }
-        }
-      }
-    }
-#endif
     cell.num_indices = 0;
   }
 

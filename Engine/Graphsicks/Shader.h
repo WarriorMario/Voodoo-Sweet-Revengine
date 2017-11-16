@@ -102,7 +102,7 @@ struct ForegroundShader
 
     Color t = const_data.texture->Sample(pixel_data.u, pixel_data.v);
     float a = t.GetA() / 255.f;
-    pixel = Color((unsigned char)(t.GetR() * i * a), (unsigned char)(t.GetG() * i  * a), (unsigned char)(t.GetB() * i * a));
+    pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
   }
 };
 
@@ -138,17 +138,51 @@ struct UIShader
 
   void Shade(const PixelData& pixel_data, Color& pixel)
   {
+#if 1
+    // get texel's index
+    int idx_y = pixel_data.v * (float)const_data.height;
+    int idx_x = pixel_data.u * (float)const_data.width;
+    int tex_pixel_idx = idx_x + idx_y * const_data.width;
+
+    // simple assert
+    assert(tex_pixel_idx >= 0 && tex_pixel_idx < (const_data.width * const_data.height) &&
+      "The pixel you are trying to access is out of bounds");
+
+    // alpha value of new pixel
+    unsigned char new_pixel_alpha = (int)const_data.alpha_values[tex_pixel_idx];
+
+    // inverse alpha value
+    unsigned char origin_alpha = ~new_pixel_alpha;
+
+    // get the color values
+    int const_color = (*(int*)&const_data.color);
+
+    // pointer cast pixel to int
+    int cur_pixel = *(int*)&pixel;
+
+    // apply alpha on each channel, assign alpha to the pixel
+    pixel = (new_pixel_alpha << 24) | // mask in alpha channel
+      (((((cur_pixel >> 16 & 0xff) * origin_alpha) + (new_pixel_alpha * (const_color >> 16 & 0xff))) >> 8) << 16) | // r channel alpha blended
+      (((((cur_pixel >> 8 & 0xff) * origin_alpha) + (new_pixel_alpha * (const_color >> 8 & 0xff))) >> 8) << 8) |  // g channel alpha blended
+      (((((cur_pixel & 0xff) * origin_alpha) + (new_pixel_alpha * (const_color & 0xff))) >> 8));        // b channel alpha blended;
+
+    //// might be faster when SIMDified
+    //int rb = (((cur_pixel & 0x00ff00ff) * origin_alpha) + ((const_color & 0x00ff00ff) * new_pixel_alpha)) & 0xff00ff00;
+    //int g  = (((cur_pixel & 0x0000ff00) * origin_alpha) + ((const_color & 0x0000ff00) * new_pixel_alpha)) & 0x00ff0000;
+    //pixel  = (cur_pixel & 0xff000000) | ((rb | g) >> 8) + 0x00010101;
+#else
     int idx_y = pixel_data.v * (float)const_data.height;
     int idx_x = pixel_data.u * (float)const_data.width;
     int tex_pixel_idx = idx_x + idx_y * const_data.width;
 
     assert(tex_pixel_idx >= 0 && tex_pixel_idx < (const_data.width * const_data.height) &&
-    "The pixel you are trying to access is out of bounds");
+      "The pixel you are trying to access is out of bounds");
 
-    Color final_pixel = ((*(int*)&const_data.color) & 0x00ffffff) |
+    Color final_pixel = (*(int*)&const_data.color & 0x00ffffff) | 
       ((int)const_data.alpha_values[tex_pixel_idx] << 24);
-
     final_pixel.ApplyAlphaTheRightWay(pixel);
+
     pixel = final_pixel;
+#endif
   }
 };

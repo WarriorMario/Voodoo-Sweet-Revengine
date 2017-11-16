@@ -5,9 +5,9 @@
 
 FontRenderObject::FontRenderObject()
   : TemplateBase("FontRenderObject"),
-  start_x(10),
-  start_y(10),
-  orig_point_size(128),
+  start_x(300),
+  start_y(300),
+  orig_point_size(256),
   frames(0),
   max_size_diff(64)
 {
@@ -24,15 +24,15 @@ FontRenderObject::FontRenderObject()
 
 void FontRenderObject::Update()
 {
-  if(start_x < 1000)
-  {
-    start_x += 1;
-  }
-
-  if(start_y < 600)
-  {
-    start_y += 1;
-  }
+  //if(start_x < 1000)
+  //{
+  //  start_x += 1;
+  //}
+  //
+  //if(start_y < 600)
+  //{
+  //  start_y += 1;
+  //}
 
 #if 1
   //point_size = sinf((frames / 100.0f) * PI) * max_size_diff + orig_point_size;
