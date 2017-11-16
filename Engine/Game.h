@@ -33,7 +33,7 @@
 #include "Gameplay\Framework\Objects\FontRenderObject.h"
 #include "Gameplay\Framework\Objects\FrameCounter.h"
 #include "Threading\Job_Manager.h"
-
+#include "Gameplay\GodEditor.h"
 class Game
 {
 public:
@@ -54,9 +54,9 @@ private:
 	b2ParticleSystem* particleSystem;
 	Renderer renderer;
 	Triangle tri_buff[2];
-  FontRenderObject font_render_object;
   FrameCounter frame_counter;
   Arena arena;
+  GodEditor editor;
   Player player;
   Input input;
 	/********************************/

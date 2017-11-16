@@ -24,20 +24,20 @@ FontRenderObject::FontRenderObject()
 
 void FontRenderObject::Update()
 {
-  if(start_x < 1000)
-  {
-    start_x += 1;
-  }
-
-  if(start_y < 600)
-  {
-    start_y += 1;
-  }
-
-#if 1
-  point_size = sinf((frames / 100.0f) * PI) * max_size_diff + orig_point_size;
-  frames++;
-#endif
+//  if(start_x < 1000)
+//  {
+//    start_x += 1;
+//  }
+//
+//  if(start_y < 600)
+//  {
+//    start_y += 1;
+//  }
+//
+//#if 1
+//  point_size = sinf((frames / 100.0f) * PI) * max_size_diff + orig_point_size;
+//  frames++;
+//#endif
 }
 
 void FontRenderObject::Draw(Renderer & renderer)
@@ -95,4 +95,10 @@ void FontRenderObject::Draw(Renderer & renderer)
     //y +
     //y +
   }
+}
+
+void FontRenderObject::SetPosition(Vec2 & pos)
+{
+  start_x = pos.x;
+  start_y = pos.y;
 }

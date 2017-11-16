@@ -4,8 +4,7 @@
 #include "Graphsicks\Renderer.h"
 #include "VString.h"
 
-FrameCounter::FrameCounter()
-  : TemplateBase("FontRenderObject"),
+FrameCounter::FrameCounter():
   pos_x(10),
   pos_y(1000),
   point_size(64),

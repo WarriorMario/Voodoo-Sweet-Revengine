@@ -189,7 +189,9 @@
     <ClInclude Include="Gameplay\Framework\Objects\FontRenderObject.h" />
     <ClInclude Include="Gameplay\Framework\Objects\FrameCounter.h" />
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
+    <ClInclude Include="Gameplay\Framework\Objects\UIButtonObject.h" />
     <ClInclude Include="Gameplay\Framework\States.h" />
+    <ClInclude Include="Gameplay\GodEditor.h" />
     <ClInclude Include="Gameplay\Player.h" />
     <ClInclude Include="Input\ButtonCodes.h" />
     <ClInclude Include="Input\Controller.h" />
@@ -497,6 +499,8 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\FontRenderObject.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\FrameCounter.cpp" />
+    <ClCompile Include="Gameplay\Framework\Objects\UIButtonObject.cpp" />
+    <ClCompile Include="Gameplay\GodEditor.cpp" />
     <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Graphsicks\FontManager.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />

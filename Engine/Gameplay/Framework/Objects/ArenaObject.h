@@ -15,9 +15,15 @@ public:
     tag(tag)
   {
   }
+
+  void SetPosition(struct Vec2& pos)
+  {}
   const String tag;
+  static T* dummy_instance;
 };
 
+template<typename T>
+T* ArenaObject<T>::dummy_instance =(T*) malloc(sizeof( T));
 
 class MeshObject : public ArenaObject<MeshObject>
 {
@@ -54,19 +60,4 @@ class Buffer
   {}
 
   GameObject copy;
-};
-
-
-
-template<typename T>
-class ObjectGroup
-{
-  using Type = T;
-public:
-  void Update()
-  {
-    
-  }
-
-  Array<T> objects;
 };

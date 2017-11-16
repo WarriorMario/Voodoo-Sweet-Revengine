@@ -1,9 +1,12 @@
 #pragma once
 #include "Objects\PhysicsObject.h"
 #include "Objects\ParticleObject.h"
+#include "Objects\FontRenderObject.h"
+#include "Objects\UIButtonObject.h"
 #include "Physics\Physics.h"
 #include "VTuple.h"
 #include "VArray.h"
+#define OBJECT_TYPES GameObject, MeshObject, PhysicsObject, ParticleObject, FontRenderObject, UIButtonObject
 template<typename T>
 struct RefCounter : public T
 {
@@ -11,18 +14,28 @@ struct RefCounter : public T
   RefCounter(const T& obj)
     : T(obj)
   {
-
+    count = 1;
   }
   void IncrementCount()
   {
+    assert(IsValid());
     count++;
   }
   void DecrementCount()
   {
-    assert(count == 0);
+    assert(count == 0&& IsValid());
     count--;
   }
+  bool IsValid()
+  {
+    return (count != INVALID_COUNTER);
+  }
+  void Invalidate()
+  {
+    count = INVALID_COUNTER;
+  }
 private:
+  static const size_t INVALID_COUNTER = -1;
   size_t count;
 };
 
@@ -30,18 +43,22 @@ class Arena
 {
 public:
 
-  Arena()
-    :
-    physx()
-    //input(input)
-  {
-    ArenaBaseObject::arena = this;
-  }
+  Arena(Input& input);
 
   template<typename T>
   Handle<T> Create()
   {
     return Register(T());
+  }
+  template<typename T>
+  void Destroy(Handle<T>& handle)// We should design this more 
+  {
+    if(handle.IsValid())
+    {
+      RefCounter<T>& ref =  Get<Array<RefCounter<T>>>(objectGroups)[GetIndex(handle)];
+      ref.Invalidate();
+      handle.Invalidate();
+    }
   }
 
   template<typename T>
@@ -49,6 +66,7 @@ public:
   {
     static_assert(std::is_base_of_v<ArenaObject<T>, T>, "T is not an ArenaObject");
     auto as = Get<Array<RefCounter<T>>>(objectGroups);
+    
     Handle<T> ret = Get<Array<RefCounter<T>>>(objectGroups).size();
     RefCounter<T> refObj = object;
     Get<Array<RefCounter<T>>>(objectGroups).push_back(refObj);
@@ -83,7 +101,6 @@ public:
   }
   Physics physx;
 private:
-  // class Input& input;
 
 
   template<typename... Object>
@@ -122,7 +139,6 @@ private:
   }
 
 
-
 public:
-  ObjectGroup<GameObject, MeshObject, PhysicsObject, ParticleObject> objectGroups;
+  ObjectGroup<OBJECT_TYPES> objectGroups;
 };

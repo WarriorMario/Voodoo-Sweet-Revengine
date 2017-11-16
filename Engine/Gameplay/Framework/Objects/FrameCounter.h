@@ -6,7 +6,7 @@ class Font;
 static constexpr int FRAMES_TO_MEASURE_OVER = 8;
 static constexpr double INV_FRAMES_TO_MEASURE_OVER = 1.0 / (double)FRAMES_TO_MEASURE_OVER;
 
-class FrameCounter : public ArenaObject<FrameCounter>
+class FrameCounter
 {
 public:
   FrameCounter();

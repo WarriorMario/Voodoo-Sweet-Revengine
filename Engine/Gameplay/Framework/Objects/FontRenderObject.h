@@ -12,6 +12,8 @@ public:
   void Update();
   void Draw(class Renderer& renderer);
 
+
+  void SetPosition(struct Vec2& pos);
 private:
   Font* font;
   int start_x, start_y;

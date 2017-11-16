@@ -135,7 +135,7 @@ public:
       for(int x = Max(v_start[y_min], 0); x < Min(v_end[y_min], width); ++x)
       {
         ScreenGridCell& cell = cells[y_min * width + x];
-        assert(cell.num_indices < _countof(cell.indices) && "Cell indices out of bounds");
+        //assert(cell.num_indices < _countof(cell.indices) && "Cell indices out of bounds");
         if(cell.num_indices < _countof(cell.indices))
         {
           cell.indices[cell.num_indices] = primitive_index;

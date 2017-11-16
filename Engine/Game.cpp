@@ -50,15 +50,17 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   renderer(Renderer(gfx)),
   arena(input),
   player(renderer),
-  input(godWindow.kbd,godWindow.mouse)
+  input(godWindow.kbd,godWindow.mouse),
+  editor(arena)
 {
   JM_Get() = JM_AllocJobManager();
   JM_InitJobManager(JM_Get(), num_cores);
   //test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
+  editor.Init();
 
   //arena.Create<FontRenderObject>();
-  arena.Create<UIButtonObject>()->Initialize(RectF(0,50,0,50), FlorisThisIsHowSimpleUIIs, Colors::White,Colors::Yellow ,Colors::Green );
+  //arena.Create<UIButtonObject>()->Initialize(RectF(0,50,0,50), FlorisThisIsHowSimpleUIIs, Colors::White,Colors::Yellow ,Colors::Green );
  
   godWindow.SetFocused();
 
@@ -168,7 +170,7 @@ void Game::UpdateModel()
   {
     godWindow.Kill();
   }
-  
+  editor.Update();
   player.Update();
   player.Input(godWindow.kbd); 
   frame_counter.Update();

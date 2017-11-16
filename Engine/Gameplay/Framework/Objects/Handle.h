@@ -32,7 +32,16 @@ public:
   Type* operator->() const
   {
     //assert(IsValid());
-    return &(Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index]);
+    
+    auto test = Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index];
+    if(test.IsValid())
+    {
+      return &(Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index]);
+    }
+    else
+    {
+      return Type::dummy_instance;
+    }
   }
 private:
   size_t index;
