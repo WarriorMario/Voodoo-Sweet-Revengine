@@ -95,18 +95,27 @@ public:
   Color operator*(const Color& rhs)
   {
     Color res;
-    res.SetA((GetA() * rhs.GetA()) / 255);
-    res.SetR((GetR() * rhs.GetR()) / 255);
-    res.SetG((GetG() * rhs.GetG()) / 255);
-    res.SetB((GetB() * rhs.GetB()) / 255);
+    res.SetA((GetA() * rhs.GetA()) / 256);
+    res.SetR((GetR() * rhs.GetR()) / 256);
+    res.SetG((GetG() * rhs.GetG()) / 256);
+    res.SetB((GetB() * rhs.GetB()) / 256);
     return res;
   }
 
   void ApplyAlphaTheWrongWay()
   {
-    SetR((GetA() * GetR()) / 255);
-    SetG((GetA() * GetG()) / 255);
-    SetB((GetA() * GetB()) / 255);
+    SetR((GetA() * GetR()) / 256);
+    SetG((GetA() * GetG()) / 256);
+    SetB((GetA() * GetB()) / 256);
+  }
+
+  void ApplyAlphaTheRightWay(Color origin)
+  {
+    int origin_value = 255 - GetA();
+    int my_value = GetA();
+    SetR(((origin.GetR() * origin_value) + (my_value * GetR())) / 256);
+    SetG(((origin.GetG() * origin_value) + (my_value * GetG())) / 256);
+    SetB(((origin.GetB() * origin_value) + (my_value * GetB())) / 256);
   }
 };
 

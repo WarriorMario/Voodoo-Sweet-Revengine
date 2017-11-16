@@ -26,7 +26,7 @@
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
-constexpr size_t num_cores = 4;
+constexpr size_t num_cores = 8;
 #else
 constexpr size_t num_cores = 1;
 #endif
