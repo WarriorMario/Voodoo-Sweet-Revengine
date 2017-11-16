@@ -6,7 +6,7 @@
 // ****************************************************************************
 #define PROFILE_HEADER1 "Min : Avg : Max : Ms : # : Profile tag"
 #define PROFILE_HEADER2 "---------------------------------"
-#define PROFILE_SAMPLE "%s : %s  : %s : %s : %s : %s"
+#define PROFILE_SAMPLE "%s%% : %s%%  : %s%% : %s : %s : %s"
 
 // ****************************************************************************
 class ProfilerLogHandler : public ProfilerOutputHandler
