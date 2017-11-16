@@ -20,8 +20,7 @@
  ******************************************************************************************/
 #include "Game.h"
 #include "MainWindow.h"
-#include "Vec3.h"
-#include "Vec2.h"
+#include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
 
 #include "Utility\ProfileOutput.h"
@@ -82,7 +81,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   //  testf1.density = 1.0f;
   //  temp->SetTransform(Vec2(i * 10, 590), 0);
   //  temp->CreateFixture(&testf1);
-  //  
+  //
   //  temp = world.CreateBody(&test1);
   //  testf1.shape = &circle;
   //  testf1.friction = 0.5f;
@@ -142,13 +141,13 @@ void Game::Go()
     }
     UpdateModel();
     ComposeFrame();
-    
+
     {
       PROFILE_SCOPE("Game::Go::EndFrame");
       gfx.EndFrame();
     }
   }
-  ProfileSample::Output();
+  //ProfileSample::Output();
 
 }
 Vec3 offset = Vec3(400, 400, 350);
@@ -163,7 +162,7 @@ void Game::UpdateModel()
   }
   
   player.Update();
-  player.Input(godWindow.kbd); 
+  player.Input(godWindow.kbd);
   font_render_object.Update();
   frame_counter.Update();
 
@@ -190,4 +189,5 @@ void Game::ComposeFrame()
   frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
+
 }

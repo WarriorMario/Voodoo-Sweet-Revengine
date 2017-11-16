@@ -3,6 +3,8 @@
 #include "Utility.h"
 #include "Assets\Assets.h"
 
+
+//////////// OBSOLETE TODO (Floris) unobsoletify this
 // ****************************************************************************
 // To create a new shader you can declare it as a struct which implements:
 // - A public member struct ConstData.
@@ -19,129 +21,223 @@
 
 struct InterpData
 {
-  float t0, t1, t2;
+  float t1, t2;
   int x, y;
 };
 
 struct BackgroundShader
 {
+private:
   struct ConstData
   {
     Color color;
+    float u10, v10, u20, v20;
   };
 
-  struct PixelData
+public:
+  struct PrimData
   {
     float x, y;
     float u, v;
   };
 
+  BackgroundShader(
+    const PrimData& vertex_0,
+    const PrimData& vertex_1,
+    const PrimData& vertex_2,
+    const Color& color)
+  {
+    prim_data[0] = vertex_0;
+    prim_data[1] = vertex_1;
+    prim_data[2] = vertex_2;
+    const_data.color = color;
+
+    const_data.u10 = prim_data[1].u - prim_data[0].u;
+    const_data.v10 = prim_data[1].v - prim_data[0].v;
+    const_data.u20 = prim_data[2].u - prim_data[0].u;
+    const_data.v20 = prim_data[2].v - prim_data[0].v;
+  }
+
+  void Shade(const InterpData& interp_data, Color& pixel)
+  {
+    /////////////////////////////////////
+    // Interpolation
+    /////////////////////////////////////
+
+    const PrimData& p0 = prim_data[0];
+    const PrimData& p1 = prim_data[1];
+    const PrimData& p2 = prim_data[2];
+    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;
+    float v = p0.v + const_data.v10 * interp_data.t1 + const_data.v20 * interp_data.t2;
+
+    /////////////////////////////////////
+    // Shading
+    /////////////////////////////////////
+    pixel = Color((unsigned char)(u * 255.f), (unsigned char)(v * 255.f), 0);
+  }
+
+  const PrimData* GetPrimData()
+  {
+    return &prim_data[0];
+  }
+
+private:
   ConstData const_data;
-  PixelData prim_data[3];
-
-  void Interpolate(const InterpData& interp_data, PixelData& res)
-  {
-    const auto& p0 = prim_data[0];
-    const auto& p1 = prim_data[1];
-    const auto& p2 = prim_data[2];
-    res.x = interp_data.x;
-    res.y = interp_data.y;
-    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
-    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
-  }
-
-  void Shade(const PixelData& pixel_data, Color& pixel)
-  {
-    pixel = Color((unsigned char)(pixel_data.u * 255.f), (unsigned char)(pixel_data.v * 255.f), 0);
-  }
+  PrimData prim_data[3];
 };
 
 // ****************************************************************************
 struct ForegroundShader
 {
+private:
   struct ConstData
   {
     Color color;
     Texture* texture;
+    float u10, v10, u20, v20;
+    float nx10, ny10, nx20, ny20;
   };
 
-  struct PixelData
+public:
+  struct PrimData
   {
     float x, y;
     float u, v;
     float nx, ny;
   };
 
-  ConstData const_data;
-  PixelData prim_data[3];
-
-  void Interpolate(const InterpData& interp_data, PixelData& res)
+  ForegroundShader(
+    const PrimData& vertex_0,
+    const PrimData& vertex_1, 
+    const PrimData& vertex_2,
+    const Color& color, Texture* texture)
   {
-    const auto& p0 = prim_data[0];
-    const auto& p1 = prim_data[1];
-    const auto& p2 = prim_data[2];
-    res.x = interp_data.x;
-    res.y = interp_data.y;
-    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
-    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
-    res.nx = p0.nx * interp_data.t0 + p1.nx * interp_data.t1 + p2.nx * interp_data.t2;
-    res.ny = p0.ny * interp_data.t0 + p1.ny * interp_data.t1 + p2.ny * interp_data.t2;
+    prim_data[0] = vertex_0;
+    prim_data[1] = vertex_1;
+    prim_data[2] = vertex_2;
+    const_data.color = color;
+    const_data.texture = texture;
+
+    const_data.u10  = prim_data[1].u  - prim_data[0].u;
+    const_data.v10  = prim_data[1].v  - prim_data[0].v;
+    const_data.nx10 = prim_data[1].nx - prim_data[0].nx;
+    const_data.ny10 = prim_data[1].ny - prim_data[0].ny;
+    const_data.u20  = prim_data[2].u  - prim_data[0].u;
+    const_data.v20  = prim_data[2].v  - prim_data[0].v;
+    const_data.nx10 = prim_data[2].nx - prim_data[0].nx;
+    const_data.ny20 = prim_data[2].ny - prim_data[0].ny;
   }
 
-  void Shade(const PixelData& pixel_data, Color& pixel)
+  void Shade(const InterpData& interp_data, Color& pixel)
   {
+    /////////////////////////////////////
+    // Interpolation
+    /////////////////////////////////////
+
+    // for convenience
+    const PrimData& p0 = prim_data[0];
+    const PrimData& p1 = prim_data[1];
+    const PrimData& p2 = prim_data[2];
+
+    // only requires t1 and t2
+    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;
+    float v = p0.v + const_data.v10 * interp_data.t1 + const_data.v20 * interp_data.t2;
+    float nx = p0.nx + const_data.nx10 * interp_data.t1 + const_data.nx20 * interp_data.t2;
+    float ny = p0.ny + const_data.ny10 * interp_data.t1 + const_data.ny20 * interp_data.t2;
+
+    /////////////////////////////////////
+    // Shading
+    /////////////////////////////////////
+
     const float lx = 200.f;
     const float ly = 200.f;
     const float ldist = 3000.f;
 
-    const float dx = pixel_data.x - lx;
-    const float dy = pixel_data.y - ly;
+    const float dx = interp_data.x - lx;
+    const float dy = interp_data.y - ly;
 
     float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
     i = Max(i, 0.f);
 
-    Color t = const_data.texture->Sample(pixel_data.u, pixel_data.v);
+    Color t = const_data.texture->Sample(u, v);
     float a = t.GetA() / 255.f;
     pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
   }
+
+  const PrimData* GetPrimData()
+  {
+    return &prim_data[0];
+  }
+
+private:
+  ConstData const_data;
+  PrimData prim_data[3];
 };
 
 // ****************************************************************************
 struct UIShader
 {
+private:
   struct ConstData
   {
+
     Color color;
     unsigned char* alpha_values;
     int width, height;
+    float u10, v10, u20, v20;
   };
 
-  struct PixelData
+public:
+  struct PrimData
   {
     float x, y;
     float u, v;
   };
 
-  ConstData const_data;
-  PixelData prim_data[3];
-
-  void Interpolate(const InterpData& interp_data, PixelData& res)
+  UIShader(
+    const PrimData& vertex_0,
+    const PrimData& vertex_1,
+    const PrimData& vertex_2,
+    unsigned char* alpha_values,
+    int width, int height,
+    const Color& color)
   {
-    const auto& p0 = prim_data[0];
-    const auto& p1 = prim_data[1];
-    const auto& p2 = prim_data[2];
-    res.x = interp_data.x;
-    res.y = interp_data.y;
-    res.u = p0.u * interp_data.t0 + p1.u * interp_data.t1 + p2.u * interp_data.t2;
-    res.v = p0.v * interp_data.t0 + p1.v * interp_data.t1 + p2.v * interp_data.t2;
+    prim_data[0] = vertex_0;
+    prim_data[1] = vertex_1;
+    prim_data[2] = vertex_2;
+
+    const_data.color = color;
+    const_data.alpha_values = alpha_values;
+    const_data.width = width;
+    const_data.height = height;
+
+    const_data.u10 = prim_data[1].u - prim_data[0].u;
+    const_data.v10 = prim_data[1].v - prim_data[0].v;
+    const_data.u20 = prim_data[2].u - prim_data[0].u;
+    const_data.v20 = prim_data[2].v - prim_data[0].v;
   }
-
-  void Shade(const PixelData& pixel_data, Color& pixel)
+  void Shade(const InterpData& interp_data, Color& pixel)
   {
+    /////////////////////////////////////
+    // Interpolation
+    /////////////////////////////////////
+
+    // for convenience
+    const PrimData& p0 = prim_data[0];
+    const PrimData& p1 = prim_data[1];
+    const PrimData& p2 = prim_data[2];
+
+    // only requires t1 and t2
+    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;
+    float v = p0.v + const_data.v10 * interp_data.t1 + const_data.v20 * interp_data.t2;
+
+    /////////////////////////////////////
+    // Shading
+    /////////////////////////////////////
 #if 1
     // get texel's index
-    int idx_y = pixel_data.v * (float)const_data.height;
-    int idx_x = pixel_data.u * (float)const_data.width;
+    int idx_x = u * (float)const_data.width;
+    int idx_y = v * (float)const_data.height;
     int tex_pixel_idx = idx_x + idx_y * const_data.width;
 
     // simple assert
@@ -178,11 +274,20 @@ struct UIShader
     assert(tex_pixel_idx >= 0 && tex_pixel_idx < (const_data.width * const_data.height) &&
       "The pixel you are trying to access is out of bounds");
 
-    Color final_pixel = (*(int*)&const_data.color & 0x00ffffff) | 
+    Color final_pixel = (*(int*)&const_data.color & 0x00ffffff) |
       ((int)const_data.alpha_values[tex_pixel_idx] << 24);
     final_pixel.ApplyAlphaTheRightWay(pixel);
 
     pixel = final_pixel;
 #endif
   }
+
+  const PrimData* GetPrimData()
+  {
+    return &prim_data[0];
+  }
+
+  private:
+    ConstData const_data;
+    PrimData prim_data[3];
 };

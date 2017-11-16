@@ -30,46 +30,52 @@ public:
   }
   void Draw()
   {
-    ForegroundShader draw_call;
-    draw_call.const_data.color = Colors::White;
-    draw_call.const_data.texture = &sprites[curr_sprite];
 
     const float min_u = flip_sprite ? 1.f : 0.f;
     const float max_u = flip_sprite ? 0.f : 1.f;
     
+    ForegroundShader::PrimData vertices[3];
     // left-top tri
     // pcs
-    draw_call.prim_data[0].x = x - 0.5f * width;
-    draw_call.prim_data[0].y = y - 0.5f * height;
-    draw_call.prim_data[1].x = x + 0.5f * width;
-    draw_call.prim_data[1].y = y - 0.5f * height;
-    draw_call.prim_data[2].x = x - 0.5f * width;
-    draw_call.prim_data[2].y = y + 0.5f * height;
+    vertices[0].x = x - 0.5f * width;
+    vertices[0].y = y - 0.5f * height;
+    vertices[1].x = x + 0.5f * width;
+    vertices[1].y = y - 0.5f * height;
+    vertices[2].x = x - 0.5f * width;
+    vertices[2].y = y + 0.5f * height;
     // uvs
-    draw_call.prim_data[0].u = min_u;
-    draw_call.prim_data[0].v = 0.f;
-    draw_call.prim_data[1].u = max_u;
-    draw_call.prim_data[1].v = 0.f;
-    draw_call.prim_data[2].u = min_u;
-    draw_call.prim_data[2].v = 1.f;
+    vertices[0].u = min_u;
+    vertices[0].v = 0.f;
+    vertices[1].u = max_u;
+    vertices[1].v = 0.f;
+    vertices[2].u = min_u;
+    vertices[2].v = 1.f;
+
+    ForegroundShader draw_call = ForegroundShader(
+    vertices[0], vertices[1], vertices[2],
+      Colors::White, &sprites[curr_sprite]);
 
     renderer.AddDrawCommand(draw_call);
     
     // bot-right tri
     // pcs
-    draw_call.prim_data[0].x = x + 0.5f * width;
-    draw_call.prim_data[0].y = y - 0.5f * height;
-    draw_call.prim_data[1].x = x + 0.5f * width;
-    draw_call.prim_data[1].y = y + 0.5f * height;
-    draw_call.prim_data[2].x = x - 0.5f * width;
-    draw_call.prim_data[2].y = y + 0.5f * height;
+    vertices[0].x = x + 0.5f * width;
+    vertices[0].y = y - 0.5f * height;
+    vertices[1].x = x + 0.5f * width;
+    vertices[1].y = y + 0.5f * height;
+    vertices[2].x = x - 0.5f * width;
+    vertices[2].y = y + 0.5f * height;
     // uvs
-    draw_call.prim_data[0].u = max_u;
-    draw_call.prim_data[0].v = 0.f;
-    draw_call.prim_data[1].u = max_u;
-    draw_call.prim_data[1].v = 1.f;
-    draw_call.prim_data[2].u = min_u;
-    draw_call.prim_data[2].v = 1.f;
+    vertices[0].u = max_u;
+    vertices[0].v = 0.f;
+    vertices[1].u = max_u;
+    vertices[1].v = 1.f;
+    vertices[2].u = min_u;
+    vertices[2].v = 1.f;
+
+    draw_call = ForegroundShader(
+      vertices[0], vertices[1], vertices[2],
+      Colors::White, &sprites[curr_sprite]);
 
     renderer.AddDrawCommand(draw_call);
   }

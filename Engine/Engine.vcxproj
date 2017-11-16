@@ -191,6 +191,7 @@
     <ClInclude Include="Gameplay\Framework\Objects\ParticleObject.h" />
     <ClInclude Include="Gameplay\Framework\States.h" />
     <ClInclude Include="Gameplay\Player.h" />
+    <ClInclude Include="MatrixDef.h" />
     <ClInclude Include="Input\ButtonCodes.h" />
     <ClInclude Include="Input\Controller.h" />
     <ClInclude Include="Input\Input.h" />
@@ -475,16 +476,13 @@
     <ClInclude Include="LiquidFun\Rope\b2Rope.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="VMap.h" />
-    <ClInclude Include="Mat2.h" />
-    <ClInclude Include="Mat3.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="VString.h" />
     <ClInclude Include="Utilities\Utilities.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vec3.h" />
     <ClInclude Include="VTuple.h" />
     <ClInclude Include="XAudio\audiodefs.h" />
     <ClInclude Include="XAudio\comdecl.h" />

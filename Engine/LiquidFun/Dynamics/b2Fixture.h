@@ -155,11 +155,11 @@ public:
 
 	/// Test a point for containment in this fixture.
 	/// @param p a point in world coordinates.
-	bool TestPoint(const Vec2& p) const;
+	bool TestPoint(const b2Vec2& p) const;
 
 	/// Compute the distance from this fixture.
 	/// @param p a point in world coordinates.
-	void ComputeDistance(const Vec2& p, float32* distance, Vec2* normal, int32 childIndex) const;
+	void ComputeDistance(const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const;
 
 	/// Cast a ray against this shape.
 	/// @param output the ray-cast results.
@@ -326,12 +326,12 @@ inline void b2Fixture::SetRestitution(float32 restitution)
 	m_restitution = restitution;
 }
 
-inline bool b2Fixture::TestPoint(const Vec2& p) const
+inline bool b2Fixture::TestPoint(const b2Vec2& p) const
 {
 	return m_shape->TestPoint(m_body->GetTransform(), p);
 }
 
-inline void b2Fixture::ComputeDistance(const Vec2& p, float32* d, Vec2* n, int32 childIndex) const
+inline void b2Fixture::ComputeDistance(const b2Vec2& p, float32* d, b2Vec2* n, int32 childIndex) const
 {
 	m_shape->ComputeDistance(m_body->GetTransform(), p, d, n, childIndex);
 }

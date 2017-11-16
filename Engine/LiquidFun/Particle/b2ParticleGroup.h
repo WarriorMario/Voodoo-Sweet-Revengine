@@ -95,14 +95,14 @@ struct b2ParticleGroupDef
 
 	/// The world position of the group.
 	/// Moves the group's shape a distance equal to the value of position.
-	Vec2 position;
+	b2Vec2 position;
 
 	/// The world angle of the group in radians.
 	/// Rotates the shape by an angle equal to the value of angle.
 	float32 angle;
 
 	/// The linear velocity of the group's origin in world co-ordinates.
-	Vec2 linearVelocity;
+	b2Vec2 linearVelocity;
 
 	/// The angular velocity of the group.
 	float32 angularVelocity;
@@ -131,7 +131,7 @@ struct b2ParticleGroupDef
 	int32 particleCount;
 
 	/// The initial positions of the particleCount particles.
-	const Vec2* positionData;
+	const b2Vec2* positionData;
 
 	/// Lifetime of the particle group in seconds.  A value <= 0.0f indicates a
 	/// particle group with infinite lifetime.
@@ -207,10 +207,10 @@ public:
 	float32 GetInertia() const;
 
 	/// Get the center of gravity for the group.
-	Vec2 GetCenter() const;
+	b2Vec2 GetCenter() const;
 
 	/// Get the linear velocity of the group.
-	Vec2 GetLinearVelocity() const;
+	b2Vec2 GetLinearVelocity() const;
 
 	/// Get the angular velocity of the group.
 	float32 GetAngularVelocity() const;
@@ -221,7 +221,7 @@ public:
 
 	/// Get position of the particle group as a whole.
 	/// Used only with groups of rigid particles.
-	const Vec2& GetPosition() const;
+	const b2Vec2& GetPosition() const;
 
 	/// Get the rotational angle of the particle group as a whole.
 	/// Used only with groups of rigid particles.
@@ -231,7 +231,7 @@ public:
 	/// and angular velocities of the particle group.
 	/// @param a point in world coordinates.
 	/// @return the world velocity of a point.
-	Vec2 GetLinearVelocityFromWorldPoint(const Vec2& worldPoint) const;
+	b2Vec2 GetLinearVelocityFromWorldPoint(const b2Vec2& worldPoint) const;
 
 	/// Get the user data pointer that was provided in the group definition.
 	void* GetUserData() const;
@@ -240,11 +240,11 @@ public:
 	void SetUserData(void* data);
 
 	/// Call b2ParticleSystem::ApplyForce for every particle in the group.
-	void ApplyForce(const Vec2& force);
+	void ApplyForce(const b2Vec2& force);
 
 	/// Call b2ParticleSystem::ApplyLinearImpulse for every particle in the
 	/// group.
-	void ApplyLinearImpulse(const Vec2& impulse);
+	void ApplyLinearImpulse(const b2Vec2& impulse);
 
 	/// Destroy all the particles in this group.
 	/// This function is locked during callbacks.
@@ -273,8 +273,8 @@ private:
 	mutable int32 m_timestamp;
 	mutable float32 m_mass;
 	mutable float32 m_inertia;
-	mutable Vec2 m_center;
-	mutable Vec2 m_linearVelocity;
+	mutable b2Vec2 m_center;
+	mutable b2Vec2 m_linearVelocity;
 	mutable float32 m_angularVelocity;
 	mutable b2Transform m_transform;
 
@@ -342,13 +342,13 @@ inline float32 b2ParticleGroup::GetInertia() const
 	return m_inertia;
 }
 
-inline Vec2 b2ParticleGroup::GetCenter() const
+inline b2Vec2 b2ParticleGroup::GetCenter() const
 {
 	UpdateStatistics();
 	return m_center;
 }
 
-inline Vec2 b2ParticleGroup::GetLinearVelocity() const
+inline b2Vec2 b2ParticleGroup::GetLinearVelocity() const
 {
 	UpdateStatistics();
 	return m_linearVelocity;
@@ -365,7 +365,7 @@ inline const b2Transform& b2ParticleGroup::GetTransform() const
 	return m_transform;
 }
 
-inline const Vec2& b2ParticleGroup::GetPosition() const
+inline const b2Vec2& b2ParticleGroup::GetPosition() const
 {
 	return m_transform.p;
 }
@@ -375,8 +375,8 @@ inline float32 b2ParticleGroup::GetAngle() const
 	return m_transform.q.GetAngle();
 }
 
-inline Vec2 b2ParticleGroup::GetLinearVelocityFromWorldPoint(
-												const Vec2& worldPoint) const
+inline b2Vec2 b2ParticleGroup::GetLinearVelocityFromWorldPoint(
+												const b2Vec2& worldPoint) const
 {
 	UpdateStatistics();
 	return m_linearVelocity + b2Cross(m_angularVelocity, worldPoint - m_center);

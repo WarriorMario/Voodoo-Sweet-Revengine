@@ -109,7 +109,7 @@ int32 b2DynamicTree::CreateProxy(const b2AABB& aabb, void* userData)
 	int32 proxyId = AllocateNode();
 
 	// Fatten the aabb.
-	Vec2 r(b2_aabbExtension, b2_aabbExtension);
+	b2Vec2 r(b2_aabbExtension, b2_aabbExtension);
 	m_nodes[proxyId].aabb.lowerBound = aabb.lowerBound - r;
 	m_nodes[proxyId].aabb.upperBound = aabb.upperBound + r;
 	m_nodes[proxyId].userData = userData;
@@ -129,7 +129,7 @@ void b2DynamicTree::DestroyProxy(int32 proxyId)
 	FreeNode(proxyId);
 }
 
-bool b2DynamicTree::MoveProxy(int32 proxyId, const b2AABB& aabb, const Vec2& displacement)
+bool b2DynamicTree::MoveProxy(int32 proxyId, const b2AABB& aabb, const b2Vec2& displacement)
 {
 	b2Assert(0 <= proxyId && proxyId < m_nodeCapacity);
 
@@ -144,12 +144,12 @@ bool b2DynamicTree::MoveProxy(int32 proxyId, const b2AABB& aabb, const Vec2& dis
 
 	// Extend AABB.
 	b2AABB b = aabb;
-	Vec2 r(b2_aabbExtension, b2_aabbExtension);
+	b2Vec2 r(b2_aabbExtension, b2_aabbExtension);
 	b.lowerBound = b.lowerBound - r;
 	b.upperBound = b.upperBound + r;
 
 	// Predict AABB displacement.
-	Vec2 d = b2_aabbMultiplier * displacement;
+	b2Vec2 d = b2_aabbMultiplier * displacement;
 
 	if (d.x < 0.0f)
 	{
@@ -773,7 +773,7 @@ void b2DynamicTree::RebuildBottomUp()
 	B2_DEBUG_STATEMENT(Validate());
 }
 
-void b2DynamicTree::ShiftOrigin(const Vec2& newOrigin)
+void b2DynamicTree::ShiftOrigin(const b2Vec2& newOrigin)
 {
 	// Build array of leaves. Free the rest.
 	for (int32 i = 0; i < m_nodeCapacity; ++i)

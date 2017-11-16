@@ -71,12 +71,6 @@ void FrameCounter::Draw(Renderer & renderer)
 
     for(int i = 0; i < line.num_quads; ++i)
     {
-      UIShader shader;
-      shader.const_data.color = Colors::Red;
-      shader.const_data.alpha_values = line.text_quads[i].glyph_alpha_values;
-      shader.const_data.width = line.text_quads[i].glyph_width;
-      shader.const_data.height = line.text_quads[i].glyph_height;
-
       float min_x = line.text_quads[i].min_x,
         min_y = line.text_quads[i].min_y,
         max_x = line.text_quads[i].max_x,
@@ -87,17 +81,29 @@ void FrameCounter::Draw(Renderer & renderer)
         max_u = line.text_quads[i].max_u,
         max_v = line.text_quads[i].max_v;
 
+
       // first triangle      x      y      u      v
-      shader.prim_data[0] = {min_x, min_y, min_u, min_v};
-      shader.prim_data[1] = {max_x, min_y, max_u, min_v};
-      shader.prim_data[2] = {min_x, max_y, min_u, max_v};
+      UIShader::PrimData vertices[3];
+      vertices[0] = {min_x, min_y, min_u, min_v};
+      vertices[1] = {max_x, min_y, max_u, min_v};
+      vertices[2] = {min_x, max_y, min_u, max_v};
+
+      UIShader shader = UIShader(vertices[0], vertices[1], vertices[2],
+        line.text_quads[i].glyph_alpha_values,
+        line.text_quads[i].glyph_width, line.text_quads[i].glyph_height,
+        Colors::Red);
 
       renderer.AddDrawCommand<UIShader>(shader);
 
       // second triangle
-      shader.prim_data[0] = {max_x, min_y, max_u, min_v};
-      shader.prim_data[1] = {max_x, max_y, max_u, max_v};
-      shader.prim_data[2] = {min_x, max_y, min_u, max_v};
+      vertices[0] = {max_x, min_y, max_u, min_v};
+      vertices[1] = {max_x, max_y, max_u, max_v};
+      vertices[2] = {min_x, max_y, min_u, max_v};
+
+      shader = UIShader(vertices[0], vertices[1], vertices[2],
+        line.text_quads[i].glyph_alpha_values,
+        line.text_quads[i].glyph_width, line.text_quads[i].glyph_height,
+        Colors::Red);
 
       renderer.AddDrawCommand<UIShader>(shader);
     }

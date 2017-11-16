@@ -35,7 +35,7 @@
 #include <LiquidFun/Common/b2Timer.h>
 #include <new>
 
-b2World::b2World(const Vec2& gravity)
+b2World::b2World(const b2Vec2& gravity)
 {
 	Init(gravity);
 }
@@ -421,7 +421,7 @@ void b2World::SetAllowSleeping(bool flag)
 }
 
 // Initialize the world with a specified gravity.
-void b2World::Init(const Vec2& gravity)
+void b2World::Init(const b2Vec2& gravity)
 {
 	m_destructionListener = NULL;
 	m_debugDraw = NULL;
@@ -1108,7 +1108,7 @@ struct b2WorldRayCastWrapper
 		if (hit)
 		{
 			float32 fraction = output.fraction;
-			Vec2 point = (1.0f - fraction) * input.p1 + fraction * input.p2;
+			b2Vec2 point = (1.0f - fraction) * input.p1 + fraction * input.p2;
 			return callback->ReportFixture(fixture, point, output.normal, fraction);
 		}
 
@@ -1119,7 +1119,7 @@ struct b2WorldRayCastWrapper
 	b2RayCastCallback* callback;
 };
 
-void b2World::RayCast(b2RayCastCallback* callback, const Vec2& point1, const Vec2& point2) const
+void b2World::RayCast(b2RayCastCallback* callback, const b2Vec2& point1, const b2Vec2& point2) const
 {
 	b2WorldRayCastWrapper wrapper;
 	wrapper.broadPhase = &m_contactManager.m_broadPhase;
@@ -1146,9 +1146,9 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 		{
 			b2CircleShape* circle = (b2CircleShape*)fixture->GetShape();
 
-			Vec2 center = b2Mul(xf, circle->m_p);
+			b2Vec2 center = b2Mul(xf, circle->m_p);
 			float32 radius = circle->m_radius;
-			Vec2 axis = b2Mul(xf.q, Vec2(1.0f, 0.0f));
+			b2Vec2 axis = b2Mul(xf.q, b2Vec2(1.0f, 0.0f));
 
 			m_debugDraw->DrawSolidCircle(center, radius, axis, color);
 		}
@@ -1157,8 +1157,8 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 	case b2Shape::e_edge:
 		{
 			b2EdgeShape* edge = (b2EdgeShape*)fixture->GetShape();
-			Vec2 v1 = b2Mul(xf, edge->m_vertex1);
-			Vec2 v2 = b2Mul(xf, edge->m_vertex2);
+			b2Vec2 v1 = b2Mul(xf, edge->m_vertex1);
+			b2Vec2 v2 = b2Mul(xf, edge->m_vertex2);
 			m_debugDraw->DrawSegment(v1, v2, color);
 		}
 		break;
@@ -1167,12 +1167,12 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 		{
 			b2ChainShape* chain = (b2ChainShape*)fixture->GetShape();
 			int32 count = chain->m_count;
-			const Vec2* vertices = chain->m_vertices;
+			const b2Vec2* vertices = chain->m_vertices;
 
-			Vec2 v1 = b2Mul(xf, vertices[0]);
+			b2Vec2 v1 = b2Mul(xf, vertices[0]);
 			for (int32 i = 1; i < count; ++i)
 			{
-				Vec2 v2 = b2Mul(xf, vertices[i]);
+				b2Vec2 v2 = b2Mul(xf, vertices[i]);
 				m_debugDraw->DrawSegment(v1, v2, color);
 				m_debugDraw->DrawCircle(v1, 0.05f, color);
 				v1 = v2;
@@ -1185,7 +1185,7 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 			b2PolygonShape* poly = (b2PolygonShape*)fixture->GetShape();
 			int32 vertexCount = poly->m_count;
 			b2Assert(vertexCount <= b2_maxPolygonVertices);
-			Vec2 vertices[b2_maxPolygonVertices];
+			b2Vec2 vertices[b2_maxPolygonVertices];
 
 			for (int32 i = 0; i < vertexCount; ++i)
 			{
@@ -1207,10 +1207,10 @@ void b2World::DrawJoint(b2Joint* joint)
 	b2Body* bodyB = joint->GetBodyB();
 	const b2Transform& xf1 = bodyA->GetTransform();
 	const b2Transform& xf2 = bodyB->GetTransform();
-	Vec2 x1 = xf1.p;
-	Vec2 x2 = xf2.p;
-	Vec2 p1 = joint->GetAnchorA();
-	Vec2 p2 = joint->GetAnchorB();
+	b2Vec2 x1 = xf1.p;
+	b2Vec2 x2 = xf2.p;
+	b2Vec2 p1 = joint->GetAnchorA();
+	b2Vec2 p2 = joint->GetAnchorB();
 
 	b2Color color(0.5f, 0.8f, 0.8f);
 
@@ -1223,8 +1223,8 @@ void b2World::DrawJoint(b2Joint* joint)
 	case e_pulleyJoint:
 		{
 			b2PulleyJoint* pulley = (b2PulleyJoint*)joint;
-			Vec2 s1 = pulley->GetGroundAnchorA();
-			Vec2 s2 = pulley->GetGroundAnchorB();
+			b2Vec2 s1 = pulley->GetGroundAnchorA();
+			b2Vec2 s2 = pulley->GetGroundAnchorB();
 			m_debugDraw->DrawSegment(s1, p1, color);
 			m_debugDraw->DrawSegment(s2, p2, color);
 			m_debugDraw->DrawSegment(s1, s2, color);
@@ -1248,7 +1248,7 @@ void b2World::DrawParticleSystem(const b2ParticleSystem& system)
 	if (particleCount)
 	{
 		float32 radius = system.GetRadius();
-		const Vec2* positionBuffer = system.GetPositionBuffer();
+		const b2Vec2* positionBuffer = system.GetPositionBuffer();
 		if (system.m_colorBuffer.data)
 		{
 			const b2ParticleColor* colorBuffer = system.GetColorBuffer();
@@ -1326,8 +1326,8 @@ void b2World::DrawDebugData()
 			//b2Fixture* fixtureA = c->GetFixtureA();
 			//b2Fixture* fixtureB = c->GetFixtureB();
 
-			//Vec2 cA = fixtureA->GetAABB().GetCenter();
-			//Vec2 cB = fixtureB->GetAABB().GetCenter();
+			//b2Vec2 cA = fixtureA->GetAABB().GetCenter();
+			//b2Vec2 cB = fixtureB->GetAABB().GetCenter();
 
 			//m_debugDraw->DrawSegment(cA, cB, color);
 		}
@@ -1351,7 +1351,7 @@ void b2World::DrawDebugData()
 				{
 					b2FixtureProxy* proxy = f->m_proxies + i;
 					b2AABB aabb = bp->GetFatAABB(proxy->proxyId);
-					Vec2 vs[4];
+					b2Vec2 vs[4];
 					vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
 					vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
 					vs[2].Set(aabb.upperBound.x, aabb.upperBound.y);
@@ -1417,7 +1417,7 @@ float32 b2World::GetTreeQuality() const
 	return m_contactManager.m_broadPhase.GetTreeQuality();
 }
 
-void b2World::ShiftOrigin(const Vec2& newOrigin)
+void b2World::ShiftOrigin(const b2Vec2& newOrigin)
 {
 	b2Assert((m_flags & e_locked) == 0);
 	if ((m_flags & e_locked) == e_locked)

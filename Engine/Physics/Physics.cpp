@@ -4,7 +4,7 @@
 
 Physics::Physics()
   :
-  world(Vec2(0, 0))
+  world(b2Vec2(0, 0))
 {
   b2ParticleSystemDef particle_system_def;
   particle_system_def.strictContactCheck = false;

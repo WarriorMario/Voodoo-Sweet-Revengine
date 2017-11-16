@@ -41,20 +41,20 @@ public:
 	/// Create a loop. This automatically adjusts connectivity.
 	/// @param vertices an array of vertices, these are copied
 	/// @param count the vertex count
-	void CreateLoop(const Vec2* vertices, int32 count);
+	void CreateLoop(const b2Vec2* vertices, int32 count);
 
 	/// Create a chain with isolated end vertices.
 	/// @param vertices an array of vertices, these are copied
 	/// @param count the vertex count
-	void CreateChain(const Vec2* vertices, int32 count);
+	void CreateChain(const b2Vec2* vertices, int32 count);
 
 	/// Establish connectivity to a vertex that precedes the first vertex.
 	/// Don't call this for loops.
-	void SetPrevVertex(const Vec2& prevVertex);
+	void SetPrevVertex(const b2Vec2& prevVertex);
 
 	/// Establish connectivity to a vertex that follows the last vertex.
 	/// Don't call this for loops.
-	void SetNextVertex(const Vec2& nextVertex);
+	void SetNextVertex(const b2Vec2& nextVertex);
 
 	/// Implement b2Shape. Vertices are cloned using b2Alloc.
 	b2Shape* Clone(b2BlockAllocator* allocator) const;
@@ -67,10 +67,10 @@ public:
 
 	/// This always return false.
 	/// @see b2Shape::TestPoint
-	bool TestPoint(const b2Transform& transform, const Vec2& p) const;
+	bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;
 
 	// @see b2Shape::ComputeDistance
-	void ComputeDistance(const b2Transform& xf, const Vec2& p, float32* distance, Vec2* normal, int32 childIndex) const;
+	void ComputeDistance(const b2Transform& xf, const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const;
 
 	/// Implement b2Shape.
 	bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
@@ -84,12 +84,12 @@ public:
 	void ComputeMass(b2MassData* massData, float32 density) const;
 
 	/// The vertices. Owned by this class.
-	Vec2* m_vertices;
+	b2Vec2* m_vertices;
 
 	/// The vertex count.
 	int32 m_count;
 
-	Vec2 m_prevVertex, m_nextVertex;
+	b2Vec2 m_prevVertex, m_nextVertex;
 	bool m_hasPrevVertex, m_hasNextVertex;
 };
 
