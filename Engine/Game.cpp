@@ -148,7 +148,7 @@ void Game::Go()
       gfx.EndFrame();
     }
   }
-  ProfileSample::Output();
+  //ProfileSample::Output();
 
 }
 Vec3 offset = Vec3(400, 400, 350);

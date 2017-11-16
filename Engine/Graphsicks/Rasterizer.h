@@ -135,10 +135,10 @@ public:
     for(int i = 0; i < cell.num_indices; ++i)
     {
       auto& cmd = commands[cell.indices[i]];
-      auto* d = cmd.prim_data;
+      auto d = cmd.GetPrimData();
       const Vec2 A(d[1].x - d[0].x, d[1].y - d[0].y);
       const Vec2 B(d[2].x - d[0].x, d[2].y - d[0].y);
-      const float prarea = 1.f / (A.x * B.y - A.y * B.x);
+      const float inv_area = 1.f / (A.x * B.y - A.y * B.x);
 
       // precalculate barycentric coordinate data
       int
@@ -152,6 +152,7 @@ public:
       int t0_row = (start_x - d[1].x) * a12 - (start_y - d[1].y) * (d[1].x - d[2].x);
       int t1_row = (start_x - d[2].x) * a20 - (start_y - d[2].y) * (d[2].x - d[0].x);
       int t2_row = (start_x - d[0].x) * a01 - (start_y - d[0].y) * (d[0].x - d[1].x);
+
       Color* cur_color = cell.buff;
       for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y, ++pix_y)
       {
@@ -166,10 +167,8 @@ public:
           if(is_inside == true)
           {
             // Determine interpolated values
-            const InterpData interp = {t0 * prarea, t1 * prarea, t2 * prarea, pix_x, pix_y};
-            Shader::PixelData id;
-            cmd.Interpolate(interp, id);
-            cmd.Shade(id, *cur_color);
+            const InterpData interp = {t1 * inv_area, t2 * inv_area, pix_x, pix_y};
+            cmd.Shade(interp, *cur_color);
           }
 
           // one step to the right
