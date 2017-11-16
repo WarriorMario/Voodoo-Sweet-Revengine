@@ -1,5 +1,6 @@
 #pragma once
 #include "VString.h"
+#include "Utility/Logging.h"
 #include <fstream>
 
 struct File
@@ -39,7 +40,7 @@ public:
     else
     {
       // assert with a handy debug message
-      assert(false && "Unable to load file.");
+      Logger::Get().Write(LogCategory::USER, "Unable to open file %s", file_name.data());
 
       // return sadly
       return false;
