@@ -19,31 +19,51 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #include "Mouse.h"
-
+#include <Windows.h>
 
 std::pair<int,int> Mouse::GetPos() const
 {
-	return { x,y };
+	return { current_state.x,current_state.y };
 }
 
 int Mouse::GetPosX() const
 {
-	return x;
+	return current_state.x;
 }
 
 int Mouse::GetPosY() const
 {
-	return y;
+  return current_state.y;
 }
 
 bool Mouse::LeftIsPressed() const
 {
-	return leftIsPressed;
+  return previous_state.leftIsPressed == false && current_state.leftIsPressed == true;
 }
 
 bool Mouse::RightIsPressed() const
 {
-	return rightIsPressed;
+  return previous_state.rightIsPressed == false && current_state.rightIsPressed == true;
+}
+
+bool Mouse::LeftIsReleased() const
+{
+  return previous_state.leftIsPressed == true && current_state.leftIsPressed == false;
+}
+
+bool Mouse::RightIsReleased() const
+{
+  return previous_state.rightIsPressed == true && current_state.rightIsPressed == false;
+}
+
+bool Mouse::LeftIsDown() const
+{
+  return current_state.leftIsPressed;
+}
+
+bool Mouse::RightIsDown() const
+{
+  return current_state.rightIsPressed;
 }
 
 bool Mouse::IsInWindow() const
@@ -69,6 +89,10 @@ void Mouse::Flush()
 {
 	buffer = std::queue<Event>();
 }
+void Mouse::Poll()
+{
+  previous_state = current_state;
+}
 
 void Mouse::OnMouseLeave()
 {
@@ -82,8 +106,8 @@ void Mouse::OnMouseEnter()
 
 void Mouse::OnMouseMove( int newx,int newy )
 {
-	x = newx;
-	y = newy;
+	current_state.x = newx;
+	current_state.y = newy;
 
 	buffer.push( Mouse::Event( Mouse::Event::Move,*this ) );
 	TrimBuffer();
@@ -91,7 +115,7 @@ void Mouse::OnMouseMove( int newx,int newy )
 
 void Mouse::OnLeftPressed( int x,int y )
 {
-	leftIsPressed = true;
+  current_state.leftIsPressed = true;
 
 	buffer.push( Mouse::Event( Mouse::Event::LPress,*this ) );
 	TrimBuffer();
@@ -99,7 +123,7 @@ void Mouse::OnLeftPressed( int x,int y )
 
 void Mouse::OnLeftReleased( int x,int y )
 {
-	leftIsPressed = false;
+  current_state.leftIsPressed = false;
 
 	buffer.push( Mouse::Event( Mouse::Event::LRelease,*this ) );
 	TrimBuffer();
@@ -107,7 +131,7 @@ void Mouse::OnLeftReleased( int x,int y )
 
 void Mouse::OnRightPressed( int x,int y )
 {
-	rightIsPressed = true;
+  current_state.rightIsPressed = true;
 
 	buffer.push( Mouse::Event( Mouse::Event::RPress,*this ) );
 	TrimBuffer();
@@ -115,7 +139,7 @@ void Mouse::OnRightPressed( int x,int y )
 
 void Mouse::OnRightReleased( int x,int y )
 {
-	rightIsPressed = false;
+  current_state.rightIsPressed = false;
 
 	buffer.push( Mouse::Event( Mouse::Event::RRelease,*this ) );
 	TrimBuffer();

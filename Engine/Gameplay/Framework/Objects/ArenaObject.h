@@ -2,6 +2,10 @@
 #include "Handle.h"
 #include "VString.h"
 #include "ArenaBaseObject.h"
+#include "Utility.h"
+#include "Utility\Logging.h"
+
+#include <typeinfo>
 
 template<typename T>
 class ArenaObject : public ArenaBaseObject
@@ -17,7 +21,10 @@ public:
   }
 
   void SetPosition(struct Vec2& pos)
-  {}
+  {
+    Logger::Get().Write(LogCategory::USER, "Missing implementation of %s::SetPosition()", typeid(T).name());
+    CRASH();
+  }
   const String tag;
   static T* dummy_instance;
 };

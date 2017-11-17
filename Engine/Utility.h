@@ -54,3 +54,11 @@ inline bool RangeEquals(const T(&arr)[count], const V& comparison)
   }
   return val;
 }
+
+#define ASSERT(expr, msg) assert(expr && msg)
+#define CRASH() (*(int*)0);
+#ifdef DEBUG
+#define VERIFY(expr) if(!expr) CRASH();
+#else
+#define VERIFY(expr) expr;
+#endif

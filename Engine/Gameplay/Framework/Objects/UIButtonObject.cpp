@@ -45,13 +45,12 @@ void UIButtonObject::Draw(Renderer & renderer)
 {
   for(int i = 0; i < 2; ++i)
   {
-    BackgroundShader shader;
-    shader.const_data.color = state_colors[state];
+     UIShaderSimple::PrimData data[3];
     for(int y = 0; y < 3; ++y)
     {
-      shader.prim_data[y] = {rect.GetTrianglePoint(i,y).x,rect.GetTrianglePoint(i,y).y, 0.0f,0.0f};
+      data[y] = {rect.GetTrianglePoint(i,y).x,rect.GetTrianglePoint(i,y).y, 0.0f,0.0f};
     }
-    renderer.AddDrawCommand(shader);
+    renderer.AddDrawCommand(UIShaderSimple(data[0],data[1],data[2],this->state_colors[state]));
   }
 }
 

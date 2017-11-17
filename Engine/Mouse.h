@@ -57,10 +57,10 @@ public:
 		Event( Type type,const Mouse& parent )
 			:
 			type( type ),
-			leftIsPressed( parent.leftIsPressed ),
-			rightIsPressed( parent.rightIsPressed ),
-			x( parent.x ),
-			y( parent.y )
+			leftIsPressed( parent.current_state.leftIsPressed ),
+			rightIsPressed( parent.current_state.rightIsPressed ),
+			x( parent.current_state.x ),
+			y( parent.current_state.y )
 		{}
 		bool IsValid() const
 		{
@@ -100,6 +100,10 @@ public:
 	int GetPosY() const;
 	bool LeftIsPressed() const;
 	bool RightIsPressed() const;
+  bool LeftIsReleased() const;
+  bool RightIsReleased() const;
+  bool LeftIsDown() const;
+  bool RightIsDown() const;
 	bool IsInWindow() const;
 	Mouse::Event Read();
 	bool IsEmpty() const
@@ -107,6 +111,7 @@ public:
 		return buffer.empty();
 	}
 	void Flush();
+  void Poll();
 private:
 	void OnMouseMove( int x,int y );
 	void OnMouseLeave();
@@ -120,10 +125,16 @@ private:
 	void TrimBuffer();
 private:
 	static constexpr unsigned int bufferSize = 4u;
-	int x;
-	int y;
-	bool leftIsPressed = false;
-	bool rightIsPressed = false;
+
+  struct State
+  {
+    int x;
+    int y;
+    bool leftIsPressed;
+    bool rightIsPressed;
+  };
+  State previous_state, current_state;
+
 	bool isInWindow = false;
 	std::queue<Event> buffer;
 };

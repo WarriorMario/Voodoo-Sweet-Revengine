@@ -38,10 +38,7 @@ b2BodyDef test1;
 b2FixtureDef testf0;
 b2FixtureDef testf1;
 Handle<PhysicsObject> test;
-void FlorisThisIsHowSimpleUIIs()
-{
-  int that = 0;
-}
+
 Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   :
   godWindow(godWindow),
@@ -74,74 +71,12 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   test1.position.Set(100, 160); //set the starting position
   test1.angle = 0; //set the starting angle
 
-  //for ( int i = 0; i < 5000; ++i )
-  //{
-  //   b = world.CreateBody( &test0 );
-  //   testf0.shape = &circle;
-  //   testf0.friction = 0.5f;
-  //   testf0.density = 1.0f;
-  //   b->SetTransform(Vec2(i,i%5),0);
-  //   b->CreateFixture( &testf0 );
-  //}
-  //for(int i = 1; i < 80; ++i)
-  //{
-  //  temp = world.CreateBody(&test1);
-  //  testf1.shape = &circle;
-  //  testf1.friction = 0.5f;
-  //  testf1.density = 1.0f;
-  //  temp->SetTransform(Vec2(i * 10, 590), 0);
-  //  temp->CreateFixture(&testf1);
-  //  
-  //  temp = world.CreateBody(&test1);
-  //  testf1.shape = &circle;
-  //  testf1.friction = 0.5f;
-  //  testf1.density = 1.0f;
-  //  temp->SetTransform(Vec2(i * 10, 0), 0);
-  //  temp->CreateFixture(&testf1);
-  //}
-  //for(int i = 1; i < 80; ++i)
-  //{
-  //  temp = world.CreateBody(&test1);
-  //  testf1.shape = &circle;
-  //  testf1.friction = 0.5f;
-  //  testf1.density = 1.0f;
-  //  temp->SetTransform(Vec2(10, i * 10), 0);
-  //  temp->CreateFixture(&testf1);
-  //  temp = world.CreateBody(&test1);
-  //  testf1.shape = &circle;
-  //  testf1.friction = 0.5f;
-  //  testf1.density = 1.0f;
-  //  temp->SetTransform(Vec2(790, i * 10), 0);
-  //  temp->CreateFixture(&testf1);
-  //}
-
-  //const b2ParticleSystemDef particleSystemDef;
-  //particleSystem = world.CreateParticleSystem(&particleSystemDef);
-  //particleSystem->SetRadius(3);
-  //for ( int i = 0; i < 100000; ++i )
-  //{
-  //   b2ParticleDef pd;
-  //   pd.flags = b2_waterParticle;
-  //   pd.color.Set( 0, 0, 255, 255 );
-  //   pd.position.Set( 20 +i*3, 80+i*5 );
-  //   int tempIndex = particleSystem->CreateParticle( pd );
-  //}
-
-  //for(int x = 0; x < 50; ++x)
-  //{
-  //  for(int y = 0; y < 50; ++y)
-  //  {
-  //    auto particle = arena.Create<ParticleObject>();
-  //    particle->SetPosition(Vec2(x*20, y * 20));
-  //  }
-  //}
 }
 
 void Game::Go()
 {
   ProfilerLogHandler pf_output;
   ProfileSample::output_handler = &pf_output;
-  input.Poll();
   {
     PROFILE_SCOPE("Game::Go");
     {
@@ -157,8 +92,9 @@ void Game::Go()
       gfx.EndFrame();
     }
   }
-  //ProfileSample::Output();
+  ProfileSample::Output();
 
+  input.Poll();
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
@@ -175,16 +111,6 @@ void Game::UpdateModel()
   player.Input(godWindow.kbd); 
   frame_counter.Update();
 
-  static size_t count = 0;
-  if(input.IsPressed(ButtonCode::RIGHT_MOUSE) == true )
-  {
-    count++;
-    if(count % 20)
-    {
-      auto particle = arena.Create<ParticleObject>();
-      particle->SetPosition(input.MousePos());
-    }
-  }
   //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
@@ -192,9 +118,9 @@ void Game::ComposeFrame()
 {
   PROFILE_SCOPE("Game::ComposeFrame");
 
-  arena.Draw(renderer);
-  //player.Draw();
-  //frame_counter.Draw(renderer);
+  //arena.Draw(renderer);
+  player.Draw();
+  frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
 }

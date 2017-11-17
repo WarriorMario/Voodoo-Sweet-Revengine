@@ -22,7 +22,17 @@
 
 bool Keyboard::KeyIsPressed( unsigned char keycode ) const
 {
-	return keystates[keycode];
+  return (key_states[keycode] == Keyboard::Press );
+}
+
+bool Keyboard::KeyIsReleased(unsigned char keycode) const
+{
+  return (key_states[keycode] == Keyboard::Release);
+}
+
+bool Keyboard::KeyIsDown(unsigned char keycode) const
+{
+  return (key_states[keycode] == Keyboard::Press || key_states[keycode] == Keyboard::Pressed);
 }
 
 Keyboard::Event Keyboard::ReadKey()
@@ -96,6 +106,14 @@ bool Keyboard::AutorepeatIsEnabled() const
 
 void Keyboard::OnKeyPressed( unsigned char keycode )
 {
+  if(key_states[keycode] == Keyboard::Press)
+  {
+    key_states[keycode] = Keyboard::Pressed;
+  }
+  else
+  {
+    key_states[keycode] = Keyboard::Press;
+  }
 	keystates[ keycode ] = true;	
 	keybuffer.push( Keyboard::Event( Keyboard::Event::Press,keycode ) );
 	TrimBuffer( keybuffer );
@@ -103,6 +121,14 @@ void Keyboard::OnKeyPressed( unsigned char keycode )
 
 void Keyboard::OnKeyReleased( unsigned char keycode )
 {
+  if(key_states[keycode] == Keyboard::Release)
+  {
+    key_states[keycode] = Keyboard::Released;
+  }
+  else
+  {
+    key_states[keycode] = Keyboard::Release;
+  }
 	keystates[ keycode ] = false;
 	keybuffer.push( Keyboard::Event( Keyboard::Event::Release,keycode ) );
 	TrimBuffer( keybuffer );

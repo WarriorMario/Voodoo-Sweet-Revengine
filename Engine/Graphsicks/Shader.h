@@ -2,8 +2,8 @@
 #include "Colors.h"
 #include "Utility.h"
 #include "Assets\Assets.h"
-
-
+#include "VArray.h"
+#include "Vec2.h"
 //////////// OBSOLETE TODO (Floris) unobsoletify this
 // ****************************************************************************
 // To create a new shader you can declare it as a struct which implements:
@@ -28,19 +28,29 @@ struct InterpData
 struct BackgroundShader
 {
 private:
+public:
   struct ConstData
   {
     Color color;
     float u10, v10, u20, v20;
   };
 
-public:
   struct PrimData
   {
     float x, y;
     float u, v;
   };
 
+  struct DataSIMDBuffer
+  {
+    void Add(BackgroundShader& s)
+    {}
+    void Clear()
+    {}
+    void GetTriangle(Vec2* points, size_t index)
+    {}
+    size_t size;
+  };
   BackgroundShader(
     const PrimData& vertex_0,
     const PrimData& vertex_1,
@@ -80,7 +90,7 @@ public:
   {
     return &prim_data[0];
   }
-
+  static constexpr bool SIMD = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];
@@ -90,6 +100,7 @@ private:
 struct ForegroundShader
 {
 private:
+public:
   struct ConstData
   {
     Color color;
@@ -98,7 +109,6 @@ private:
     float nx10, ny10, nx20, ny20;
   };
 
-public:
   struct PrimData
   {
     float x, y;
@@ -106,9 +116,19 @@ public:
     float nx, ny;
   };
 
+  struct DataSIMDBuffer
+  {
+    void Add(ForegroundShader& s)
+    {}
+    void Clear()
+    {}
+    void GetTriangle(Vec2* points, size_t index)
+    {}
+    size_t size;
+  };
   ForegroundShader(
     const PrimData& vertex_0,
-    const PrimData& vertex_1, 
+    const PrimData& vertex_1,
     const PrimData& vertex_2,
     const Color& color, Texture* texture)
   {
@@ -118,12 +138,12 @@ public:
     const_data.color = color;
     const_data.texture = texture;
 
-    const_data.u10  = prim_data[1].u  - prim_data[0].u;
-    const_data.v10  = prim_data[1].v  - prim_data[0].v;
+    const_data.u10 = prim_data[1].u - prim_data[0].u;
+    const_data.v10 = prim_data[1].v - prim_data[0].v;
     const_data.nx10 = prim_data[1].nx - prim_data[0].nx;
     const_data.ny10 = prim_data[1].ny - prim_data[0].ny;
-    const_data.u20  = prim_data[2].u  - prim_data[0].u;
-    const_data.v20  = prim_data[2].v  - prim_data[0].v;
+    const_data.u20 = prim_data[2].u - prim_data[0].u;
+    const_data.v20 = prim_data[2].v - prim_data[0].v;
     const_data.nx10 = prim_data[2].nx - prim_data[0].nx;
     const_data.ny20 = prim_data[2].ny - prim_data[0].ny;
   }
@@ -169,6 +189,7 @@ public:
     return &prim_data[0];
   }
 
+  static constexpr bool SIMD = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];
@@ -178,6 +199,7 @@ private:
 struct UIShader
 {
 private:
+public:
   struct ConstData
   {
 
@@ -187,11 +209,20 @@ private:
     float u10, v10, u20, v20;
   };
 
-public:
   struct PrimData
   {
     float x, y;
     float u, v;
+  };
+  struct DataSIMDBuffer
+  {
+    void Add(UIShader& s)
+    {}
+    void Clear()
+    {}
+    void GetTriangle(Vec2* points, size_t index)
+    {}
+    size_t size;
   };
 
   UIShader(
@@ -287,7 +318,88 @@ public:
     return &prim_data[0];
   }
 
-  private:
-    ConstData const_data;
-    PrimData prim_data[3];
+  static constexpr bool SIMD = false;
+private:
+  ConstData const_data;
+  PrimData prim_data[3];
+};
+
+
+struct UIShaderSimple
+{
+
+private:
+
+public:
+  struct ConstData
+  {
+    Color color;
+  };
+  struct PrimData
+  {
+    float x, y;
+    float u, v;
+  };
+  struct DataSIMDBuffer
+  {
+    void Add(UIShaderSimple shader)
+    {
+      ++size;
+      color.push_back(shader.const_data.color);
+      for(int i = 0; i < 3; ++i)
+      {
+        x.push_back(shader.prim_data[i].x);
+        y.push_back(shader.prim_data[i].y);
+        u.push_back(shader.prim_data[i].u);
+        v.push_back(shader.prim_data[i].v);
+      }
+    }
+    void GetTriangle(Vec2* points, size_t index)
+    {
+      points[0] = Vec2(x[index * 3], y[index * 3]);
+      points[1] = Vec2(x[index * 3 + 1], y[index * 3 + 1]);
+      points[2] = Vec2(x[index * 3 + 2], y[index * 3 + 2]);
+    }
+    void Clear()
+    {
+      x.clear();
+      y.clear();
+      u.clear();
+      v.clear();
+      size = 0;
+    }
+    Array<Color> color;
+    Array<float> x;
+    Array<float> y;
+    Array<float> u;
+    Array<float> v;
+    size_t size = 0;;
+  };
+
+  UIShaderSimple(
+    const PrimData& vertex_0,
+    const PrimData& vertex_1,
+    const PrimData& vertex_2,
+    const Color& color)
+  {
+    prim_data[0] = vertex_0;
+    prim_data[1] = vertex_1;
+    prim_data[2] = vertex_2;
+
+    const_data.color = color;
+  }
+  void Shade(const InterpData& interp_data, Color& pixel)
+  {
+    pixel = const_data.color;
+  }
+
+  const PrimData* GetPrimData()
+  {
+    return &prim_data[0];
+  }
+
+  static constexpr bool SIMD = true;
+private:
+  ConstData const_data;
+  PrimData prim_data[3];
 };

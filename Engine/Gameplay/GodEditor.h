@@ -9,89 +9,69 @@ class GodEditor
 public:
   GodEditor(Arena& arena):
     arena(arena)
-  {}
+  {
+    selected_index = -1;
+  }
 
   void Init();
   void Update();
   template<typename T>
+  void SelectObject()
+  {
+    OnElement(placeable_objects, selected_index, ObjectDestroyer(), arena);
+    Get<Handle<T>>(placeable_objects) = arena.Create<T>();
+    selected_index = IndexValue<T, Tuple<OBJECT_TYPES>>;
+  }
+  template<typename T>
   void PlaceObject()
   {
-    DestroyAllObject(placeable_objects, selected_index);
     Get<Handle<T>>(placeable_objects) = arena.Create<T>();
-    selected_index = Index<T, Tuple<OBJECT_TYPES>>::value;
   }
 private:
   Arena& arena;
   template<typename... Object>
   using ObjectGroup = Tuple<Handle<Object>...>;
 
-  template <class T, class Tuple>
-  struct Index;
-
-  template <class T, class... Types>
-  struct Index<T, Tuple<T, Types...>>
+  struct UIInitializer
   {
-    static const size_t value = 0;
-  };
-
-  template <class T, class U, class... Types>
-  struct Index<T, Tuple<U, Types...>>
-  {
-    static const size_t value = 1 + Index<T, Tuple<Types...>>::value;
-  };
-
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t<I == sizeof...(Types), void>
-    InitGroupUI(Tuple<Types...>&,Vec2 pos)
-  {}
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t < I<sizeof...(Types), void>
-    InitGroupUI(Tuple<Types...>& tuple, Vec2 pos)
-  {
-    std::function<void()> select_object = [=]()
+    template<typename T>
+    void operator()(T& type, Arena& arena, GodEditor& editor, Vec2 pos)
     {
-      this->PlaceObject<std::tuple_element<I, Tuple<OBJECT_TYPES>>::type>();
-    };
-    
-    auto handle = arena.Create<UIButtonObject>();
-    handle->Initialize(RectF(0 + pos.y, 50 + pos.y, I * 50 + pos.x, I * 50 + 50 + pos.x), select_object, Colors::White, Colors::Yellow, Colors::Green);
-    Get<I>(placeable_objects) = arena.Create<std::tuple_element<I, Tuple<OBJECT_TYPES>>::type>();
-
-    InitGroupUI<I + 1, Types...>(tuple, pos);
-  }
-
-  // Temp fix Maarton help
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t<I == sizeof...(Types), void>
-    DestroyAllObject(Tuple<Types...>&, size_t index)
-  {}
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t < I<sizeof...(Types), void>
-    DestroyAllObject(Tuple<Types...>& tuple, size_t index)
-  {
-    if(I == index)
-    {
-      arena.Destroy(Get<I>(placeable_objects));
-      return;
+      std::function<void()> select_object = [&]()
+      {
+        editor.SelectObject<T::Type>();
+      };
+      auto handle = arena.Create<UIButtonObject>();
+      const int I = IndexValue<T, ObjectGroup<OBJECT_TYPES>>;
+      handle->Initialize(RectF(0 + pos.y, 50 + pos.y, I * 50 + pos.x, I * 50 + 50 + pos.x), select_object, Colors::White, Colors::Yellow, Colors::Green);
+      type = arena.Create<T::Type>();
     }
-    DestroyAllObject<I + 1, Types...>(tuple,index);
-  }
-
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t<I == sizeof...(Types), void>
-    MoveSelectedObject(Tuple<Types...>&, size_t index)
-  {}
-  template<size_t I = 0, typename... Types>
-  typename std::enable_if_t < I<sizeof...(Types), void>
-    MoveSelectedObject(Tuple<Types...>& tuple, size_t index)
+  };
+  
+  struct ObjectDestroyer
   {
-    if(I == index)
+    template<typename T>
+    void operator()(T& object, Arena& arena)
     {
-      Get<I>(placeable_objects)->SetPosition(ArenaBaseObject::input->MousePos());
-      return;
+      arena.Destroy(object);
     }
-    MoveSelectedObject<I + 1, Types...>(tuple, index);
-  }
+  };
+  struct ObjectMover
+  {
+    template<typename T>
+    void operator()(T& object)
+    {
+      object->SetPosition(ArenaBaseObject::input->MousePos());
+    }
+  };
+  struct ObjectPlacer
+  {
+    template <typename T>
+    void operator()(T& object, GodEditor& editor)
+    {
+      editor.PlaceObject<T::Type>();
+    }
+  };
 
 
   ObjectGroup<OBJECT_TYPES> placeable_objects;

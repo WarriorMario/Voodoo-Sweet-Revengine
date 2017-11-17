@@ -41,6 +41,58 @@ bool Input::IsPressed(ButtonCode code, int device_ID)
   }
 }
 
+bool Input::IsDown(ButtonCode code, int device_ID)
+{
+  switch(code)
+  {
+    case ButtonCode::LEFT_MOUSE:
+    {
+      return mouse.LeftIsDown();
+    }
+    case ButtonCode::RIGHT_MOUSE:
+    {
+      return mouse.RightIsDown();
+    }
+    default:
+    {
+      if((size_t)code > 255)
+      {
+        return controllers[device_ID].ButtonIsPressed((size_t)code);
+      }
+      else
+      {
+        return kbd.KeyIsDown((unsigned char)code);
+      }
+    }
+  }
+}
+
+bool Input::IsReleased(ButtonCode code, int device_ID)
+{
+  switch(code)
+  {
+    case ButtonCode::LEFT_MOUSE:
+    {
+      return mouse.LeftIsReleased();
+    }
+    case ButtonCode::RIGHT_MOUSE:
+    {
+      return mouse.RightIsReleased();
+    }
+    default:
+    {
+      if((size_t)code > 255)
+      {
+        return controllers[device_ID].ButtonIsPressed((size_t)code);
+      }
+      else
+      {
+        return kbd.KeyIsReleased((unsigned char)code);
+      }
+    }
+  }
+}
+
 Vec2 Input::GetAxis(AxisCode code, int device_ID)
 {
   switch(code)
@@ -67,6 +119,7 @@ Vec2 Input::MousePos()
 
 void Input::Poll()
 {
+  mouse.Poll();
   for(int i = 0; i < NUM_CONTROLLERS; ++i)
   {
     controllers[i].Poll();

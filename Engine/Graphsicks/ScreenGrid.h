@@ -8,8 +8,8 @@
 // ****************************************************************************
 struct ScreenGridCell
 {
-  size_t num_indices;
-  size_t indices[8];
+  unsigned short num_indices;
+  unsigned short indices[8];
   Color* buff;
 };
 
@@ -170,7 +170,7 @@ public:
   void UnPackBuffer(Color* destination)
   {
     PROFILE_SCOPE("Render::Grid::UnPackBuffer");
-#if 0
+#if 1
 	UnPackBufferData job_data[height] alignas(128);
 	size_t job_id = 0;
   for(int i = 0; i < height; ++i)

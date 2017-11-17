@@ -2,10 +2,11 @@
 #include "VArray.h"
 class Arena;
 
-template<typename Type>
+template<typename T>
 class Handle
 {
 public:
+  using Type = T;
   Handle() :index(INVALID_HANDLE)
   {}
   Handle(size_t index) :index(index)
@@ -29,18 +30,18 @@ public:
   }
   static constexpr size_t INVALID_HANDLE = -1;
 
-  Type* operator->() const
+  T* operator->() const
   {
     //assert(IsValid());
     
-    auto test = Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index];
+    auto test = Get<Array<RefCounter<T>>>(T::arena->objectGroups)[index];
     if(test.IsValid())
     {
-      return &(Get<Array<RefCounter<Type>>>(Type::arena->objectGroups)[index]);
+      return &(Get<Array<RefCounter<T>>>(T::arena->objectGroups)[index]);
     }
     else
     {
-      return Type::dummy_instance;
+      return T::dummy_instance;
     }
   }
 private:

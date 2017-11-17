@@ -66,6 +66,13 @@ public:
 		Z = 0x5A
 	};
 
+  enum State : unsigned char
+  {
+    Released,
+    Press,
+    Pressed,
+    Release
+  };
 	class Event
 	{
 	public:
@@ -111,6 +118,8 @@ public:
 	Keyboard( const Keyboard& ) = delete;
 	Keyboard& operator=( const Keyboard& ) = delete;
 	bool KeyIsPressed( unsigned char keycode ) const;
+  bool KeyIsReleased(unsigned char keycode) const;
+  bool KeyIsDown(unsigned char keycode) const;
 	Event ReadKey();
 	bool KeyIsEmpty() const;
 	char ReadChar();
@@ -131,6 +140,7 @@ private:
 	static constexpr unsigned int nKeys = 256u;
 	static constexpr unsigned int bufferSize = 4u;
 	bool autorepeatEnabled = false;
+  State key_states[256];
 	std::bitset<nKeys> keystates;
 	std::queue<Event> keybuffer;
 	std::queue<char> charbuffer;

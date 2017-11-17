@@ -24,15 +24,7 @@ FontRenderObject::FontRenderObject()
 
 void FontRenderObject::Update()
 {
-  //if(start_x < 1000)
-  //{
-  //  start_x += 1;
-  //}
-  //
-  //if(start_y < 600)
-  //{
-  //  start_y += 1;
-  //}
+}
 
 void FontRenderObject::Draw(Renderer & renderer)
 {
