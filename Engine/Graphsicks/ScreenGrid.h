@@ -9,7 +9,7 @@
 struct ScreenGridCell
 {
   size_t num_indices;
-  size_t indices[8];
+  size_t indices[24];
   Color* buff;
 };
 

@@ -22,6 +22,7 @@
 #include "MainWindow.h"
 #include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
+#include "Utility\FrameAllocator.h"
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
@@ -51,6 +52,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   JM_InitJobManager(JM_Get(), num_cores);
   //test = arena.Create<PhysicsObject>();
   arena.physx.CreateDebugDraw(gfx);
+
+  MakeSingleton<FrameAllocator>();
 
   godWindow.SetFocused();
 
@@ -127,6 +130,11 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   }
 }
 
+Game::~Game()
+{
+	DestroySingleton<FrameAllocator>();
+}
+
 void Game::Go()
 {
   ProfilerLogHandler pf_output;
@@ -147,7 +155,12 @@ void Game::Go()
       gfx.EndFrame();
     }
   }
-  //ProfileSample::Output();
+
+  // clear the frame allocator.
+  FrameAllocator::Get().Clear();
+
+  ProfileSample::Output();
+
 
 }
 Vec3 offset = Vec3(400, 400, 350);

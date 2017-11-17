@@ -1,14 +1,12 @@
 #pragma once
-#include "Utility.h"
-#include "STB\stb_truetype.h"
-#include "STB\stb_rect_pack.h"
+#include "VArray.h"
+#include "Graphsicks\Shader.h"
+#include "Graphsicks\Renderer.h"
 
 class FontManager
 {
 public:
-	FontManager();
-	~FontManager();
-
-private:
+  static void FontManager::RenderLine(TextRenderData& line,
+    Renderer& renderer, const Color& color = Colors::White);
 };
 
