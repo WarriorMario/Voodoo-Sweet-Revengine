@@ -49,6 +49,7 @@ struct TextRenderData
   GlyphQuad text_quads[TEXT_QUAD_BUFF_SIZE];
   FontAtlas atlas;
   size_t num_quads;
+  size_t start_x, start_y, tot_width, tot_height;
 };
 
 // ****************************************************************************
@@ -118,17 +119,15 @@ public:
       text_render_data.atlas = LoadFontAtlas(point_size);
     }
 
+	text_render_data.tot_height = 0;
+	text_render_data.start_x = start_x;
+	text_render_data.start_y = start_y;
+
     int cur_x = start_x, cur_y = start_y;
 
     // per letter
     for(int i = 0; i < text.size(); ++i)
     {
-      // offset the rest of the characters if the current char is a space
-      if(text[i] == ' ')
-      {
-        cur_x += space_size;
-      }
-
       // get the index of the char
       int idx = GetIndexInBaseChar(text[i]);
 
@@ -146,12 +145,17 @@ public:
           offset_x = text_render_data.atlas.w_h_ox_oy[idx][2],
           offset_y = text_render_data.atlas.w_h_ox_oy[idx][3];
 
+	  if (height > text_render_data.tot_height)
+	  {
+		  text_render_data.tot_height = height;
+	  }
+
       // set min values
       text_render_data.text_quads[i].min_x = cur_x;// + offset_x;
       text_render_data.text_quads[i].min_y = cur_y;// + offset_y;
 
       // update cur_x (and cur_y in the future)
-      cur_x += text_render_data.atlas.w_h_ox_oy[idx][0];
+      cur_x += width;
 
       // set the max values
       text_render_data.text_quads[i].max_x = cur_x         ;// + offset_x;
@@ -166,7 +170,8 @@ public:
       cur_x += 8;
     }
 
-    // update the num_quads value
+	// update the last values
+	text_render_data.tot_width = cur_x;
     text_render_data.num_quads = text.size();
 
     // return happily
@@ -180,16 +185,18 @@ private:
 
     if(FileIO::LoadFileBinary(filename.data(), &data.font_file) == false)
     {
+      // return sadly
       return false;
     }
 
     if(stbtt_InitFont(&data.stb_font, (unsigned char*)data.font_file.data,
       stbtt_GetFontOffsetForIndex((unsigned char*)data.font_file.data, 0)))
     {
+      // return happily
       return true; // load was succesful
     }
 
-
+    // return sadly
     return false;
   }
 
@@ -203,18 +210,22 @@ private:
 
     // four arrays to hold the bitmap sizes per glyph
     int w_h_ox_oy[NUM_BASE_CHARS][4];
-    unsigned char* mono_bitmaps[NUM_BASE_CHARS];
+    unsigned char* mono_bitmaps[NUM_BASE_CHARS - 1];
+    size_t
+      space_width = point_size / 2,
+      space_height = point_size,
+      space_size = space_width * space_height;
 
     // get the scale that stb_truetype can use
     float scale = stbtt_ScaleForPixelHeight(&data.stb_font, (float)point_size);
 
-    // keep track of the amount of pixels
-    size_t tot_size = 0;
+    // keep track of the amount of pixels. start with some extra memory for ' '
+    size_t tot_size = space_size;
 
     // use stb_truetype to rasterize all of the glyphs for me
-    for(int i = 0; i < NUM_BASE_CHARS; ++i)
+    for(int i = 1; i < NUM_BASE_CHARS; ++i)
     {
-      mono_bitmaps[i] = stbtt_GetCodepointBitmap(&data.stb_font, 0.0f, scale, BASE_CHAR[i],
+      mono_bitmaps[i - 1] = stbtt_GetCodepointBitmap(&data.stb_font, 0.0f, scale, BASE_CHAR[i],
         &w_h_ox_oy[i][0], &w_h_ox_oy[i][1], &w_h_ox_oy[i][2], &w_h_ox_oy[i][3]);
 
       tot_size += w_h_ox_oy[i][0] * w_h_ox_oy[i][1];
@@ -230,15 +241,24 @@ private:
 
     // get the initial alpha value
     unsigned char* p = font_atlas.alpha_values[0];
+    
+    // set the first bit of the texture buffer to be the space bar
+    font_atlas.w_h_ox_oy[0][0] = space_width;
+    font_atlas.w_h_ox_oy[0][1] = space_height;
+    font_atlas.w_h_ox_oy[0][2] = 0;
+    font_atlas.w_h_ox_oy[0][3] = 0;
+    font_atlas.alpha_values[0] = p;
+
+    memset(p, 0, space_size * sizeof(unsigned char));
+    p += space_size;
 
     // for all glyphs we'll use
-    for(int i = 0; i < NUM_BASE_CHARS; ++i)
+    for(int i = 1; i < NUM_BASE_CHARS; ++i)
     {
       // reset idx counter
       size_t idx_glyph_tex = 0;
 
       // set the appropriate font atlas values
-      font_atlas.tot_alpha_values = w_h_ox_oy[i][0] * w_h_ox_oy[i][1];
       font_atlas.alpha_values[i] = p;
       font_atlas.w_h_ox_oy[i][0] = w_h_ox_oy[i][0];
       font_atlas.w_h_ox_oy[i][1] = w_h_ox_oy[i][1];
@@ -246,10 +266,20 @@ private:
       font_atlas.w_h_ox_oy[i][3] = w_h_ox_oy[i][3];
 
       // copy over the alpha values
-      memcpy(p, mono_bitmaps[i], font_atlas.tot_alpha_values * sizeof(unsigned char));
+	  for (int y = 0; y < w_h_ox_oy[i][1]; ++y)
+	  {
+		  int res_y = w_h_ox_oy[i][1] - y - 1;
+		  memcpy(
+			  p + res_y * w_h_ox_oy[i][0],
+			  mono_bitmaps[i - 1] + y * w_h_ox_oy[i][0],
+			  w_h_ox_oy[i][0] * sizeof(unsigned char));
+	  }
+
+      // free stb memory
+      stbtt_FreeBitmap(mono_bitmaps[i - 1], nullptr);
 
       // offset the pointer to the next glyph
-      p += font_atlas.tot_alpha_values;
+      p += font_atlas.w_h_ox_oy[i][0] * w_h_ox_oy[i][1];
     }
 
     // place the font atlas in the map

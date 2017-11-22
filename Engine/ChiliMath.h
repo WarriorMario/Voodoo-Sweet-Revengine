@@ -80,7 +80,8 @@ inline int RoundUpPow2(int v)
 	v |= v >> 16;
 	return v + 1;
 }
-inline float Lerp(float v1, float v2, float t)
+template<typename T>
+inline T Lerp(const T& v1, const T& v2, float t)
 {
 	return (1.0f - t) * v1 + t * v2;
 }
