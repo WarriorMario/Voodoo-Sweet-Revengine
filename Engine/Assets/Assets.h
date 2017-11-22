@@ -24,7 +24,7 @@ class AssetsImpl : public Singleton<AssetsImpl<Types...>>
     int refs;
   };
   template<typename T>
-  using AssetMap = UnorderedMap<String, Asset<T>>;
+  using AssetMap = HashMap<String, Asset<T>>;
 
 public:
   template<typename T>

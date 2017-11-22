@@ -58,6 +58,8 @@ struct b2Vec2
 	/// Default constructor does nothing (for performance).
 	b2Vec2() {}
 
+  /// Construct using a single value.
+  b2Vec2(float32 val) : x(val), y(val) {}
 	/// Construct using coordinates.
 	b2Vec2(float32 x, float32 y) : x(x), y(y) {}
 
@@ -173,6 +175,8 @@ struct b2Vec3
 	/// Default constructor does nothing (for performance).
 	b2Vec3() {}
 
+  /// Construct using a single value.
+  b2Vec3(float32 val) : x(val), y(val), z(val) {}
 	/// Construct using coordinates.
 	b2Vec3(float32 x, float32 y, float32 z) : x(x), y(y), z(z) {}
 
@@ -240,6 +244,66 @@ struct b2Vec4
 	float32 x, y, z, w;
 };
 
+/// Rotation
+struct b2Rot
+{
+  b2Rot()
+  {}
+
+  /// Initialize from an angle in radians
+  explicit b2Rot(float32 angle)
+  {
+    /// TODO_ERIN optimize
+    s = sinf(angle);
+    c = cosf(angle);
+  }
+
+  /// Set using an angle in radians.
+  void Set(float32 angle)
+  {
+    /// TODO_ERIN optimize
+    s = sinf(angle);
+    c = cosf(angle);
+  }
+
+  /// Set to the identity rotation
+  void SetIdentity()
+  {
+    s = 0.0f;
+    c = 1.0f;
+  }
+
+  /// Get a new idenity rotation
+  static b2Rot GetIdentity()
+  {
+    b2Rot r;
+    r.s = 0.0f;
+    r.c = 1.0f;
+    return r;
+  }
+
+  /// Get the angle in radians
+  float32 GetAngle() const
+  {
+    return b2Atan2(s, c);
+  }
+
+  /// Get the x-axis
+  b2Vec2 GetXAxis() const
+  {
+    return b2Vec2(c, s);
+  }
+
+  /// Get the u-axis
+  b2Vec2 GetYAxis() const
+  {
+    return b2Vec2(-s, c);
+  }
+
+  /// Sine and cosine
+  float32 s, c;
+};
+
 /// A 2-by-2 matrix. Stored in column-major order.
 struct b2Mat22
 {
@@ -253,12 +317,30 @@ struct b2Mat22
 		ey = c2;
 	}
 
+  /// Construct this matrix from a single value.
+  b2Mat22(float32 val)
+  {
+    ex.x = val; ex.y = val;
+    ey.x = val; ey.y = val;
+  }
 	/// Construct this matrix using scalars.
 	b2Mat22(float32 a11, float32 a12, float32 a21, float32 a22)
 	{
 		ex.x = a11; ex.y = a21;
 		ey.x = a12; ey.y = a22;
 	}
+  /// Construct this matrix from a rotation.
+  b2Mat22(const b2Rot& r)
+  {
+    ex.x = r.c; ex.y = -r.s;
+    ey.x = r.s; ey.y = r.c;
+  }
+  /// Construct this matrix from axis scalars
+  b2Mat22(float32 sx, float32 sy)
+  {
+    ex.x = 1.0f; ex.y = 0.0f;
+    ey.x = 0.0f; ey.y = 1.0f;
+  }
 
 	/// Initialize this matrix using columns.
 	void Set(const b2Vec2& c1, const b2Vec2& c2)
@@ -275,7 +357,7 @@ struct b2Mat22
 	}
 
   /// Get a new idenity matrix
-  inline static b2Mat22 GetIdentity()
+  static b2Mat22 GetIdentity()
   {
     return b2Mat22(
       1.0f, 0.0f,
@@ -337,12 +419,62 @@ struct b2Mat33
 		ez = c3;
 	}
 
+  /// Construct this matrix from a single value.
+  b2Mat33(float32 val)
+  {
+    ex.x = val; ex.y = val; ex.z = val;
+    ey.x = val; ey.y = val; ey.z = val;
+    ez.x = val; ez.y = val; ez.z = val;
+  }
+  /// Construct this matrix using scalars.
+  b2Mat33(
+    float32 a11, float32 a12, float32 a13,
+    float32 a21, float32 a22, float32 a23,
+    float32 a31, float32 a32, float32 a33)
+  {
+    ex.x = a11; ex.y = a21; ex.z = a31;
+    ey.x = a12; ey.y = a22; ey.z = a32;
+    ez.x = a13; ez.y = a23; ez.z = a33;
+  }
+  /// Construct this matrix from a rotation.
+  b2Mat33(const b2Rot& r)
+  {
+    ex.x = r.c; ex.y = -r.s; ex.z = 0.0f;
+    ey.x = r.s; ey.y = r.c; ey.z = 0.0f;
+    ez.x = 0.0f; ez.y = 0.0f; ez.z = 1.0f;
+  }
+  /// Construct this matrix from axis scalars
+  b2Mat33(float32 sx, float32 sy, float32 sz)
+  {
+    ex.x = sx; ex.y = 0.0f; ex.z = 0.0f;
+    ey.x = 0.0f; ey.y = sy; ey.z = 0.0f;
+    ez.x = 0.0f; ez.y = 0.0f; ez.z = sz;
+  }
+
 	/// Set this matrix to all zeros.
 	void SetZero()
 	{
 		ex.SetZero();
 		ey.SetZero();
 		ez.SetZero();
+	}
+
+	/// Set this to the identity matrix.
+	void SetIdentity()
+	{
+		ex.x = 1.0f; ey.x = 0.0f; ez.x = 0.0f;
+		ex.y = 0.0f; ey.y = 1.0f; ez.y = 0.0f;
+		ex.z = 0.0f; ey.z = 0.0f; ez.z = 1.0f;
+	}
+
+	/// Get a new idenity matrix
+	static b2Mat33 GetIdentity()
+	{
+		return b2Mat33(
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f
+		);
 	}
 
 	/// Solve A * x = b, where b is a column vector. This is more efficient
@@ -363,65 +495,6 @@ struct b2Mat33
 	void GetSymInverse33(b2Mat33* M) const;
 
 	b2Vec3 ex, ey, ez;
-};
-
-/// Rotation
-struct b2Rot
-{
-	b2Rot() {}
-
-	/// Initialize from an angle in radians
-	explicit b2Rot(float32 angle)
-	{
-		/// TODO_ERIN optimize
-		s = sinf(angle);
-		c = cosf(angle);
-	}
-
-	/// Set using an angle in radians.
-	void Set(float32 angle)
-	{
-		/// TODO_ERIN optimize
-		s = sinf(angle);
-		c = cosf(angle);
-	}
-
-	/// Set to the identity rotation
-	void SetIdentity()
-	{
-		s = 0.0f;
-		c = 1.0f;
-	}
-
-  /// Get a new idenity matrix
-  inline static b2Rot GetIdentity()
-  {
-    b2Rot r;
-    r.s = 0.0f;
-    r.c = 1.0f;
-    return r;
-  }
-
-	/// Get the angle in radians
-	float32 GetAngle() const
-	{
-		return b2Atan2(s, c);
-	}
-
-	/// Get the x-axis
-	b2Vec2 GetXAxis() const
-	{
-		return b2Vec2(c, s);
-	}
-
-	/// Get the u-axis
-	b2Vec2 GetYAxis() const
-	{
-		return b2Vec2(-s, c);
-	}
-
-	/// Sine and cosine
-	float32 s, c;
 };
 
 /// A transform contains translation and rotation. It is used to represent
@@ -658,6 +731,27 @@ inline b2Rot b2MulT(const b2Rot& q, const b2Rot& r)
 	qr.s = q.c * r.s - q.s * r.c;
 	qr.c = q.c * r.c + q.s * r.s;
 	return qr;
+}
+
+/// Multiply a matrix with a rotation: m * r
+inline b2Mat22 b2Mul(const b2Mat22& m, const b2Rot& r)
+{
+	// [ex.x ex.y] * [rc -rs] = [ex.x*rc+ex.y*rs -ex.x*rs+ex.y*rc]
+	// [ey.x ey.y]   [rs  rc]   [ey.x*rc+ey.y*rs -ey.x*rs+ey.y*rc]
+	return b2Mat22(
+		m.ex.x * r.c + m.ex.y * r.s, m.ey.x * r.c + m.ey.y * r.s,
+		-m.ex.x * r.s + m.ex.y * r.c, -m.ey.x * r.s + m.ey.y * r.c
+	);
+}
+/// Transpose multiply a matrix with a rotation: mT * r
+inline b2Mat22 b2MulT(const b2Mat22& m, const b2Rot& r)
+{
+	// [ex.x ey.x] * [rc -rs] = [ex.x*rc+ey.x*rs -ex.x*rs+ey.x*rc]
+	// [ex.y ey.y]   [rs  rc]   [ex.y*rc+ey.y*rs -ex.y*rs+ey.y*rc]
+	return b2Mat22(
+		m.ex.x * r.c + m.ey.x * r.s, m.ex.y * r.c + m.ey.y * r.s,
+		-m.ex.x * r.s + m.ey.x * r.c, -m.ex.y * r.s + m.ey.y * r.c
+	);
 }
 
 /// Rotate a vector
