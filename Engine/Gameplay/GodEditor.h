@@ -2,6 +2,7 @@
 #include "VArray.h"
 #include "Framework\Arena.h"
 #include "Input\Input.h"
+
 class ArenaBaseObject;
 
 class GodEditor

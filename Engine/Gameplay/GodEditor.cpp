@@ -1,5 +1,4 @@
 #include "GodEditor.h"
-#include "Framework\Arena.h"
 #include "Graphsicks\Graphics.h"
 
 void GodEditor::Init()

@@ -1,15 +1,13 @@
 #pragma once
 #include "ArenaObject.h"
 #include "Physics\Body.h"
+
 class b2Shape;
 using Shape = b2Shape;
 struct b2FixtureDef;
 using FixtureDef = b2FixtureDef;
 class b2Fixture;
 using Fixture = b2Fixture;
-
-struct Vec2;
-using Vec2 = Vec2;
 
 class PhysicsObject : public ArenaObject<PhysicsObject>
 {

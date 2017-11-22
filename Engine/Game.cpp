@@ -20,9 +20,10 @@
  ******************************************************************************************/
 #include "Game.h"
 #include "MainWindow.h"
-#include "Vec3.h"
-#include "Vec2.h"
+#include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
+#include "Utility\FrameAllocator.h"
+
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
 #if SINGLE_CORE_PROFILING
@@ -59,9 +60,8 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   arena.physx.CreateDebugDraw(gfx);
   editor.Init();
 
-  //arena.Create<FontRenderObject>();
-  //arena.Create<UIButtonObject>()->Initialize(RectF(0,50,0,50), FlorisThisIsHowSimpleUIIs, Colors::White,Colors::Yellow ,Colors::Green );
- 
+  MakeSingleton<FrameAllocator>();
+
   godWindow.SetFocused();
 
   test0.type = b2_dynamicBody; //this will be a dynamic body
@@ -74,6 +74,11 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
   test1.position.Set(100, 160); //set the starting position
   test1.angle = 0; //set the starting angle
 
+}
+
+Game::~Game()
+{
+	DestroySingleton<FrameAllocator>();
 }
 
 void Game::Go()
@@ -89,13 +94,18 @@ void Game::Go()
     }
     UpdateModel();
     ComposeFrame();
-    
+
     {
       PROFILE_SCOPE("Game::Go::EndFrame");
       gfx.EndFrame();
     }
   }
+
+  // clear the frame allocator.
+  FrameAllocator::Get().Clear();
+
   ProfileSample::Output();
+
 
   input.Poll();
 }
@@ -111,7 +121,7 @@ void Game::UpdateModel()
   }
   editor.Update();
   player.Update();
-  player.Input(godWindow.kbd); 
+  player.Input(godWindow.kbd);
   frame_counter.Update();
 
   //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
@@ -126,4 +136,5 @@ void Game::ComposeFrame()
   frame_counter.Draw(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
+
 }

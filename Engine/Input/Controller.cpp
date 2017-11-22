@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include "ButtonCodes.h"
+#include "Matrix.h"
 void Controller::Poll()
 {
   XINPUT_STATE state = {};

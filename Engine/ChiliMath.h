@@ -26,6 +26,7 @@
 static constexpr float PI = 3.1415926535897932384626433832795;
 static constexpr float TWO_PI = 6.283185307179586476925286766559;
 static constexpr float HALF_PI = 1.5707963267948966192313216916398;
+static constexpr float QUARTER_PI = 0.78539816339744830961566084581988;
 static constexpr float INV_PI = 0.31830988618379067153776752674503;
 static constexpr float INV_TWO_PI = 0.15915494309189533576888376337251;
 static constexpr float INV_FOUR_PI = 0.07957747154594766788444188168626;
@@ -79,7 +80,8 @@ inline int RoundUpPow2(int v)
 	v |= v >> 16;
 	return v + 1;
 }
-inline float Lerp(float v1, float v2, float t)
+template<typename T>
+inline T Lerp(const T& v1, const T& v2, float t)
 {
 	return (1.0f - t) * v1 + t * v2;
 }

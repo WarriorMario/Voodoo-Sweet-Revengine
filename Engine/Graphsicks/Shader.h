@@ -3,8 +3,8 @@
 #include "Utility.h"
 #include "Assets\Assets.h"
 #include "VArray.h"
-#include "Vec2.h"
-#include "Utility\SIMD.h"
+#include "Matrix.h"
+#include "SIMD\SIMD.h"
 //////////// OBSOLETE TODO (Floris) unobsoletify this
 // ****************************************************************************
 // To create a new shader you can declare it as a struct which implements:

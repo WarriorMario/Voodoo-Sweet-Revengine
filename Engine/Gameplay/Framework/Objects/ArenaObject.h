@@ -4,6 +4,7 @@
 #include "ArenaBaseObject.h"
 #include "Utility.h"
 #include "Utility\Logging.h"
+#include "MatrixDef.h"
 
 #include <typeinfo>
 
@@ -20,7 +21,7 @@ public:
   {
   }
 
-  void SetPosition(struct Vec2& pos)
+  void SetPosition(Vec2& pos)
   {
     Logger::Get().Write(LogCategory::USER, "Missing implementation of %s::SetPosition()", typeid(T).name());
     CRASH();

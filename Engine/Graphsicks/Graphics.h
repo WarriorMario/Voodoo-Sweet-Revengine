@@ -23,7 +23,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
-#include "Mat3.h"
+#include "Matrix.h"
 #include "Rect.h"
 #include "Utility.h"
 

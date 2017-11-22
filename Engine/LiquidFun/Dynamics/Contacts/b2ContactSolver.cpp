@@ -29,13 +29,13 @@
 
 struct b2ContactPositionConstraint
 {
-	Vec2 localPoints[b2_maxManifoldPoints];
-	Vec2 localNormal;
-	Vec2 localPoint;
+	b2Vec2 localPoints[b2_maxManifoldPoints];
+	b2Vec2 localNormal;
+	b2Vec2 localPoint;
 	int32 indexA;
 	int32 indexB;
 	float32 invMassA, invMassB;
-	Vec2 localCenterA, localCenterB;
+	b2Vec2 localCenterA, localCenterB;
 	float32 invIA, invIB;
 	b2Manifold::Type type;
 	float32 radiusA, radiusB;
@@ -154,17 +154,17 @@ void b2ContactSolver::InitializeVelocityConstraints()
 		float32 mB = vc->invMassB;
 		float32 iA = vc->invIA;
 		float32 iB = vc->invIB;
-		Vec2 localCenterA = pc->localCenterA;
-		Vec2 localCenterB = pc->localCenterB;
+		b2Vec2 localCenterA = pc->localCenterA;
+		b2Vec2 localCenterB = pc->localCenterB;
 
-		Vec2 cA = m_positions[indexA].c;
+		b2Vec2 cA = m_positions[indexA].c;
 		float32 aA = m_positions[indexA].a;
-		Vec2 vA = m_velocities[indexA].v;
+		b2Vec2 vA = m_velocities[indexA].v;
 		float32 wA = m_velocities[indexA].w;
 
-		Vec2 cB = m_positions[indexB].c;
+		b2Vec2 cB = m_positions[indexB].c;
 		float32 aB = m_positions[indexB].a;
-		Vec2 vB = m_velocities[indexB].v;
+		b2Vec2 vB = m_velocities[indexB].v;
 		float32 wB = m_velocities[indexB].w;
 
 		b2Assert(manifold->pointCount > 0);
@@ -195,7 +195,7 @@ void b2ContactSolver::InitializeVelocityConstraints()
 
 			vcp->normalMass = kNormal > 0.0f ? 1.0f / kNormal : 0.0f;
 
-			Vec2 tangent = b2Cross(vc->normal, 1.0f);
+			b2Vec2 tangent = b2Cross(vc->normal, 1.0f);
 
 			float32 rtA = b2Cross(vcp->rA, tangent);
 			float32 rtB = b2Cross(vcp->rB, tangent);
@@ -262,18 +262,18 @@ void b2ContactSolver::WarmStart()
 		float32 iB = vc->invIB;
 		int32 pointCount = vc->pointCount;
 
-		Vec2 vA = m_velocities[indexA].v;
+		b2Vec2 vA = m_velocities[indexA].v;
 		float32 wA = m_velocities[indexA].w;
-		Vec2 vB = m_velocities[indexB].v;
+		b2Vec2 vB = m_velocities[indexB].v;
 		float32 wB = m_velocities[indexB].w;
 
-		Vec2 normal = vc->normal;
-		Vec2 tangent = b2Cross(normal, 1.0f);
+		b2Vec2 normal = vc->normal;
+		b2Vec2 tangent = b2Cross(normal, 1.0f);
 
 		for (int32 j = 0; j < pointCount; ++j)
 		{
 			b2VelocityConstraintPoint* vcp = vc->points + j;
-			Vec2 P = vcp->normalImpulse * normal + vcp->tangentImpulse * tangent;
+			b2Vec2 P = vcp->normalImpulse * normal + vcp->tangentImpulse * tangent;
 			wA -= iA * b2Cross(vcp->rA, P);
 			vA -= mA * P;
 			wB += iB * b2Cross(vcp->rB, P);
@@ -301,13 +301,13 @@ void b2ContactSolver::SolveVelocityConstraints()
 		float32 iB = vc->invIB;
 		int32 pointCount = vc->pointCount;
 
-		Vec2 vA = m_velocities[indexA].v;
+		b2Vec2 vA = m_velocities[indexA].v;
 		float32 wA = m_velocities[indexA].w;
-		Vec2 vB = m_velocities[indexB].v;
+		b2Vec2 vB = m_velocities[indexB].v;
 		float32 wB = m_velocities[indexB].w;
 
-		Vec2 normal = vc->normal;
-		Vec2 tangent = b2Cross(normal, 1.0f);
+		b2Vec2 normal = vc->normal;
+		b2Vec2 tangent = b2Cross(normal, 1.0f);
 		float32 friction = vc->friction;
 
 		b2Assert(pointCount == 1 || pointCount == 2);
@@ -319,7 +319,7 @@ void b2ContactSolver::SolveVelocityConstraints()
 			b2VelocityConstraintPoint* vcp = vc->points + j;
 
 			// Relative velocity at contact
-			Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
+			b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
 
 			// Compute tangent force
 			float32 vt = b2Dot(dv, tangent) - vc->tangentSpeed;
@@ -332,7 +332,7 @@ void b2ContactSolver::SolveVelocityConstraints()
 			vcp->tangentImpulse = newImpulse;
 
 			// Apply contact impulse
-			Vec2 P = lambda * tangent;
+			b2Vec2 P = lambda * tangent;
 
 			vA -= mA * P;
 			wA -= iA * b2Cross(vcp->rA, P);
@@ -347,7 +347,7 @@ void b2ContactSolver::SolveVelocityConstraints()
 			b2VelocityConstraintPoint* vcp = vc->points + 0;
 
 			// Relative velocity at contact
-			Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
+			b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
 
 			// Compute normal impulse
 			float32 vn = b2Dot(dv, normal);
@@ -359,7 +359,7 @@ void b2ContactSolver::SolveVelocityConstraints()
 			vcp->normalImpulse = newImpulse;
 
 			// Apply contact impulse
-			Vec2 P = lambda * normal;
+			b2Vec2 P = lambda * normal;
 			vA -= mA * P;
 			wA -= iA * b2Cross(vcp->rA, P);
 
@@ -404,18 +404,18 @@ void b2ContactSolver::SolveVelocityConstraints()
 			b2VelocityConstraintPoint* cp1 = vc->points + 0;
 			b2VelocityConstraintPoint* cp2 = vc->points + 1;
 
-			Vec2 a(cp1->normalImpulse, cp2->normalImpulse);
+			b2Vec2 a(cp1->normalImpulse, cp2->normalImpulse);
 			b2Assert(a.x >= 0.0f && a.y >= 0.0f);
 
 			// Relative velocity at contact
-			Vec2 dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
-			Vec2 dv2 = vB + b2Cross(wB, cp2->rB) - vA - b2Cross(wA, cp2->rA);
+			b2Vec2 dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
+			b2Vec2 dv2 = vB + b2Cross(wB, cp2->rB) - vA - b2Cross(wA, cp2->rA);
 
 			// Compute normal velocity
 			float32 vn1 = b2Dot(dv1, normal);
 			float32 vn2 = b2Dot(dv2, normal);
 
-			Vec2 b;
+			b2Vec2 b;
 			b.x = vn1 - cp1->velocityBias;
 			b.y = vn2 - cp2->velocityBias;
 
@@ -436,16 +436,16 @@ void b2ContactSolver::SolveVelocityConstraints()
 				//
 				// x = - inv(A) * b'
 				//
-				Vec2 x = - b2Mul(vc->normalMass, b);
+				b2Vec2 x = - b2Mul(vc->normalMass, b);
 
 				if (x.x >= 0.0f && x.y >= 0.0f)
 				{
 					// Get the incremental impulse
-					Vec2 d = x - a;
+					b2Vec2 d = x - a;
 
 					// Apply incremental impulse
-					Vec2 P1 = d.x * normal;
-					Vec2 P2 = d.y * normal;
+					b2Vec2 P1 = d.x * normal;
+					b2Vec2 P2 = d.y * normal;
 					vA -= mA * (P1 + P2);
 					wA -= iA * (b2Cross(cp1->rA, P1) + b2Cross(cp2->rA, P2));
 
@@ -484,11 +484,11 @@ void b2ContactSolver::SolveVelocityConstraints()
 				if (x.x >= 0.0f && vn2 >= 0.0f)
 				{
 					// Get the incremental impulse
-					Vec2 d = x - a;
+					b2Vec2 d = x - a;
 
 					// Apply incremental impulse
-					Vec2 P1 = d.x * normal;
-					Vec2 P2 = d.y * normal;
+					b2Vec2 P1 = d.x * normal;
+					b2Vec2 P2 = d.y * normal;
 					vA -= mA * (P1 + P2);
 					wA -= iA * (b2Cross(cp1->rA, P1) + b2Cross(cp2->rA, P2));
 
@@ -525,11 +525,11 @@ void b2ContactSolver::SolveVelocityConstraints()
 				if (x.y >= 0.0f && vn1 >= 0.0f)
 				{
 					// Resubstitute for the incremental impulse
-					Vec2 d = x - a;
+					b2Vec2 d = x - a;
 
 					// Apply incremental impulse
-					Vec2 P1 = d.x * normal;
-					Vec2 P2 = d.y * normal;
+					b2Vec2 P1 = d.x * normal;
+					b2Vec2 P2 = d.y * normal;
 					vA -= mA * (P1 + P2);
 					wA -= iA * (b2Cross(cp1->rA, P1) + b2Cross(cp2->rA, P2));
 
@@ -565,11 +565,11 @@ void b2ContactSolver::SolveVelocityConstraints()
 				if (vn1 >= 0.0f && vn2 >= 0.0f )
 				{
 					// Resubstitute for the incremental impulse
-					Vec2 d = x - a;
+					b2Vec2 d = x - a;
 
 					// Apply incremental impulse
-					Vec2 P1 = d.x * normal;
-					Vec2 P2 = d.y * normal;
+					b2Vec2 P1 = d.x * normal;
+					b2Vec2 P2 = d.y * normal;
 					vA -= mA * (P1 + P2);
 					wA -= iA * (b2Cross(cp1->rA, P1) + b2Cross(cp2->rA, P2));
 
@@ -620,8 +620,8 @@ struct b2PositionSolverManifold
 		{
 		case b2Manifold::e_circles:
 			{
-				Vec2 pointA = b2Mul(xfA, pc->localPoint);
-				Vec2 pointB = b2Mul(xfB, pc->localPoints[0]);
+				b2Vec2 pointA = b2Mul(xfA, pc->localPoint);
+				b2Vec2 pointB = b2Mul(xfB, pc->localPoints[0]);
 				normal = pointB - pointA;
 				normal.Normalize();
 				point = 0.5f * (pointA + pointB);
@@ -632,9 +632,9 @@ struct b2PositionSolverManifold
 		case b2Manifold::e_faceA:
 			{
 				normal = b2Mul(xfA.q, pc->localNormal);
-				Vec2 planePoint = b2Mul(xfA, pc->localPoint);
+				b2Vec2 planePoint = b2Mul(xfA, pc->localPoint);
 
-				Vec2 clipPoint = b2Mul(xfB, pc->localPoints[index]);
+				b2Vec2 clipPoint = b2Mul(xfB, pc->localPoints[index]);
 				separation = b2Dot(clipPoint - planePoint, normal) - pc->radiusA - pc->radiusB;
 				point = clipPoint;
 			}
@@ -643,9 +643,9 @@ struct b2PositionSolverManifold
 		case b2Manifold::e_faceB:
 			{
 				normal = b2Mul(xfB.q, pc->localNormal);
-				Vec2 planePoint = b2Mul(xfB, pc->localPoint);
+				b2Vec2 planePoint = b2Mul(xfB, pc->localPoint);
 
-				Vec2 clipPoint = b2Mul(xfA, pc->localPoints[index]);
+				b2Vec2 clipPoint = b2Mul(xfA, pc->localPoints[index]);
 				separation = b2Dot(clipPoint - planePoint, normal) - pc->radiusA - pc->radiusB;
 				point = clipPoint;
 
@@ -665,8 +665,8 @@ struct b2PositionSolverManifold
 		}
 	}
 
-	Vec2 normal;
-	Vec2 point;
+	b2Vec2 normal;
+	b2Vec2 point;
 	float32 separation;
 };
 
@@ -681,18 +681,18 @@ bool b2ContactSolver::SolvePositionConstraints()
 
 		int32 indexA = pc->indexA;
 		int32 indexB = pc->indexB;
-		Vec2 localCenterA = pc->localCenterA;
+		b2Vec2 localCenterA = pc->localCenterA;
 		float32 mA = pc->invMassA;
 		float32 iA = pc->invIA;
-		Vec2 localCenterB = pc->localCenterB;
+		b2Vec2 localCenterB = pc->localCenterB;
 		float32 mB = pc->invMassB;
 		float32 iB = pc->invIB;
 		int32 pointCount = pc->pointCount;
 
-		Vec2 cA = m_positions[indexA].c;
+		b2Vec2 cA = m_positions[indexA].c;
 		float32 aA = m_positions[indexA].a;
 
-		Vec2 cB = m_positions[indexB].c;
+		b2Vec2 cB = m_positions[indexB].c;
 		float32 aB = m_positions[indexB].a;
 
 		// Solve normal constraints
@@ -706,13 +706,13 @@ bool b2ContactSolver::SolvePositionConstraints()
 
 			b2PositionSolverManifold psm;
 			psm.Initialize(pc, xfA, xfB, j);
-			Vec2 normal = psm.normal;
+			b2Vec2 normal = psm.normal;
 
-			Vec2 point = psm.point;
+			b2Vec2 point = psm.point;
 			float32 separation = psm.separation;
 
-			Vec2 rA = point - cA;
-			Vec2 rB = point - cB;
+			b2Vec2 rA = point - cA;
+			b2Vec2 rB = point - cB;
 
 			// Track max constraint error.
 			minSeparation = b2Min(minSeparation, separation);
@@ -728,7 +728,7 @@ bool b2ContactSolver::SolvePositionConstraints()
 			// Compute normal impulse
 			float32 impulse = K > 0.0f ? - C / K : 0.0f;
 
-			Vec2 P = impulse * normal;
+			b2Vec2 P = impulse * normal;
 
 			cA -= mA * P;
 			aA -= iA * b2Cross(rA, P);
@@ -760,8 +760,8 @@ bool b2ContactSolver::SolveTOIPositionConstraints(int32 toiIndexA, int32 toiInde
 
 		int32 indexA = pc->indexA;
 		int32 indexB = pc->indexB;
-		Vec2 localCenterA = pc->localCenterA;
-		Vec2 localCenterB = pc->localCenterB;
+		b2Vec2 localCenterA = pc->localCenterA;
+		b2Vec2 localCenterB = pc->localCenterB;
 		int32 pointCount = pc->pointCount;
 
 		float32 mA = 0.0f;
@@ -780,10 +780,10 @@ bool b2ContactSolver::SolveTOIPositionConstraints(int32 toiIndexA, int32 toiInde
 			iB = pc->invIB;
 		}
 
-		Vec2 cA = m_positions[indexA].c;
+		b2Vec2 cA = m_positions[indexA].c;
 		float32 aA = m_positions[indexA].a;
 
-		Vec2 cB = m_positions[indexB].c;
+		b2Vec2 cB = m_positions[indexB].c;
 		float32 aB = m_positions[indexB].a;
 
 		// Solve normal constraints
@@ -797,13 +797,13 @@ bool b2ContactSolver::SolveTOIPositionConstraints(int32 toiIndexA, int32 toiInde
 
 			b2PositionSolverManifold psm;
 			psm.Initialize(pc, xfA, xfB, j);
-			Vec2 normal = psm.normal;
+			b2Vec2 normal = psm.normal;
 
-			Vec2 point = psm.point;
+			b2Vec2 point = psm.point;
 			float32 separation = psm.separation;
 
-			Vec2 rA = point - cA;
-			Vec2 rB = point - cB;
+			b2Vec2 rA = point - cA;
+			b2Vec2 rB = point - cB;
 
 			// Track max constraint error.
 			minSeparation = b2Min(minSeparation, separation);
@@ -819,7 +819,7 @@ bool b2ContactSolver::SolveTOIPositionConstraints(int32 toiIndexA, int32 toiInde
 			// Compute normal impulse
 			float32 impulse = K > 0.0f ? - C / K : 0.0f;
 
-			Vec2 P = impulse * normal;
+			b2Vec2 P = impulse * normal;
 
 			cA -= mA * P;
 			aA -= iA * b2Cross(rA, P);

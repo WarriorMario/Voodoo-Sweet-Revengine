@@ -1,5 +1,5 @@
 #pragma once
-#include "Vec3.h"
+#include "Matrix.h"
 #include "Rect.h"
 #include "Colors.h"
 #include "Utility.h"
@@ -8,8 +8,8 @@
 // ****************************************************************************
 struct ScreenGridCell
 {
-  unsigned short num_indices;
-  unsigned short indices[8];
+  size_t num_indices;
+  size_t indices[24];
   Color* buff;
 };
 

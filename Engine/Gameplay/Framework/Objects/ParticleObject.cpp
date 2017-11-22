@@ -1,6 +1,5 @@
 #include "ParticleObject.h"
 #include "..\Arena.h"
-#include "Vec2.h"
 #include "Graphsicks\Renderer.h"
 #include "Physics\PhysicsConstants.h"
  b2ParticleSystem* ParticleObjectBase::system = nullptr;

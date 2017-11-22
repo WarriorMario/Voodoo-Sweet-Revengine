@@ -40,6 +40,7 @@ public:
 	Game(class MainWindow& wnd, class RenderWindow& wnd2);
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
+	~Game();
 	void Go();
 private:
 	void ComposeFrame();

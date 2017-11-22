@@ -36,7 +36,7 @@ void b2MotorJointDef::Initialize(b2Body* bA, b2Body* bB)
 {
 	bodyA = bA;
 	bodyB = bB;
-	Vec2 xB = bodyB->GetPosition();
+	b2Vec2 xB = bodyB->GetPosition();
 	linearOffset = bodyA->GetLocalPoint(xB);
 
 	float32 angleA = bodyA->GetAngle();
@@ -69,14 +69,14 @@ void b2MotorJoint::InitVelocityConstraints(const b2SolverData& data)
 	m_invIA = m_bodyA->m_invI;
 	m_invIB = m_bodyB->m_invI;
 
-	Vec2 cA = data.positions[m_indexA].c;
+	b2Vec2 cA = data.positions[m_indexA].c;
 	float32 aA = data.positions[m_indexA].a;
-	Vec2 vA = data.velocities[m_indexA].v;
+	b2Vec2 vA = data.velocities[m_indexA].v;
 	float32 wA = data.velocities[m_indexA].w;
 
-	Vec2 cB = data.positions[m_indexB].c;
+	b2Vec2 cB = data.positions[m_indexB].c;
 	float32 aB = data.positions[m_indexB].a;
-	Vec2 vB = data.velocities[m_indexB].v;
+	b2Vec2 vB = data.velocities[m_indexB].v;
 	float32 wB = data.velocities[m_indexB].w;
 
 	b2Rot qA(aA), qB(aB);
@@ -120,7 +120,7 @@ void b2MotorJoint::InitVelocityConstraints(const b2SolverData& data)
 		m_linearImpulse *= data.step.dtRatio;
 		m_angularImpulse *= data.step.dtRatio;
 
-		Vec2 P(m_linearImpulse.x, m_linearImpulse.y);
+		b2Vec2 P(m_linearImpulse.x, m_linearImpulse.y);
 		vA -= mA * P;
 		wA -= iA * (b2Cross(m_rA, P) + m_angularImpulse);
 		vB += mB * P;
@@ -140,9 +140,9 @@ void b2MotorJoint::InitVelocityConstraints(const b2SolverData& data)
 
 void b2MotorJoint::SolveVelocityConstraints(const b2SolverData& data)
 {
-	Vec2 vA = data.velocities[m_indexA].v;
+	b2Vec2 vA = data.velocities[m_indexA].v;
 	float32 wA = data.velocities[m_indexA].w;
-	Vec2 vB = data.velocities[m_indexB].v;
+	b2Vec2 vB = data.velocities[m_indexB].v;
 	float32 wB = data.velocities[m_indexB].w;
 
 	float32 mA = m_invMassA, mB = m_invMassB;
@@ -167,10 +167,10 @@ void b2MotorJoint::SolveVelocityConstraints(const b2SolverData& data)
 
 	// Solve linear friction
 	{
-		Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA) + inv_h * m_correctionFactor * m_linearError;
+		b2Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA) + inv_h * m_correctionFactor * m_linearError;
 
-		Vec2 impulse = -b2Mul(m_linearMass, Cdot);
-		Vec2 oldImpulse = m_linearImpulse;
+		b2Vec2 impulse = -b2Mul(m_linearMass, Cdot);
+		b2Vec2 oldImpulse = m_linearImpulse;
 		m_linearImpulse += impulse;
 
 		float32 maxImpulse = h * m_maxForce;
@@ -203,17 +203,17 @@ bool b2MotorJoint::SolvePositionConstraints(const b2SolverData& data)
 	return true;
 }
 
-Vec2 b2MotorJoint::GetAnchorA() const
+b2Vec2 b2MotorJoint::GetAnchorA() const
 {
 	return m_bodyA->GetPosition();
 }
 
-Vec2 b2MotorJoint::GetAnchorB() const
+b2Vec2 b2MotorJoint::GetAnchorB() const
 {
 	return m_bodyB->GetPosition();
 }
 
-Vec2 b2MotorJoint::GetReactionForce(float32 inv_dt) const
+b2Vec2 b2MotorJoint::GetReactionForce(float32 inv_dt) const
 {
 	return inv_dt * m_linearImpulse;
 }
@@ -256,7 +256,7 @@ float32 b2MotorJoint::GetCorrectionFactor() const
 	return m_correctionFactor;
 }
 
-void b2MotorJoint::SetLinearOffset(const Vec2& linearOffset)
+void b2MotorJoint::SetLinearOffset(const b2Vec2& linearOffset)
 {
 	if (linearOffset.x != m_linearOffset.x || linearOffset.y != m_linearOffset.y)
 	{
@@ -266,7 +266,7 @@ void b2MotorJoint::SetLinearOffset(const Vec2& linearOffset)
 	}
 }
 
-const Vec2& b2MotorJoint::GetLinearOffset() const
+const b2Vec2& b2MotorJoint::GetLinearOffset() const
 {
 	return m_linearOffset;
 }

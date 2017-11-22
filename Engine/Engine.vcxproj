@@ -193,6 +193,7 @@
     <ClInclude Include="Gameplay\Framework\States.h" />
     <ClInclude Include="Gameplay\GodEditor.h" />
     <ClInclude Include="Gameplay\Player.h" />
+    <ClInclude Include="MatrixDef.h" />
     <ClInclude Include="Input\ButtonCodes.h" />
     <ClInclude Include="Input\Controller.h" />
     <ClInclude Include="Input\Input.h" />
@@ -398,6 +399,7 @@
     <ClInclude Include="STB\stb_image.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utility\FileIO.h" />
+    <ClInclude Include="Utility\FrameAllocator.h" />
     <ClInclude Include="Utility\Logging.h" />
     <ClInclude Include="Utility\ProfileOutput.h" />
     <ClInclude Include="Utility\Profiling.h" />
@@ -479,16 +481,13 @@
     <ClInclude Include="LiquidFun\Rope\b2Rope.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="VMap.h" />
-    <ClInclude Include="Mat2.h" />
-    <ClInclude Include="Mat3.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="VString.h" />
     <ClInclude Include="Utilities\Utilities.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vec3.h" />
     <ClInclude Include="VTuple.h" />
     <ClInclude Include="XAudio\audiodefs.h" />
     <ClInclude Include="XAudio\comdecl.h" />
@@ -581,6 +580,7 @@
     <ClCompile Include="Threading\Job_Manager.cpp" />
     <ClCompile Include="Utility\DirectoryWatch.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
+    <ClCompile Include="Utility\FrameAllocator.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>

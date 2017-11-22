@@ -305,7 +305,7 @@ void b2Body::ResetMassData()
 	b2Assert(m_type == b2_dynamicBody);
 
 	// Accumulate mass over all fixtures.
-	Vec2 localCenter = b2Vec2_zero;
+	b2Vec2 localCenter = b2Vec2_zero;
 	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 	{
 		if (f->m_density == 0.0f)
@@ -348,7 +348,7 @@ void b2Body::ResetMassData()
 	}
 
 	// Move center of mass.
-	Vec2 oldCenter = m_sweep.c;
+	b2Vec2 oldCenter = m_sweep.c;
 	m_sweep.localCenter = localCenter;
 	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 
@@ -389,7 +389,7 @@ void b2Body::SetMassData(const b2MassData* massData)
 	}
 
 	// Move center of mass.
-	Vec2 oldCenter = m_sweep.c;
+	b2Vec2 oldCenter = m_sweep.c;
 	m_sweep.localCenter =  massData->center;
 	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 
@@ -420,7 +420,7 @@ bool b2Body::ShouldCollide(const b2Body* other) const
 	return true;
 }
 
-void b2Body::SetTransform(const Vec2& position, float32 angle)
+void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 {
 	b2Assert(m_world->IsLocked() == false);
 	if (m_world->IsLocked() == true)

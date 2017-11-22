@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <Xinput.h>
-#include "Vec2.h"
+#include "MatrixDef.h"
 class Controller
 {
 public:

@@ -224,7 +224,7 @@ public:
       {
         for(int j = 0; j < cell.num_indices; ++j)
         {
-          float redness = (float)cell.num_indices / (sizeof(cell.indices) / sizeof(int));
+          float redness = (float)cell.num_indices / CountOf(cell.indices);
           cell.buff[y*ScreenGrid::CELL_WIDTH + x] = Color((redness)*255.0f, (1.0f - redness)*255.0f, 0);
         }
       }

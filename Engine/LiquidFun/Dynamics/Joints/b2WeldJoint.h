@@ -38,13 +38,13 @@ struct b2WeldJointDef : public b2JointDef
 
 	/// Initialize the bodies, anchors, and reference angle using a world
 	/// anchor point.
-	void Initialize(b2Body* bodyA, b2Body* bodyB, const Vec2& anchor);
+	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor);
 
 	/// The local anchor point relative to bodyA's origin.
-	Vec2 localAnchorA;
+	b2Vec2 localAnchorA;
 
 	/// The local anchor point relative to bodyB's origin.
-	Vec2 localAnchorB;
+	b2Vec2 localAnchorB;
 
 	/// The bodyB angle minus bodyA angle in the reference state (radians).
 	float32 referenceAngle;
@@ -62,17 +62,17 @@ struct b2WeldJointDef : public b2JointDef
 class b2WeldJoint : public b2Joint
 {
 public:
-	Vec2 GetAnchorA() const;
-	Vec2 GetAnchorB() const;
+	b2Vec2 GetAnchorA() const;
+	b2Vec2 GetAnchorB() const;
 
-	Vec2 GetReactionForce(float32 inv_dt) const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// The local anchor point relative to bodyA's origin.
-	const Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
 
 	/// The local anchor point relative to bodyB's origin.
-	const Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
 
 	/// Get the reference angle.
 	float32 GetReferenceAngle() const { return m_referenceAngle; }
@@ -103,8 +103,8 @@ protected:
 	float32 m_bias;
 
 	// Solver shared
-	Vec2 m_localAnchorA;
-	Vec2 m_localAnchorB;
+	b2Vec2 m_localAnchorA;
+	b2Vec2 m_localAnchorB;
 	float32 m_referenceAngle;
 	float32 m_gamma;
 	b2Vec3 m_impulse;
@@ -112,10 +112,10 @@ protected:
 	// Solver temp
 	int32 m_indexA;
 	int32 m_indexB;
-	Vec2 m_rA;
-	Vec2 m_rB;
-	Vec2 m_localCenterA;
-	Vec2 m_localCenterB;
+	b2Vec2 m_rA;
+	b2Vec2 m_rB;
+	b2Vec2 m_localCenterA;
+	b2Vec2 m_localCenterB;
 	float32 m_invMassA;
 	float32 m_invMassB;
 	float32 m_invIA;

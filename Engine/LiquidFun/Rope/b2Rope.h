@@ -38,7 +38,7 @@ struct b2RopeDef
 	}
 
 	///
-	Vec2* vertices;
+	b2Vec2* vertices;
 
 	///
 	int32 count;
@@ -47,7 +47,7 @@ struct b2RopeDef
 	float32* masses;
 
 	///
-	Vec2 gravity;
+	b2Vec2 gravity;
 
 	///
 	float32 damping;
@@ -79,7 +79,7 @@ public:
 	}
 
 	///
-	const Vec2* GetVertices() const
+	const b2Vec2* GetVertices() const
 	{
 		return m_ps;
 	}
@@ -96,16 +96,16 @@ private:
 	void SolveC3();
 
 	int32 m_count;
-	Vec2* m_ps;
-	Vec2* m_p0s;
-	Vec2* m_vs;
+	b2Vec2* m_ps;
+	b2Vec2* m_p0s;
+	b2Vec2* m_vs;
 
 	float32* m_ims;
 
 	float32* m_Ls;
 	float32* m_as;
 
-	Vec2 m_gravity;
+	b2Vec2 m_gravity;
 	float32 m_damping;
 
 	float32 m_k2;

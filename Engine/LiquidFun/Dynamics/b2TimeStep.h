@@ -50,14 +50,14 @@ struct b2TimeStep
 /// This is an internal structure.
 struct b2Position
 {
-	Vec2 c;
+	b2Vec2 c;
 	float32 a;
 };
 
 /// This is an internal structure.
 struct b2Velocity
 {
-	Vec2 v;
+	b2Vec2 v;
 	float32 w;
 };
 
