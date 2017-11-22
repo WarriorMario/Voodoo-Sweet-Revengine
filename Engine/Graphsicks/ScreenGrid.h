@@ -211,7 +211,6 @@ public:
     //{
     //  cells[i].num_indices = 0;
     //}
-    // Multithread clear
     memset(buff, 0, sizeof(Color)*ScreenGrid::RESOLUTION_X * ScreenGrid::RESOLUTION_Y);
   }
 

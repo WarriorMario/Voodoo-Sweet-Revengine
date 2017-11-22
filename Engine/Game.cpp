@@ -23,14 +23,17 @@
 #include "Vec3.h"
 #include "Vec2.h"
 #include "Physics\PhysicsConstants.h"
-
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
+#if SINGLE_CORE_PROFILING
+constexpr size_t num_cores = 1;
+#else
+
 constexpr size_t num_cores = 8;
+#endif
 #else
 constexpr size_t num_cores = 1;
 #endif
-
 b2Body* b;
 b2Body* temp;
 b2BodyDef test0;
@@ -118,7 +121,7 @@ void Game::ComposeFrame()
 {
   PROFILE_SCOPE("Game::ComposeFrame");
 
-  //arena.Draw(renderer);
+  arena.Draw(renderer);
   player.Draw();
   frame_counter.Draw(renderer);
   renderer.Render();

@@ -65,8 +65,13 @@ protected:
 };
 
 // ****************************************************************************
+#define SINGLE_CORE_PROFILING 0
 #define PROFILE_SCOPE(tag) ProfileSample Sample##__LINE__(tag)
-
+#if SINGLE_CORE_PROFILING
+#define SINGLE_CORE_PROFILE PROFILE_SCOPE
+#else
+#define SINGLE_CORE_PROFILE
+#endif
 // ****************************************************************************
 class ProfilerOutputHandler
 {

@@ -12,51 +12,26 @@ template<typename Shader>
 class RenderPass
 {
 public:
-  class Pass
+  void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
   {
-  public:
-    void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
+    for(int i = 0; i < commands.size(); ++i)
     {
-      for(int i = 0; i < commands.size(); ++i)
-      {
-        auto pd = commands[i].GetPrimData();
-        Vec2 points[3] = {
-          {pd[0].x, pd[0].y},
-          {pd[1].x, pd[1].y},
-          {pd[2].x, pd[2].y}
-        };
-        grid.PlaceTriangleInCell(points, i);
-      }
-      if(commands.size() != 0)
-      {
-        rasterizer.RasterizeCells(grid, commands, false);
-        commands.clear();
-      }
+      auto pd = commands[i].GetPrimData();
+      Vec2 points[3] = {
+        {pd[0].x, pd[0].y},
+        {pd[1].x, pd[1].y},
+        {pd[2].x, pd[2].y}
+      };
+      grid.PlaceTriangleInCell(points, i);
     }
-
-    Array<Shader> commands;
-  } pass;
-  class SIMDPass
-  {
-  public:
-    void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
+    if(commands.size() != 0)
     {
-      for(int i = 0; i < prim_data.size; ++i)
-      {
-        //auto pd = commands[i].GetPrimData();
-        Vec2 points[3];
-        prim_data.GetTriangle(points, i);
-        grid.PlaceTriangleInCell(points, i);
-      }
-      if(prim_data.size != 0)
-      {
-        //rasterizer.RasterizeCells(grid, commands, false);
-        prim_data.Clear();
-      }
+      rasterizer.RasterizeCells(grid, commands, false);
+      commands.clear();
     }
-    typename Shader::DataSIMDBuffer prim_data;
-  } simd_pass;
+  }
 
+  Array<Shader> commands;
 };
 
 // ****************************************************************************
@@ -71,8 +46,7 @@ class Renderer
     template<typename T, typename... Args>
     void operator()(T& pass, Args&&... args)
     {
-      pass.pass.Apply(Forward<Args>(args)...);
-      pass.simd_pass.Apply(Forward<Args>(args)...);
+      pass.Apply(Forward<Args>(args)...);
     }
   };
 
@@ -82,12 +56,7 @@ public:
   template<typename Shader>
   void AddDrawCommand(Shader& s)
   {
-    Get<RenderPass<Shader>>(passes).pass.commands.push_back(s);
-  }
-  template<typename Shader>
-  void AddDrawCommandSIMD(Shader& s)
-  {
-    Get<RenderPass<Shader>>(passes).simd_pass.prim_data.Add(s);
+    Get<RenderPass<Shader>>(passes).commands.push_back(s);
   }
   void Render();
 

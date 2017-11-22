@@ -3,6 +3,7 @@
 #include "Resource.h"
 #include "Colors.h"
 #include "STB/stb_image.h"
+#include "SIMD\SIMD.h"
 
 // ****************************************************************************
 // Converts in_pixels to Color format
@@ -85,7 +86,21 @@ public:
     const int ty = (int)(data.height * (v - FLT_EPSILON));
     return data.texels[ty * data.width + tx];
   }
-
+  __m256i Sample(__m256& u8, __m256& v8)
+  {
+    auto& data = GetData<Texture>();
+    __m256i tx8 = AVX_INT32_FROM_FLOAT(AVX_FLOAT_MUL(AVX_FLOAT_FROM1((float)data.width), AVX_FLOAT_SUB(u8, AVX_FLOAT_FROM1(FLT_EPSILON))));
+    __m256i ty8 = AVX_INT32_FROM_FLOAT(AVX_FLOAT_MUL(AVX_FLOAT_FROM1((float)data.height), AVX_FLOAT_SUB(v8, AVX_FLOAT_FROM1(FLT_EPSILON))));
+    __m256i index = AVX_INT32_ADD(AVX_INT32_MUL(ty8, AVX_INT32_FROM1(data.width)), tx8);
+    return AVX_INT32_FROM8(data.texels[index.m256i_i32[0]].dword,
+      data.texels[index.m256i_i32[1]].dword,
+      data.texels[index.m256i_i32[2]].dword,
+      data.texels[index.m256i_i32[3]].dword,
+      data.texels[index.m256i_i32[4]].dword,
+      data.texels[index.m256i_i32[5]].dword,
+      data.texels[index.m256i_i32[6]].dword, 
+      data.texels[index.m256i_i32[7]].dword);
+  }
 private:
   friend bool Load(StringRef filename, Data& data)
   {

@@ -198,6 +198,8 @@
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Physics\DebugDraw.h" />
     <ClInclude Include="Physics\PhysicsConstants.h" />
+    <ClInclude Include="SIMD\AVX.h" />
+    <ClInclude Include="SIMD\SIMD.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="STB\stb_rect_pack.h" />

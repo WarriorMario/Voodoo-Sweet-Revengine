@@ -3,6 +3,8 @@
 #include "Graphics.h"
 #include "Threading\Job_Manager.h"
 #include "Utility\Profiling.h"
+#include "SIMD\SIMD.h"
+
 class Rasterizer;
 
 template<typename Shader>
@@ -65,19 +67,40 @@ public:
 #if 1
       static RasterizeCellData<Shader> job_data[ScreenGrid::NUM_CELLS];
       int job_id = 0;
-      for(int y = 0; y < ScreenGrid::HEIGHT; y += 1)
+      if(Shader::SIMD == true)
       {
-        for(int x = 0; x < ScreenGrid::WIDTH; x += 1)
+        for(int y = 0; y < ScreenGrid::HEIGHT; y += 1)
         {
-          ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
-          if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+          for(int x = 0; x < ScreenGrid::WIDTH; x += 1)
           {
-            continue;
+            ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+            if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+            {
+              continue;
+            }
+            job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+            Job s = {RasterizeThreadedCellSIMD<Shader> ,(void*)&(job_data[job_id])};
+            JM_SubmitJob(JM_Get(), &s);
+            ++job_id;
           }
-          job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
-          Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
-          JM_SubmitJob(JM_Get(), &s);
-          ++job_id;
+        }
+      }
+      else
+      {
+        for(int y = 0; y < ScreenGrid::HEIGHT; y += 1)
+        {
+          for(int x = 0; x < ScreenGrid::WIDTH; x += 1)
+          {
+            ScreenGridCell& cell = grid.cells[y * ScreenGrid::WIDTH + x];
+            if(cell.num_indices == 0)// Check if this really is a perf gain in release after threading
+            {
+              continue;
+            }
+            job_data[job_id] = RasterizeCellData<Shader>(*this, grid, cell, commands, x, y);
+            Job s = {RasterizeThreadedCell<Shader> ,(void*)&(job_data[job_id])};
+            JM_SubmitJob(JM_Get(), &s);
+            ++job_id;
+          }
         }
       }
       //for(int y = 0; y < ScreenGrid::HEIGHT; ++y)
@@ -130,6 +153,7 @@ public:
   template<typename Shader>
   void RasterizeCell(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
   {
+    SINGLE_CORE_PROFILE("RasterizeCell");
     int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
 
     for(int i = 0; i < cell.num_indices; ++i)
@@ -154,6 +178,7 @@ public:
       int t2_row = (start_x - d[0].x) * a01 - (start_y - d[0].y) * (d[0].x - d[1].x);
 
       Color* cur_color = cell.buff;
+      SINGLE_CORE_PROFILE("RasterizeCellSimd y loop");
       for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y, ++pix_y)
       {
         int t0 = t0_row;
@@ -161,6 +186,7 @@ public:
         int t2 = t2_row;
         pix_x = start_x;
 
+        SINGLE_CORE_PROFILE("RasterizeCellSimd x loop");
         for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x, ++pix_x, ++cur_color)
         {
           const bool is_inside = (t0 | t1 | t2) >= 0;
@@ -169,6 +195,7 @@ public:
             // Determine interpolated values
             const InterpData interp = {t1 * inv_area, t2 * inv_area, pix_x, pix_y};
             cmd.Shade(interp, *cur_color);
+            //*cur_color = is_inside * -1;
           }
 
           // one step to the right
@@ -205,6 +232,100 @@ public:
     cell.num_indices = 0;
   }
 
+
+
+  template<typename Shader>
+  void RasterizeCellSIMD(ScreenGrid& grid, ScreenGridCell& cell, Array<Shader>& commands, int cell_x, int cell_y)
+  {
+    SINGLE_CORE_PROFILE("RasterizeCellSimd primitve");
+    int start_x = cell_x * ScreenGrid::CELL_WIDTH, start_y = cell_y * ScreenGrid::CELL_HEIGHT;
+
+    for(int i = 0; i < cell.num_indices; ++i)
+    {
+      auto& cmd = commands[cell.indices[i]];
+      auto d = cmd.GetPrimData();
+      const Vec2 A(d[1].x - d[0].x, d[1].y - d[0].y);
+      const Vec2 B(d[2].x - d[0].x, d[2].y - d[0].y);
+      const float area = (A.x * B.y - A.y * B.x);// Fits in 1<<21
+      int test = area;
+      const float inv_area = 1.f / area;// split up in 1/width and 1/height as that does not require a lot of bits.
+      __m256 inv_area8 = AVX_FLOAT_FROM1(inv_area);
+
+      // precalculate barycentric coordinate data
+      int// A -1080 to 1080, B -1920 t0 1920 both fits in 1<<11 + 1 for sign
+        a01 = d[0].y - d[1].y, b01 = d[1].x - d[0].x,
+        a12 = d[1].y - d[2].y, b12 = d[2].x - d[1].x,
+        a20 = d[2].y - d[0].y, b20 = d[0].x - d[2].x;
+
+      __m256i a018 = AVX_INT32_FROM1(a01 << 3);
+      __m256i a128 = AVX_INT32_FROM1(a12 << 3);
+      __m256i a208 = AVX_INT32_FROM1(a20 << 3);
+
+      __m256i b018 = AVX_INT32_FROM1(b01 << 3);
+      __m256i b128 = AVX_INT32_FROM1(b12 << 3);
+      __m256i b208 = AVX_INT32_FROM1(b20 << 3);
+      __m256i a018_starting_step = AVX_INT32_FROM8(0, a12, a12 << 1, (a12 << 1) + a12, a12 << 2, (a12 << 2) + a12, (a12 << 2) + (a12 << 1), (a12 << 2) + (a12 << 1) + a12);
+      __m256i a128_starting_step = AVX_INT32_FROM8(0, a20, a20 << 1, (a20 << 1) + a20, a20 << 2, (a20 << 2) + a20, (a20 << 2) + (a20 << 1), (a20 << 2) + (a20 << 1) + a20);
+      __m256i a208_starting_step = AVX_INT32_FROM8(0, a01, a01 << 1, (a01 << 1) + a01, a01 << 2, (a01 << 2) + a01, (a01 << 2) + (a01 << 1), (a01 << 2) + (a01 << 1) + a01);
+
+      int pix_x = start_x;
+      int pix_y = start_y;
+
+      int t0_row = (start_x - d[1].x) * a12 - (start_y - d[1].y) * (d[1].x - d[2].x);// Fits in 1<<21
+      int t1_row = (start_x - d[2].x) * a20 - (start_y - d[2].y) * (d[2].x - d[0].x);// Fits in 1<<21
+      int t2_row = (start_x - d[0].x) * a01 - (start_y - d[0].y) * (d[0].x - d[1].x);// Fits in 1<<21
+
+      __m256i t08_row = AVX_INT32_ADD(AVX_INT32_FROM1(t0_row), a018_starting_step);
+      __m256i t18_row = AVX_INT32_ADD(AVX_INT32_FROM1(t1_row), a128_starting_step);
+      __m256i t28_row = AVX_INT32_ADD(AVX_INT32_FROM1(t2_row), a208_starting_step);
+      Color* cur_color = cell.buff;
+      SINGLE_CORE_PROFILE("RasterizeCellSimd y loop");
+      for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y, ++pix_y)
+      {
+        //int t0 = t0_row;
+        //int t1 = t1_row;
+        //int t2 = t2_row;
+        __m256i t08 = t08_row;
+        __m256i t18 = t18_row;
+        __m256i t28 = t28_row;
+        pix_x = start_x;
+
+        SINGLE_CORE_PROFILE("RasterizeCellSimd x loop");
+        for(int x = 0; x < ScreenGrid::CELL_WIDTH/8; ++x, pix_x += 8, cur_color +=8)
+        {
+          //const bool is_inside = (t0 | t1 | t2) >= 0;
+          __m256i is_inside8 = _mm256_cmpgt_epi32(_mm256_or_si256(_mm256_or_si256(t08, t18), t28), AVX_INT32_FROM1(-1));
+          
+          //if(is_inside == true)
+          {
+            // Determine interpolated values
+            //const InterpData interp = {t1 * inv_area, t2 * inv_area, pix_x, pix_y};
+            //SINGLE_CORE_PROFILE("RasterizeCellSimd shade");
+            cmd.ShadeSIMD(AVX_FLOAT_MUL(_mm256_cvtepi32_ps(t18),inv_area8), AVX_FLOAT_MUL(_mm256_cvtepi32_ps( t28),inv_area8),is_inside8,pix_x,pix_y, cur_color);
+            
+          }
+
+          // one step to the right
+          t08 = AVX_INT32_ADD(t08, a128);
+          t18 = AVX_INT32_ADD(t18, a208);
+          t28 = AVX_INT32_ADD(t28, a018);
+          //t0 += a12;
+          //t1 += a20;
+          //t2 += a01;
+        }
+
+        // one step down
+        t08_row = AVX_INT32_ADD(t08_row, AVX_INT32_FROM1(b12));
+        t18_row = AVX_INT32_ADD(t18_row, AVX_INT32_FROM1(b20));
+        t28_row = AVX_INT32_ADD(t28_row, AVX_INT32_FROM1(b01));
+        //t0_row += b12;
+        //t1_row += b20;
+        //t2_row += b01;
+      }
+    }
+    cell.num_indices = 0;
+  }
+
 };
 
 
@@ -213,4 +334,10 @@ void RasterizeThreadedCell(void* data)
 {
   RasterizeCellData<Shader>* real_data = (RasterizeCellData<Shader>*)data;
   real_data->rasterizer->RasterizeCell(*real_data->grid, *real_data->cell, *real_data->commands, real_data->cell_x, real_data->cell_y);
+}
+template<typename Shader>
+void RasterizeThreadedCellSIMD(void* data)
+{
+  RasterizeCellData<Shader>* real_data = (RasterizeCellData<Shader>*)data;
+  real_data->rasterizer->RasterizeCellSIMD(*real_data->grid, *real_data->cell, *real_data->commands, real_data->cell_x, real_data->cell_y);
 }
