@@ -94,6 +94,7 @@ public:
     return &prim_data[0];
   }
   static constexpr bool SIMD = false;
+  static constexpr bool CHECKER = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];
@@ -243,6 +244,7 @@ public:
   }
 
   static constexpr bool SIMD = true;
+  static constexpr bool CHECKER = true;
 private:
   ConstData const_data;
   PrimData prim_data[3];
@@ -409,6 +411,7 @@ public:
   }
 
   static constexpr bool SIMD = false;
+  static constexpr bool CHECKER = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];
@@ -490,6 +493,7 @@ public:
   }
 
   static constexpr bool SIMD = false;
+  static constexpr bool CHECKER = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];
