@@ -26,9 +26,10 @@ void FontRenderObject::Update()
 
 void FontRenderObject::Draw(Renderer & renderer)
 {
-  auto line = font->RenderLine("Hello world!", point_size, start_x, start_y);
-
-  FontManager::RenderLine(line, renderer, Colors::White);
+  //auto line = font->RenderLine("Hello world!", point_size, start_x, start_y);
+  //
+  //FontManager::RenderLine(line, renderer, Colors::White);
+	RenderLinePerGlyph("Hello world!", point_size, start_x, start_y, *font, renderer, Colors::White);
 }
 
 void FontRenderObject::SetPosition(Vec2 & pos)

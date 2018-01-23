@@ -23,6 +23,7 @@
 #include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
 #include "Utility\FrameAllocator.h"
+#include "Graphsicks\FontManager.h"
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
@@ -83,6 +84,7 @@ Game::~Game()
 
 void Game::Go()
 {
+  //FontManager::StartFrame(renderer);
   ProfilerLogHandler pf_output;
   ProfileSample::output_handler = &pf_output;
   {
@@ -90,11 +92,9 @@ void Game::Go()
     {
       PROFILE_SCOPE("Game::Go::BeginFrame");
       gfx.BeginFrame();
-
     }
     UpdateModel();
     ComposeFrame();
-
     {
       PROFILE_SCOPE("Game::Go::EndFrame");
       gfx.EndFrame();
@@ -134,7 +134,7 @@ void Game::ComposeFrame()
   arena.Draw(renderer);
   player.Draw();
   frame_counter.Draw(renderer);
+  //FontManager::EndFrame(renderer);
   renderer.Render();
   arena.physx.DebugDraw();
-
 }

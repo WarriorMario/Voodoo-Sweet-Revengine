@@ -63,8 +63,8 @@ void FrameCounter::Draw(Renderer & renderer)
 
   for(int i = 0; i < num_strings; ++i)
   {
-    auto line = font->RenderLine(text[i], point_size, pos_x, pos_y - i * 23);
+    //auto line = font->RenderLine(text[i], point_size, pos_x, pos_y - i * 23);
     
-    FontManager::RenderLine(line, renderer, Colors::Red);
+    RenderLinePerGlyph(text[i], point_size, pos_x, pos_y - i * 23, *font, renderer, Colors::Red);
   }
 }
