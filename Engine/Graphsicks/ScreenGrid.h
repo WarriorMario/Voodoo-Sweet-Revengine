@@ -4,13 +4,13 @@
 #include "Colors.h"
 #include "Utility.h"
 #include "Utility\Profiling.h"
-
 // ****************************************************************************
 struct ScreenGridCell
 {
   size_t num_indices;
   size_t indices[24];
   Color* buff;
+  Color* checker_buff;
 };
 
 struct alignas(128) UnPackBufferData
@@ -32,6 +32,7 @@ class ScreenGridImpl
 public:
   static constexpr size_t NUM_CELLS = width*height;
   static constexpr size_t NUM_CELL_PIXELS = cell_width * cell_height;
+  static constexpr size_t NUM_PIXELS = RESOLUTION_X*RESOLUTION_Y;
   static constexpr size_t WIDTH = width;
   static constexpr size_t HEIGHT = height;
   static constexpr size_t CELL_WIDTH = cell_width;
@@ -41,9 +42,9 @@ public:
   {
     static_assert(IsPowerOf2(cell_width));
     static_assert(IsPowerOf2(cell_height));
-
-	buff = (Color*)_aligned_malloc(RESOLUTION_X * RESOLUTION_Y * sizeof(Color), 128);
-    int cell_buff_sz = cell_width * cell_height;
+	  buff = (Color*)_aligned_malloc(RESOLUTION_X * RESOLUTION_Y * sizeof Color, 128);
+    memset(buff, 0, RESOLUTION_X * RESOLUTION_Y * sizeof Color);
+    int cell_buff_sz = (cell_width/2) * cell_height;
     int offset = 0;
     for(int i = 0; i < height; ++i)
     {
@@ -52,6 +53,7 @@ public:
         ScreenGridCell& cell = cells[i * width + j];
         cell.num_indices = 0;
         cell.buff = buff + offset;
+        cell.checker_buff = buff + offset + NUM_PIXELS / 2;
       }
     }
   }
@@ -170,7 +172,7 @@ public:
   void UnPackBuffer(Color* destination)
   {
     PROFILE_SCOPE("Render::Grid::UnPackBuffer");
-#if 1
+#if 0
 	UnPackBufferData job_data[height] alignas(128);
 	size_t job_id = 0;
   for(int i = 0; i < height; ++i)
@@ -188,19 +190,34 @@ public:
   }
 	JM_Sync(JM_Get());
 #else
-	for (int i = 0; i < height; ++i)
-	{
-		for (int j = 0; j < width; ++j)
-		{
-			ScreenGridCell& cell = cells[i * width + j];
-			Color* cur = &destination[(i * CELL_HEIGHT)*Graphics::ScreenWidth + j*CELL_WIDTH];
-			for (int y = 0; y < cell_height; ++y)
-			{
-				memcpy(cur, &cell.buff[y*cell_width], sizeof(Color)*ScreenGrid::CELL_WIDTH);
-				cur += Graphics::ScreenWidth;
-			}
-		}
-	}
+    for(int i = 0; i < height; ++i)
+    {
+      for(int j = 0; j < width; ++j)
+      {
+        ScreenGridCell& cell = cells[i * width + j];
+        Color* cur = &destination[(i * CELL_HEIGHT)*Graphics::ScreenWidth + j*CELL_WIDTH];
+        bool even = true;
+        for(int y = 0; y < cell_height; ++y)
+        {
+          int cellheight = cell_height;
+          Color* old_cur = cur;
+          for(int x = 0; x < cell_width; ++x)
+          {
+            if(x % 2 == even)
+            {
+              *cur = cell.buff[y*(cell_width / 2) + (x/2 )];
+            }
+            else
+            {
+              *cur = cell.checker_buff[y*(cell_width / 2) + (x/2 )];
+            }
+            ++cur;
+          }
+          even =! even;
+          cur = old_cur + Graphics::ScreenWidth;
+        }
+      }
+    }
 #endif
   }
 
@@ -211,7 +228,7 @@ public:
     //{
     //  cells[i].num_indices = 0;
     //}
-    memset(buff, 0, sizeof(Color)*ScreenGrid::RESOLUTION_X * ScreenGrid::RESOLUTION_Y);
+    //memset(buff, 0, sizeof(Color)*ScreenGrid::RESOLUTION_X * ScreenGrid::RESOLUTION_Y);
   }
 
   ScreenGridCell cells[width * height];
