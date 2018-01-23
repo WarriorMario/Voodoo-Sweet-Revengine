@@ -283,12 +283,13 @@ public:
 
     for(int y = 0; y < ScreenGrid::CELL_HEIGHT; ++y)
     {
-      for(int x = 0; x < ScreenGrid::CELL_WIDTH; ++x)
+      for(int x = 0; x < ScreenGrid::CELL_WIDTH/2; ++x)
       {
         for(int j = 0; j < cell.num_indices; ++j)
         {
           float redness = (float)cell.num_indices / CountOf(cell.indices);
-          cell.buff[y*ScreenGrid::CELL_WIDTH + x] = Color((redness)*255.0f, (1.0f - redness)*255.0f, 0);
+          cell.buff[y*ScreenGrid::CELL_WIDTH / 2 + x] = Color((redness)*255.0f, (1.0f - redness)*255.0f, 0);
+          cell.checker_buff[y*ScreenGrid::CELL_WIDTH / 2 + x] = Color((redness)*255.0f, (1.0f - redness)*255.0f, 0);
         }
       }
     }
