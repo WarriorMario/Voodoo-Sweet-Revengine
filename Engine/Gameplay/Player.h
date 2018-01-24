@@ -4,6 +4,7 @@
 #include "Assets\Assets.h"
 #include "Graphsicks\Renderer.h"
 #include "Keyboard.h"
+#include "Utility\DrawUtils.h"
 
 // ****************************************************************************
 class Player
@@ -30,54 +31,10 @@ public:
   }
   void Draw()
   {
-
-    const float min_u = flip_sprite ? 1.f : 0.f;
-    const float max_u = flip_sprite ? 0.f : 1.f;
-    
-    ForegroundShader::PrimData vertices[3];
-    // left-top tri
-    // pcs
-    vertices[0].x = x - 0.5f * width;
-    vertices[0].y = y - 0.5f * height;
-    vertices[1].x = x + 0.5f * width;
-    vertices[1].y = y - 0.5f * height;
-    vertices[2].x = x - 0.5f * width;
-    vertices[2].y = y + 0.5f * height;
-    // uvs
-    vertices[0].u = min_u;
-    vertices[0].v = 0.f;
-    vertices[1].u = max_u;
-    vertices[1].v = 0.f;
-    vertices[2].u = min_u;
-    vertices[2].v = 1.f;
-
-    ForegroundShader draw_call = ForegroundShader(
-    vertices[0], vertices[1], vertices[2],
-      Colors::White, &sprites[curr_sprite]);
-
-    renderer.AddDrawCommand(draw_call);
-    
-    // bot-right tri
-    // pcs
-    vertices[0].x = x + 0.5f * width;
-    vertices[0].y = y - 0.5f * height;
-    vertices[1].x = x + 0.5f * width;
-    vertices[1].y = y + 0.5f * height;
-    vertices[2].x = x - 0.5f * width;
-    vertices[2].y = y + 0.5f * height;
-    // uvs
-    vertices[0].u = max_u;
-    vertices[0].v = 0.f;
-    vertices[1].u = max_u;
-    vertices[1].v = 1.f;
-    vertices[2].u = min_u;
-    vertices[2].v = 1.f;
-
-    draw_call = ForegroundShader(
-      vertices[0], vertices[1], vertices[2],
-      Colors::White, &sprites[curr_sprite]);
-
-    renderer.AddDrawCommand(draw_call);
+	b2Vec2 pos = b2Vec2(x - 0.5f * width, y - 0.5f * height);
+	b2Vec2 size = b2Vec2(width, height);
+	RenderQuad<ForegroundShader>(renderer, pos, size,
+		flip_sprite, false, Colors::Cyan, &sprites[curr_sprite]);
   }
 
   void SetSprite(Sprite sprite)

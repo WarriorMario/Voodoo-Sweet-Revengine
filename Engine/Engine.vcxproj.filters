@@ -954,6 +954,24 @@
     <ClInclude Include="VAlgorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Framework\Objects\UIButtonObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\GodEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMD\AVX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMD\SIMD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\FrameAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\DrawUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -1206,6 +1224,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Threading\Job_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Framework\Objects\UIButtonObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\GodEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\FrameAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\DrawUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
