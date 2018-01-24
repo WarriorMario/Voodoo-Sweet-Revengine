@@ -1,6 +1,8 @@
 #include "FontManager.h"
 #include "Utility\FrameAllocator.h"
 
+// FontManager stuff
+/*
 unsigned char* FontManager::screen_buffer = nullptr;
 size_t FontManager::screen_width  = 0;
 size_t FontManager::screen_height = 0;
@@ -261,8 +263,8 @@ void RenderLinePerGlyph(StringRef text, int point_size, int start_x, int start_y
 		float
 			min_v = 0.0f,
 			min_u = 0.0f,
-			max_u = 1.0f,
-			max_v = 1.0f;
+			max_u = 0.9999f,
+			max_v = 0.9999f;
 
 		// first triangle   x      y      u      v
 		UIShader::PrimData vertices[3];
