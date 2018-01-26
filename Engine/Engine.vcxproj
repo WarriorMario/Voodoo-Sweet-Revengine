@@ -179,7 +179,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\Tile.h" />
+    <ClInclude Include="Gameplay\TileGrid.h" />
+    <ClInclude Include="Gameplay\World.h" />
     <ClInclude Include="Utility\DrawUtils.h" />
+    <ClInclude Include="Utility\FileReader.h" />
+    <ClInclude Include="Utility\FileWriter.h" />
+    <ClInclude Include="Utility\Json\json-forwards.h" />
+    <ClInclude Include="Utility\Json\json.h" />
+    <ClInclude Include="Utility\Serialization.h" />
     <ClInclude Include="VAlgorithm.h" />
     <ClInclude Include="Assets\Font.h" />
     <ClInclude Include="Assets\PhysicsShape.h" />
@@ -506,6 +514,9 @@
     <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\ParticleObject.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\PhysicsObject.cpp" />
+    <ClCompile Include="Gameplay\Tile.cpp" />
+    <ClCompile Include="Gameplay\TileGrid.cpp" />
+    <ClCompile Include="Gameplay\World.cpp" />
     <ClCompile Include="Graphsicks\Graphics.cpp" />
     <ClCompile Include="Graphsicks\Renderer.cpp" />
     <ClCompile Include="Graphsicks\ScreenGrid.cpp" />
@@ -579,8 +590,12 @@
     <ClCompile Include="Utility\DirectoryWatch.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Utility\DrawUtils.cpp" />
+    <ClCompile Include="Utility\FileReader.cpp" />
+    <ClCompile Include="Utility\FileWriter.cpp" />
     <ClCompile Include="Utility\FrameAllocator.cpp" />
+    <ClCompile Include="Utility\jsoncpp.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
+    <ClCompile Include="Utility\Serialization.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
