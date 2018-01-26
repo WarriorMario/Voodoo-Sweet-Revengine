@@ -403,7 +403,9 @@ public:
     __m256i green1 = AVX_INT32_MUL(AVX_INT32_AND(AVX_INT32_SHIFT_RIGHT(colour, 8), AVX_INT32_FROM1(0xFF)), alpha);
     __m256i green = AVX_INT32_SHIFT_LEFT(AVX_INT32_SHIFT_RIGHT(AVX_INT32_ADD(green0, green1), 8), 8);
     __m256i blue = AVX_INT32_SHIFT_RIGHT(AVX_INT32_ADD(AVX_INT32_MUL(AVX_INT32_AND(dest, AVX_INT32_FROM1(0xFF)), inverted_alpha), AVX_INT32_MUL(AVX_INT32_AND(colour, AVX_INT32_FROM1(0xFF)), alpha)),8);
-    *(__m256i*) pixel = alphas;// _mm256_or_si256(_mm256_or_si256(_mm256_or_si256(red, green), blue), alphas);
+    
+    __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
+    *((__m256i*)pixel) = AVX_INT32_ADD(AVX_INT32_AND(inverseMask, *((__m256i*)pixel)), AVX_INT32_AND(mask, _mm256_or_si256(_mm256_or_si256(_mm256_or_si256(red, green), blue), alphas)));
   }
   const PrimData* GetPrimData()
   {

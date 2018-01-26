@@ -3,14 +3,15 @@
 #include "Resource.h"
 #include "Colors.h"
 #include "STB/stb_image.h"
-#include "SIMD\SIMD.h"
+#include "Utility/ResourceAllocator.h"
+#include "SIMD/SIMD.h"
 
 // ****************************************************************************
 // Converts in_pixels to Color format
 // DANGER: allocates an array of Color values on the heap
 static Color* ConvertPixels(stbi_uc* in_texels, int x, int y, int channels)
 {
-  Color* texels = new Color[x * y];
+  Color* texels = ResourceAllocator::Get().Allocate<Color>(x * y);
   switch(channels)
   {
     case 1:
@@ -66,7 +67,7 @@ public:
     {
       if(texels)
       {
-        delete[] texels;
+        //delete[] texels;
       }
     }
 

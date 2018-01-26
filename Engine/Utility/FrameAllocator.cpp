@@ -17,5 +17,5 @@ FrameAllocator::~FrameAllocator()
 void FrameAllocator::Clear()
 {
   cur_offset = buff;
-  memset(buff, 0, FRAME_ALLOC_BUFF_SIZE);
+  //memset(buff, 0, FRAME_ALLOC_BUFF_SIZE);
 }

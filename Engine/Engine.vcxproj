@@ -176,10 +176,13 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>4194304 </StackReserveSize>
+      <HeapReserveSize>
+      </HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Utility\DrawUtils.h" />
+    <ClInclude Include="Utility\ResourceAllocator.h" />
     <ClInclude Include="VAlgorithm.h" />
     <ClInclude Include="Assets\Font.h" />
     <ClInclude Include="Assets\PhysicsShape.h" />
@@ -581,6 +584,7 @@
     <ClCompile Include="Utility\DrawUtils.cpp" />
     <ClCompile Include="Utility\FrameAllocator.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
+    <ClCompile Include="Utility\ResourceAllocator.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -455,7 +455,6 @@ public:
               // Determine interpolated values
               const InterpData interp = {t1 * inv_area, t2 * inv_area, pix_x, pix_y};
               cmd.Shade(interp, *cur_color);
-              //*cur_color = is_inside * -1;
             }
 
             // two steps to the right

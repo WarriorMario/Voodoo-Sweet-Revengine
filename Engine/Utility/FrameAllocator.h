@@ -1,7 +1,7 @@
 #pragma once
 #include "Singleton.h"
 
-static constexpr size_t FRAME_ALLOC_BUFF_SIZE = 32 * 1024 * 1024; // 32 megabytes should be enough
+static constexpr size_t FRAME_ALLOC_BUFF_SIZE = 256 * 1024 * 1024; // 32 megabytes should be enough
 class FrameAllocator : public Singleton<FrameAllocator>
 {
 public:
