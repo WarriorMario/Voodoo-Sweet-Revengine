@@ -3,16 +3,13 @@ Renderer::Renderer(Graphics & graphics)
 	:
 	gfx(graphics)
 {
-
+  camera.offset = Vec2(1000, 0);
 }
 
 void Renderer::Render()
 {
-	// place in cells
-	// rasterizer cells
-	//  shade cells
   rasterizer.FlipCheckerBoard();
-  ForEach(passes, PassApplyer(), grid, rasterizer);
+  ForEach(passes, PassApplyer(), grid, rasterizer, camera);
 	grid.UnPackBuffer(gfx.god_window_buffer);
   grid.UnPackBuffer(gfx.player_window_buffer);
 	grid.Clear();

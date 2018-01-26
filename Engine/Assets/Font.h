@@ -10,6 +10,7 @@ static constexpr char BASE_CHAR[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop
 static constexpr size_t NUM_BASE_CHARS = CountOf(BASE_CHAR);
 static constexpr size_t TEXT_QUAD_BUFF_SIZE = 256;
 static constexpr int WHITE = 255 << 16 | 255 << 8 | 255;
+static constexpr size_t alpha_values_offset = 1024 * 4;
 
 struct FontAtlas
 {
@@ -23,7 +24,7 @@ struct FontAtlas
 	}
 	void Clear()
 	{
-		delete[] alpha_values[0];
+		//delete[] (alpha_values[0]- alpha_values_offset);
 		for (int i = 0; i < NUM_BASE_CHARS; ++i)
 		{
 			alpha_values[i] = nullptr;
@@ -109,7 +110,7 @@ public:
 		auto& data = GetData<Font>();
 
 		// get the font atlas, load if necessary
-		std::map<int, FontAtlas>::iterator iter = data.font_atlas_map.find(point_size);
+    std::map<int, FontAtlas>::iterator iter = data.font_atlas_map.find(point_size);
 		if (iter != data.font_atlas_map.end())
 		{
 			text_render_data.atlas = iter->second;
@@ -228,7 +229,7 @@ private:
 
 		// allocate memory for the font textures
 		font_atlas.tot_alpha_values = tot_size;
-		font_atlas.alpha_values[0] = new unsigned char[tot_size * sizeof(unsigned char)];
+		font_atlas.alpha_values[0] = new unsigned char[tot_size * sizeof(unsigned char) + alpha_values_offset] + alpha_values_offset;
 
 		/////////////////////////////////////////////////////////////
 		// align all textures underneath each other. 

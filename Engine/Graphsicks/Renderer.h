@@ -4,6 +4,7 @@
 #include "VArray.h"
 #include "VTraits.h"
 #include "Shader.h"
+#include "Gameplay\Camera.h"
 
 class Graphics;
 
@@ -12,15 +13,20 @@ template<typename Shader>
 class RenderPass
 {
 public:
-  void Apply(ScreenGrid& grid, Rasterizer& rasterizer)
+  void Apply(ScreenGrid& grid, Rasterizer& rasterizer, Camera& camera_transform)
   {
     for(int i = 0; i < commands.size(); ++i)
     {
       auto pd = commands[i].GetPrimData();
-      Vec2 points[3] = {
-        {pd[0].x, pd[0].y},
-        {pd[1].x, pd[1].y},
-        {pd[2].x, pd[2].y}
+      for(int iVec = 0; iVec < 3; ++iVec)
+      {
+        pd[iVec].x += camera_transform.offset.x;
+        pd[iVec].y += camera_transform.offset.y;
+      }
+        Vec2 points[3] = {
+        (Vec2(pd[0].x, pd[0].y)),
+        (Vec2(pd[1].x, pd[1].y)),
+        (Vec2(pd[2].x, pd[2].y))
       };
       grid.PlaceTriangleInCell(points, i);
     }
@@ -61,6 +67,7 @@ public:
   void Render();
 
   ScreenGrid grid;
+  Camera camera;
 private:
   Rasterizer rasterizer;
   Graphics& gfx;

@@ -176,18 +176,22 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>4194304 </StackReserveSize>
+      <HeapReserveSize>
+      </HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Tile.h" />
     <ClInclude Include="Gameplay\TileGrid.h" />
     <ClInclude Include="Gameplay\World.h" />
+    <ClInclude Include="Gameplay\Camera.h" />
     <ClInclude Include="Utility\DrawUtils.h" />
     <ClInclude Include="Utility\FileReader.h" />
     <ClInclude Include="Utility\FileWriter.h" />
     <ClInclude Include="Utility\Json\json-forwards.h" />
     <ClInclude Include="Utility\Json\json.h" />
     <ClInclude Include="Utility\Serialization.h" />
+    <ClInclude Include="Utility\ResourceAllocator.h" />
     <ClInclude Include="VAlgorithm.h" />
     <ClInclude Include="Assets\Font.h" />
     <ClInclude Include="Assets\PhysicsShape.h" />
@@ -506,6 +510,7 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\FrameCounter.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\UIButtonObject.cpp" />
     <ClCompile Include="Gameplay\GodEditor.cpp" />
@@ -595,6 +600,7 @@
     <ClCompile Include="Utility\FrameAllocator.cpp" />
     <ClCompile Include="Utility\jsoncpp.cpp" />
     <ClCompile Include="Utility\Profiling.cpp" />
+    <ClCompile Include="Utility\ResourceAllocator.cpp" />
     <ClCompile Include="Utility\Serialization.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
