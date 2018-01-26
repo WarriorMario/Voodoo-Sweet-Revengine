@@ -122,15 +122,16 @@ void Game::UpdateModel()
   player.Update();
   player.Input(godWindow.kbd);
   frame_counter.Update();
-
+  Player* players[] = {&player};
+  // Update players camera
+  renderer.camera.CalculateOffset(players,1);
   //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()
 {
   PROFILE_SCOPE("Game::ComposeFrame");
-
-  arena.Draw(renderer);
+  //arena.Draw(renderer);
   player.Draw();
   frame_counter.Draw(renderer);
   //FontManager::EndFrame(renderer);

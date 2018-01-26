@@ -6,6 +6,9 @@
 #include "Utility\DrawUtils.h"
 #include "Keyboard.h"
 
+// Should be moved somewhere else
+static const size_t NUM_PLAYERS = 4;
+
 // ****************************************************************************
 class Player
 {
