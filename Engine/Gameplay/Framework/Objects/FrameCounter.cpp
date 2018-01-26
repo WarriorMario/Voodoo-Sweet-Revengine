@@ -1,5 +1,7 @@
 #include "FrameCounter.h"
-#include "Graphsicks\FontManager.h"
+#include "Utility\DrawUtils.h"
+#include "Assets\Assets.h"
+#include "Assets\Font.h"
 
 FrameCounter::FrameCounter():
   pos_x(10),
@@ -63,8 +65,6 @@ void FrameCounter::Draw(Renderer & renderer)
 
   for(int i = 0; i < num_strings; ++i)
   {
-    //auto line = font->RenderLine(text[i], point_size, pos_x, pos_y - i * 23);
-    
-    RenderLinePerGlyph(text[i], point_size, pos_x, pos_y - i * 23, *font, renderer, Colors::Red);
+	  RenderText(renderer, text[i], *font, point_size, b2Vec2(pos_x, pos_y - i * 23), Colors::Red);
   }
 }

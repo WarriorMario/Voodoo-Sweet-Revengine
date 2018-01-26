@@ -2,9 +2,9 @@
 
 #include "Framework\States.h"
 #include "Assets\Assets.h"
-#include "Graphsicks\Renderer.h"
-#include "Keyboard.h"
+#include "Assets\Font.h"
 #include "Utility\DrawUtils.h"
+#include "Keyboard.h"
 
 // ****************************************************************************
 class Player
@@ -35,6 +35,10 @@ public:
 	b2Vec2 size = b2Vec2(width, height);
 	RenderQuad<ForegroundShader>(renderer, pos, size,
 		flip_sprite, false, Colors::Cyan, &sprites[curr_sprite]);
+	RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+		font, 24, b2Vec2(200, 200), Colors::Red);
+	RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
+		font, 24, b2Vec2(200, 100), Colors::Red);
   }
 
   void SetSprite(Sprite sprite)
@@ -55,6 +59,8 @@ private:
   
   StateMachine<Player> movement;
   Texture sprites[4];
+
+  Font font;
 
   Sprite curr_sprite;
   bool flip_sprite;
@@ -131,5 +137,4 @@ private:
   float velocity;
   float direction;
   Audio fart;
-
 };
