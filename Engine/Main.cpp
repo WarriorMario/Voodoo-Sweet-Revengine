@@ -23,6 +23,7 @@
 #include "ChiliException.h"
 #include "Utility\Logging.h"
 #include "Assets\Assets.h"
+#include "Utility\ResourceAllocator.h"
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
@@ -35,6 +36,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
       Logger::Get().Init();
 
       MakeSingleton<Assets>();
+      MakeSingleton<ResourceAllocator>();
+      ResourceAllocator::Get().Allocate<int>(1024 * 1024*40);
 
       { // Extra scope here so game releases its resources before assets get freed
         Game theGame(wnd, wnd1);
