@@ -23,7 +23,6 @@
 #include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
 #include "Utility\FrameAllocator.h"
-#include "Graphsicks\FontManager.h"
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG

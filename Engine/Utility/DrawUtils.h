@@ -1,8 +1,10 @@
 #pragma once
 #include "Graphsicks\Renderer.h"
+#include "VString.h"
 
 template <typename T, typename ...Args>
-void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size, bool flip_sprite_on_x = false, bool flip_sprite_on_y = false, Args&&... args)
+void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size, 
+	bool flip_sprite_on_x = false, bool flip_sprite_on_y = false, Args&&... args)
 {
 	const float
 		min_u = flip_sprite_on_x ? 1.0f : 0.0f,
@@ -37,3 +39,6 @@ void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size, bool 
 
 	renderer.AddDrawCommand(shader);
 }
+
+void RenderText(Renderer& renderer, StringRef text, Font& font, 
+	int point_size, const b2Vec2& pos, const Color& color = Colors::White);

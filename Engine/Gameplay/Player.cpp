@@ -200,7 +200,8 @@ Player::Player(Renderer& renderer)
   renderer(renderer),
   movement(*this, new IdleState),
   sprites{"Images/idle.png", "Images/move.png", "Images/run.png", "Images/jump.png"},
-  flip_sprite(false)
+  flip_sprite(false),
+	font(Font("Fonts/times.ttf"))
 {
   width = 1920.f;
   height = 1080.f;

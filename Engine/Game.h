@@ -30,7 +30,6 @@
 #include "Assets\Assets.h"
 #include "Gameplay\Player.h"
 #include "Input\Input.h"
-#include "Gameplay\Framework\Objects\FontRenderObject.h"
 #include "Gameplay\Framework\Objects\FrameCounter.h"
 #include "Threading\Job_Manager.h"
 #include "Gameplay\GodEditor.h"

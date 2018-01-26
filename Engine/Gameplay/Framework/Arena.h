@@ -1,12 +1,11 @@
 #pragma once
 #include "Objects\PhysicsObject.h"
 #include "Objects\ParticleObject.h"
-#include "Objects\FontRenderObject.h"
 #include "Objects\UIButtonObject.h"
 #include "Physics\Physics.h"
 #include "VTuple.h"
 #include "VArray.h"
-#define OBJECT_TYPES GameObject, MeshObject, PhysicsObject, ParticleObject, FontRenderObject, UIButtonObject
+#define OBJECT_TYPES GameObject, MeshObject, PhysicsObject, ParticleObject, UIButtonObject
 template<typename T>
 struct RefCounter : public T
 {
