@@ -1,10 +1,11 @@
 #pragma once
-#include "LiquidFun\Box2D.h"
 #include "Matrix.h"
 #include "VArray.h"
 #include "VMap.h"
 #include "VString.h"
 #include "Body.h"
+#include "PhysicsConstants.h"
+#include "LiquidFun\Box2D.h"
 
 using World = b2World;
 using PhysicsBody = b2Body;
@@ -13,6 +14,7 @@ using Fixture = b2Fixture;
 using FixtureDef = b2FixtureDef;
 using Shape = b2Shape;
 using CircleShape = b2CircleShape;
+using PolygonShape = b2PolygonShape;
 
 enum class BodyType
 {

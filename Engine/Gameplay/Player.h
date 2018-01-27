@@ -5,172 +5,140 @@
 #include "Assets\Font.h"
 #include "Utility\DrawUtils.h"
 #include "Keyboard.h"
+#include "Physics\Body.h"
 
 // Should be moved somewhere else
 static const size_t NUM_PLAYERS = 4;
-
+class Physics;
+class TileGrid;
 // ****************************************************************************
 class Player
 {
 public:
+	enum Sprite
+	{
+		Idle,
+		Move,
+		Run,
+		Jump,
+	};
 
-  enum Sprite
-  {
-    Idle,
-    MoveSide,
-    MoveUp,
-    MoveUpSide,
-    MoveDownSide
-  };
+public:
+	Player(Physics& simulation, TileGrid& grid,int id);
+
+  virtual void Update();
+  void Input(Input& input);
+	void Draw(Renderer& renderer)
+	{
+		b2Vec2 pos = b2Vec2(x, y);
+		b2Vec2 size = b2Vec2(width, height);
+		RenderQuad<ForegroundShader>(renderer, pos, size,
+			flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
+		RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+			font, 24, b2Vec2(200, 200), Colors::Red);
+		RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
+			font, 24, b2Vec2(200, 100), Colors::Red);
+	}
+
+	void SetSprite(Sprite sprite)
+	{
+		curr_sprite = sprite;
+	}
+	void SetFlipped(bool flipped)
+	{
+		flip_sprite = flipped;
+	}
+
+  bool IsStuck();
+  void LoseWater();
 
 
 public:
-  Player();
-
-  void Update()
-  {
-    movement.Update();
-  }
-  void Input(Keyboard& input)
-  {
-    movement.Input(input);
-  }
-  void Draw()
-  {
-    b2Vec2 pos = b2Vec2(x, y);
-    b2Vec2 size = b2Vec2(width, height);
-    RenderSharedQuad<ForegroundShader>(pos, size,
-      flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
-  }
-
-  void SetSprite(Sprite sprite)
-  {
-    curr_sprite = sprite;
-  }
-  void SetFlipped(bool flipped)
-  {
-    flip_sprite = flipped;
-  }
-
-public:
-  float x, y;
-  float width, height;
-  float speed;
-  float waterPercentage;
-  bool is_god;
+	float x, y;
+	float width, height;
+  const int player_id;
+  Body physics_body;
 private:
+  TileGrid& grid;
 
-  StateMachine<Player> movement;
-  Texture sprites[5];
+	StateMachine<Player> movement;
+	Texture sprites[4];
 
-  Font font;
+	Font font;
 
-  Sprite curr_sprite;
-  bool flip_sprite;
+	Sprite curr_sprite;
+	bool flip_sprite;
 };
 
 // ****************************************************************************
 class IdleState : public IState<Player>
 {
 public:
-  void OnEnter(Player& player) override;
-  void OnExit() override;
+	void OnEnter(Player& player) override;
+	void OnExit() override;
 
-  State Update() override;
-  State Input(Keyboard& input) override;
-
-};
-
-// ****************************************************************************
-class MoveSideState : public IState<Player>
-{
-public:
-  MoveSideState(b2Vec2 direction)
-    : direction(direction)
-  {}
-
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
-  State Update() override;
-  State Input(Keyboard& input) override;
-
-private:
-  b2Vec2 direction;
-};
-
-// ****************************************************************************
-class MoveUpSideState : public IState<Player>
-{
-public:
-  MoveUpSideState(b2Vec2 direction)
-    : direction(direction)
-  {}
-
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
-  State Update() override;
-  State Input(Keyboard& input) override;
-
-private:
-  b2Vec2 direction;
+	State Update() override;
+	State Input(::Input& input) override;
 
 };
-
-// ****************************************************************************
-class MoveDownSideState : public IState<Player>
+class MoveState : public IState<Player>
 {
 public:
-  MoveDownSideState(b2Vec2 direction)
-    : direction(direction)
-  {}
+	MoveState(b2Vec2 direction)
+		:
+		dir(direction)
+	{}
 
-  void OnEnter(Player& player) override;
-  void OnExit() override;
+	void OnEnter(Player& player) override;
+	void OnExit() override;
 
-  State Update() override;
-  State Input(Keyboard& input) override;
-
-private:
-  b2Vec2 direction;
-
-};
-// ****************************************************************************
-class MoveUpDownState : public IState<Player>
-{
-public:
-  MoveUpDownState(b2Vec2 direction)
-    : direction(direction)
-  {}
-
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
-  State Update() override;
-  State Input(Keyboard& input) override;
+	State Update() override;
+	State Input(::Input& input) override;
 
 private:
-  b2Vec2 direction;
+	b2Vec2 dir;
 };
 
-// ****************************************************************************
-class GettingWater : public IState<Player>
+class RunState : public IState<Player>
 {
 public:
-  GettingWater(b2Vec2 direction)
-    :
-    direction(direction)
-  {}
-  void OnEnter(Player& player) override;
-  void OnExit() override;
+	RunState(b2Vec2 direction)
+		:
+		dir(direction)
+	{}
 
-  State Update() override;
-  State Input(Keyboard& input) override;
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update() override;
+	State Input(::Input& input) override;
+
 private:
-  float gettingWaterAmount;
-  float releaseWaterAmount;
-  float waterAdding;
-  float speed;
-  b2Vec2 direction;
+	b2Vec2 dir;
+};
+
+class JumpState : public IState<Player>
+{
+public:
+	JumpState()
+		:
+		direction(0.f),
+		velocity(500.f),
+		jump_y(0.f),
+		fart("fart0.wav")
+	{
+	}
+
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update() override;
+	State Input(::Input& input) override;
+
+private:
+	float base_y;
+	float jump_y;
+	float velocity;
+	float direction;
+	Audio fart;
 };

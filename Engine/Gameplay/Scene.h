@@ -7,7 +7,8 @@
 #include "Physics\Physics.h"
 
 class Renderer;
-class Keyboard;
+class Graphics;
+class Input;
 class Scene
 {
 public:
@@ -33,9 +34,8 @@ private:
 	TileGrid tile_grid;
 
 	// players
-	Player* players[4];
+	Player* players[NUM_PLAYERS];
 
 	// physics
-	Physics physx;
-
+	Physics simulation;
 };

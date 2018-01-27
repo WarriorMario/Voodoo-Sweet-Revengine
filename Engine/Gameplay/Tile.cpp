@@ -2,13 +2,14 @@
 #include "Assets\Assets.h"
 #include "Assets\Texture.h"
 #include "Utility\DrawUtils.h"
+#include "Physics\Physics.h"
 
 Tile::Tile()
 {
 }
 
 void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
-	TileFunction tile_function, Texture* atlas_texture)
+	TileFunction tile_function, Texture* atlas_texture, Physics& simulation)
 {
 	// transform the position to screen space
 	pos_x = grid_pos_x * SIZE;
@@ -39,6 +40,33 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	max_u = min_u + uv_delta_x - 0.002f;
 	min_v = atlas_y * uv_delta_y + 0.001f;
 	max_v = min_v + uv_delta_y - 0.002f;
+  InitFunction(tile_function,simulation);
+}
+
+void Tile::InitFunction(TileFunction function, Physics& simulation)
+{
+  switch(function)
+  {
+    case Tile::DEFAULT:
+    break;
+    case Tile::COLLISION:
+      simulation.CreateBody(Vec2(pos_x/PHYSICS_SCALE,pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+      break;
+    case Tile::BORDER:
+    {
+      Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+      body.body->SetUserData((void*)2);
+    }
+      break;
+    case Tile::WATER:
+    {
+      Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+      body.body->SetUserData((void*)true);
+    }
+    break;
+    default:
+      break;
+  }
 }
 
 void Tile::Render()

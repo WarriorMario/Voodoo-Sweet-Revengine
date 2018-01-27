@@ -1,12 +1,13 @@
 #include "Scene.h"
 #include "Keyboard.h"
+#include "AngryPlayer.h"
 
 Scene::Scene()
   : players{nullptr}
 {
 }
 
-void Scene::Init()
+void Scene::Init(Graphics& gfx)
 {
 	tile_grid.LoadLevel(LEVEL_TO_LOAD);
 }
