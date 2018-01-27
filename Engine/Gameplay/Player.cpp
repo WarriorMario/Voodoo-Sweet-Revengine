@@ -12,7 +12,7 @@ void IdleState::OnExit()
 
 }
 
-IdleState::State IdleState::Update()
+IdleState::State IdleState::Update(float dt)
 {
 
   return nullptr;
@@ -68,7 +68,7 @@ void MoveSideState::OnExit()
 
 }
 
-MoveSideState::State MoveSideState::Update()
+MoveSideState::State MoveSideState::Update(float dt)
 {
   direction.Normalize();
   Owner().x += direction.x * 5.f;
@@ -121,7 +121,7 @@ void MoveUpDownState::OnExit()
 
 }
 
-MoveUpDownState::State MoveUpDownState::Update()
+MoveUpDownState::State MoveUpDownState::Update(float dt)
 {
   Owner().y += direction.y * 5.f;
 
@@ -164,7 +164,7 @@ void MoveUpSideState::OnExit()
 
 }
 
-MoveUpSideState::State MoveUpSideState::Update()
+MoveUpSideState::State MoveUpSideState::Update(float dt)
 {
   Owner().y += Owner().speed * 5.f;
   Owner().x += direction.x * 5.f;
@@ -204,7 +204,7 @@ void MoveDownSideState::OnExit()
 
 }
 
-MoveDownSideState::State MoveDownSideState::Update()
+MoveDownSideState::State MoveDownSideState::Update(float dt)
 {
   Owner().y -= Owner().speed * 5.f;
   Owner().x += direction.x * 5.f;
@@ -216,7 +216,7 @@ MoveDownSideState::State MoveDownSideState::Input(Keyboard& input)
   if(input.KeyIsPressed(VK_DOWN) && input.KeyIsPressed(VK_RIGHT))
   {
     direction += Owner().speed;
-    Owner().SetFlipped(true);
+    Owner().SetFlipped(false);
   }
   if(input.KeyIsPressed(VK_DOWN) && input.KeyIsPressed(VK_LEFT))
   {
@@ -246,7 +246,7 @@ void GettingWater::OnExit()
 
 }
 
-GettingWater::State GettingWater::Update()
+GettingWater::State GettingWater::Update(float dt)
 {
   if(waterAdding > -100.f && waterAdding < 100.f)
     Owner().waterPercentage += waterAdding;
@@ -283,9 +283,14 @@ GettingWater::State GettingWater::Input(Keyboard& input)
 Player::Player()
   :
   movement(*this, new IdleState),
-  sprites{"Images/idle1.png", "Images/move1.png", "Images/MoveUp.png", "Images/MoveUpSide.png","Images/MoveDownSide.png"},
+  graphics{
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f}
+  },
   flip_sprite(false),
-  font(Font("Fonts/times.ttf")),
   is_god(false)
 {
   width = 100.f;

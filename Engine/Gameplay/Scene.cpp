@@ -19,7 +19,7 @@ void Scene::Tick(float dt, Keyboard& kbd)
   {
     if(player != nullptr)
     {
-      player->Update();
+      player->Update(dt);
       player->Input(kbd);
     }
   }
@@ -43,6 +43,7 @@ Player* Scene::GetGod() const
       return player;
     }
   }
+  return nullptr;
 }
 Array<Player*> Scene::GetPlayers() const
 {
