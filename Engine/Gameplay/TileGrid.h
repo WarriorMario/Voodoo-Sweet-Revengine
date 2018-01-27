@@ -1,5 +1,7 @@
 #pragma once
 #include "VString.h"
+
+class Renderer;
 class Tile;
 
 class TileGrid
@@ -21,6 +23,9 @@ public:
 	// destroys any present data, creates a new level
 	bool LoadLevel(StringRef level_name);
 
+	// renders all of it's tiles
+	void Draw(Renderer& renderer);
+
 	// getters to access width and height
 	inline unsigned int GetGridWidth()
 	{
@@ -36,6 +41,7 @@ public:
 	}
 
 private:
+	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/DebugAtlas.bmp";
 	unsigned int width;
 	unsigned int height;
 	Tile* tiles;

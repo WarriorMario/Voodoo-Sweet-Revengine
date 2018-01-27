@@ -258,7 +258,7 @@ typedef UInt64 LargestUInt;
 #define JSONCPP_ISTRINGSTREAM std::basic_istringstream<char, std::char_traits<char>, Json::SecureAllocator<char> >
 #define JSONCPP_ISTREAM       std::istream
 #else
-#define JSONCPP_STRING        String
+#define JSONCPP_STRING        std::string
 #define JSONCPP_OSTRINGSTREAM std::ostringstream
 #define JSONCPP_OSTREAM       std::ostream
 #define JSONCPP_ISTRINGSTREAM std::istringstream

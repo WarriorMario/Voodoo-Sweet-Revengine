@@ -7,7 +7,7 @@ FileReader::~FileReader()
 }
 
 
-FileHandle FileReader::Open(const String& a_rFileName)
+FileHandle FileReader::Open(const std::string& a_rFileName)
 {
 	FileHandle ret; 
 	FILE* pFile = fopen(a_rFileName.c_str(), "rb");

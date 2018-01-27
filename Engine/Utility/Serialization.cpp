@@ -86,7 +86,7 @@ ErrorCodes Serializer::Deserialize(const String& filePath)
 	}
 
 	// Step back into root
-	StepIn(m_root.c_str());
+	//StepIn(m_root.c_str());
 
 	return ErrorCodes::SUCCESS;
 }
@@ -97,6 +97,12 @@ ErrorCodes Serializer::Deserialize(const String& filePath)
 void Serializer::StepIn(const String& name)
 {
 	Json::Value* pNewRoot = &(Root())[name];
+	m_values.push(pNewRoot);
+}
+
+void Serializer::StepInArray(int idx)
+{
+	Json::Value* pNewRoot = &(Root())[idx];
 	m_values.push(pNewRoot);
 }
 
@@ -182,4 +188,9 @@ void Serializer::Get(const String& name, size_t& value)
 void Serializer::Get(const String& name, String& value)
 {
 	value = Root()[name].asCString();
+}
+
+void Serializer::GetAtIdx(int idx, int & value)
+{
+	value = Root()[idx].asInt();
 }

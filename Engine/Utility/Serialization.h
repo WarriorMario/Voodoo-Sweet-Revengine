@@ -27,6 +27,7 @@ public:
 	ErrorCodes Deserialize(const String& filePath);
 
 	void StepIn(const String& name);
+	void StepInArray(int idx);
 	void StepOut();
 
 	void Add(const String& name, float value);
@@ -44,6 +45,7 @@ public:
 	void Get(const String& name, unsigned int& value);
 	void Get(const String& name, size_t& value);
 	void Get(const String& name, String& value);
+	void GetAtIdx(int idx, int& value);
 
 private:
 	inline Json::Value& Root()

@@ -1693,9 +1693,9 @@ public:
   * is convenient.
   */
 bool JSON_API parseFromStream(
-	CharReader::Factory const&,
-	JSONCPP_ISTREAM&,
-	Value* root, std::string* errs);
+    CharReader::Factory const&,
+    JSONCPP_ISTREAM&,
+    Value* root, std::string* errs);
 
 /** \brief Read from 'sin' into 'root'.
 

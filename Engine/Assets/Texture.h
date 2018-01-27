@@ -80,6 +80,16 @@ public:
     : Base(filename)
   {}
 
+  int GetWidth()
+  {
+	  auto& data = GetData<Texture>();
+	  return data.width;
+  }
+  int GetHeight()
+  {
+	  auto& data = GetData<Texture>();
+	  return data.height;
+  }
   Color Sample(float u, float v)
   {
     auto& data = GetData<Texture>();

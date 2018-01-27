@@ -23,6 +23,7 @@
 #include "Matrix.h"
 #include "Physics\PhysicsConstants.h"
 #include "Utility\FrameAllocator.h"
+#include "Gameplay\Scene.h"
 
 #include "Utility\ProfileOutput.h"
 #ifdef NDEBUG
@@ -43,37 +44,39 @@ b2FixtureDef testf0;
 b2FixtureDef testf1;
 Handle<PhysicsObject> test;
 
+
 Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
-  :
-  godWindow(godWindow),
-  playerWindow(playerWindow),
-  gfx(godWindow, playerWindow),
-  renderer(Renderer(gfx)),
-  arena(input),
-  player(renderer),
-  input(godWindow.kbd,godWindow.mouse),
-  editor(arena)
+	:
+	godWindow(godWindow),
+	playerWindow(playerWindow),
+	gfx(godWindow, playerWindow),
+	renderer(Renderer(gfx)),
+	arena(input),
+	player(renderer),
+	input(godWindow.kbd, godWindow.mouse),
+	editor(arena)
 {
-  JM_Get() = JM_AllocJobManager();
-  JM_InitJobManager(JM_Get(), num_cores);
-  //test = arena.Create<PhysicsObject>();
-  arena.physx.CreateDebugDraw(gfx);
-  editor.Init();
+	JM_Get() = JM_AllocJobManager();
+	JM_InitJobManager(JM_Get(), num_cores);
+	//test = arena.Create<PhysicsObject>();
+	arena.physx.CreateDebugDraw(gfx);
+	editor.Init();
 
-  MakeSingleton<FrameAllocator>();
+	MakeSingleton<FrameAllocator>();
 
-  godWindow.SetFocused();
+	godWindow.SetFocused();
 
-  test0.type = b2_dynamicBody; //this will be a dynamic body
-  test0.position.Set(110, 20); //set the starting position
-  test0.angle = 0; //set the starting angle
+	test0.type = b2_dynamicBody; //this will be a dynamic body
+	test0.position.Set(110, 20); //set the starting position
+	test0.angle = 0; //set the starting angle
 
-  b2CircleShape circle;
-  circle.m_radius = 5;
-  test1.type = b2_staticBody; //this will be a dynamic body
-  test1.position.Set(100, 160); //set the starting position
-  test1.angle = 0; //set the starting angle
+	b2CircleShape circle;
+	circle.m_radius = 5;
+	test1.type = b2_staticBody; //this will be a dynamic body
+	test1.position.Set(100, 160); //set the starting position
+	test1.angle = 0; //set the starting angle
 
+	scene.Init();
 }
 
 Game::~Game()
@@ -83,58 +86,61 @@ Game::~Game()
 
 void Game::Go()
 {
-  //FontManager::StartFrame(renderer);
-  ProfilerLogHandler pf_output;
-  ProfileSample::output_handler = &pf_output;
-  {
-    PROFILE_SCOPE("Game::Go");
-    {
-      PROFILE_SCOPE("Game::Go::BeginFrame");
-      gfx.BeginFrame();
-    }
-    UpdateModel();
-    ComposeFrame();
-    {
-      PROFILE_SCOPE("Game::Go::EndFrame");
-      gfx.EndFrame();
-    }
-  }
+	ProfilerLogHandler pf_output;
+	ProfileSample::output_handler = &pf_output;
+	{
+		PROFILE_SCOPE("Game::Go");
+		{
+			PROFILE_SCOPE("Game::Go::BeginFrame");
+			gfx.BeginFrame();
+		}
+		UpdateModel();
+		ComposeFrame();
+		{
+			PROFILE_SCOPE("Game::Go::EndFrame");
+			gfx.EndFrame();
+		}
+	}
 
-  // clear the frame allocator.
-  FrameAllocator::Get().Clear();
+	// clear the frame allocator.
+	FrameAllocator::Get().Clear();
 
-  ProfileSample::Output();
+	ProfileSample::Output();
 
 
-  input.Poll();
+	input.Poll();
 }
 Vec3 offset = Vec3(400, 400, 350);
 void Game::UpdateModel()
 {
-  PROFILE_SCOPE("Game::UpdateModel");
+	PROFILE_SCOPE("Game::UpdateModel");
 
-  arena.Update();
-  if(input.IsPressed(ButtonCode::ESC) == true)
-  {
-    godWindow.Kill();
-  }
-  editor.Update();
-  player.Update();
-  player.Input(godWindow.kbd);
-  frame_counter.Update();
-  Player* players[] = {&player};
-  // Update players camera
-  renderer.camera.CalculateOffset(players,1);
-  //test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
+	arena.Update();
+	if (input.IsPressed(ButtonCode::ESC) == true)
+	{
+		godWindow.Kill();
+	}
+	editor.Update();
+	player.Update();
+	player.Input(godWindow.kbd);
+	frame_counter.Update();
+	Player* players[] = { &player };
+
+	// tick the scene
+	scene.Tick(1.0f / 60.0f);
+
+	// Update players camera
+	renderer.camera.CalculateOffset(players, 1);
+	//test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
 void Game::ComposeFrame()
 {
-  PROFILE_SCOPE("Game::ComposeFrame");
-  //arena.Draw(renderer);
-  player.Draw();
-  frame_counter.Draw(renderer);
-  //FontManager::EndFrame(renderer);
-  renderer.Render();
-  arena.physx.DebugDraw();
+	PROFILE_SCOPE("Game::ComposeFrame");
+	//arena.Draw(renderer);
+	player.Draw();
+	scene.Draw(renderer);
+	frame_counter.Draw(renderer);
+	renderer.Render();
+	arena.physx.DebugDraw();
 }

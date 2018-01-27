@@ -37,7 +37,7 @@ public:
 	b2Vec2 pos = b2Vec2(x - 0.5f * width, y - 0.5f * height);
 	b2Vec2 size = b2Vec2(width, height);
 	RenderQuad<ForegroundShader>(renderer, pos, size,
-		flip_sprite, false, Colors::Cyan, &sprites[curr_sprite]);
+		flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
 	RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
 		font, 24, b2Vec2(200, 200), Colors::Red);
 	RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
