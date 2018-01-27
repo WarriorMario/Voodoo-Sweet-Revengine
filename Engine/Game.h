@@ -28,7 +28,6 @@
 #include "Triangle.h"
 #include "Gameplay\Framework\Arena.h"
 #include "Assets\Assets.h"
-#include "Gameplay\Player.h"
 #include "Input\Input.h"
 #include "Gameplay\Framework\Objects\FrameCounter.h"
 #include "Threading\Job_Manager.h"
@@ -59,7 +58,6 @@ private:
 	FrameCounter frame_counter;
 	Arena arena;
 	GodEditor editor;
-	Player player;
 	Input input;
 	Scene scene;
 	/********************************/

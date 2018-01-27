@@ -52,9 +52,9 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 	gfx(godWindow, playerWindow),
 	renderer(Renderer(gfx)),
 	arena(input),
-	player(renderer),
 	input(godWindow.kbd, godWindow.mouse),
-	editor(arena)
+	editor(arena),
+	frame_counter(scene)
 {
 	JM_Get() = JM_AllocJobManager();
 	JM_InitJobManager(JM_Get(), num_cores);
@@ -121,16 +121,11 @@ void Game::UpdateModel()
 		godWindow.Kill();
 	}
 	editor.Update();
-	player.Update();
-	player.Input(godWindow.kbd);
 	frame_counter.Update();
-	Player* players[] = { &player };
 
 	// tick the scene
-	scene.Tick(1.0f / 60.0f);
+	scene.Tick(godWindow.kbd);
 
-	// Update players camera
-	renderer.camera.CalculateOffset(players, 1);
 	//test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }
 
@@ -138,7 +133,6 @@ void Game::ComposeFrame()
 {
 	PROFILE_SCOPE("Game::ComposeFrame");
 	//arena.Draw(renderer);
-	player.Draw();
 	scene.Draw(renderer);
 	frame_counter.Draw(renderer);
 	renderer.Render();
