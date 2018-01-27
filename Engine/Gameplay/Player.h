@@ -55,15 +55,14 @@ public:
   bool is_god;
   bool dead;
   Body physics_body;
-  float waterPercentage;
-  float speed;
+  float waterPercentage = 0;
+  float speed = 2.f;
+  float total_time;
 private:
   TileGrid & grid;
 
   StateMachine<Player> movement;
-  SpriteAnimation graphics[4];
-
-  Font font;
+  LayeredAnimation graphics[4];
 
   Sprite curr_sprite;
   bool flip_sprite;
@@ -194,6 +193,4 @@ private:
 	float releaseWaterAmount;
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
-	//the speed of the player
-	float speed;
 };

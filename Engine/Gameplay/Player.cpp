@@ -116,7 +116,7 @@ MoveState::State MoveState::Input(::Input& input)
     dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
-  if(dir.x == 0.f && dir.y)
+  if(dir.x == 0.f && dir.y == 0)
   {
     return new IdleState;
   }
@@ -239,6 +239,11 @@ JumpState::State JumpState::Input(::Input& input)
 }
 
 // ****************************************************************************
+#define MOVE_LAYER_0 "Images/God/Layer0/0_Kid1"
+#define MOVE_LAYER_1 "Images/God/Layer1/1_Kid1"
+#define MOVE_LAYER_2 "Images/God/Layer2/2_Kid1"
+#define MOVE_LAYER_3 "Images/God/Layer3/3_Kid1"
+
 void GettingWater::OnEnter(Player& player)
 {
 	Base::OnEnter(player);
@@ -265,7 +270,7 @@ GettingWater::State GettingWater::Update(float dt)
 		Owner().waterPercentage = 0;
 	//Makes sure the speed is lower when the waterpercentage is higher 
 	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
-		Owner().speed = -((Owner().waterPercentage - 100.f) / 100);
+		Owner().speed = -((Owner().waterPercentage - 100.f) / 100.f) + 1.f;
 	}
 
 	return nullptr;
@@ -287,21 +292,21 @@ GettingWater::State GettingWater::Input(::Input& input)
 }
 
 // ****************************************************************************
+
 Player::Player(Physics& simulation, TileGrid& grid, int id)
   :
   movement(*this, new IdleState),
-  graphics{
-    {"Images/Walking/frame", 6, 0.1f},
-    {"Images/Walking/frame", 6, 0.1f},
-    {"Images/Walking/frame", 6, 0.1f},
-    {"Images/Walking/frame", 6, 0.1f}
-  },
   flip_sprite(false),
-  font(Font("Fonts/times.ttf")),
   physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
   grid(grid),
-  player_id(id)
+  player_id(id),
+  graphics{ 0.1f, 0.1f, 0.1f, 0.1f }
 {
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_0, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_1, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_2, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_3, 3);
+
   width = 32.0f;
   height = 32.0f;
   x = 400.0f;
@@ -316,6 +321,18 @@ void Player::Update(float dt)
   {
     return;
   }
+
+  total_time += dt;
+
+  graphics[(int)Sprite::Move].ScaleLayer(0, 2.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(1, 2.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(2, 2.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(3, 2.0f);
+
+  float t = sinf(total_time * 2.0f) / 2.0f + 0.5f;
+  float scale = t + 2.f;
+  graphics[(int)Sprite::Move].ScaleLayer(1, scale);
+  graphics[(int)Sprite::Move].OffsetLayer(1, Vec2(0, -100 * t));
 
   movement.Update(dt);
   graphics[(int)curr_sprite].Update(dt);
