@@ -28,16 +28,12 @@ public:
 
   virtual void Update();
   void Input(Input& input);
-	void Draw(Renderer& renderer)
+	void Draw()
 	{
 		b2Vec2 pos = b2Vec2(x, y);
 		b2Vec2 size = b2Vec2(width, height);
-		RenderQuad<ForegroundShader>(renderer, pos, size,
+		RenderSharedQuad<ForegroundShader>(pos, size,
 			flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
-		RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-			font, 24, b2Vec2(200, 200), Colors::Red);
-		RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
-			font, 24, b2Vec2(200, 100), Colors::Red);
 	}
 
 	void SetSprite(Sprite sprite)
@@ -57,6 +53,7 @@ public:
 	float x, y;
 	float width, height;
   const int player_id;
+  bool is_god;
   Body physics_body;
 private:
   TileGrid& grid;

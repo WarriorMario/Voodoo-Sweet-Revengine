@@ -6,6 +6,7 @@
 #include "Gameplay\Player.h"
 #include "Physics\Physics.h"
 
+class AngryPlayer;
 class Renderer;
 class Graphics;
 class Input;
@@ -15,11 +16,11 @@ public:
 	Scene();
 
 	void Init();
-	void Tick(float dt, Keyboard& kbd);
+	void Tick(float dt, Input& kbd);
 	void Draw();
 
   // Gets the current god player
-  Player* GetGod() const;
+  AngryPlayer* GetGod() const;
   // Gets the current players
   Array<Player*> GetPlayers() const;
   // Demotes the current god and assigns a new player as god

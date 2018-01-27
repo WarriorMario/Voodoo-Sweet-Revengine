@@ -20,7 +20,7 @@ public:
 	void Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 		TileFunction tile_function, Texture* atlas_texture, Physics& simulation);
   void InitFunction(TileFunction function, Physics& simulation);
-	void Render(Renderer& renderer);
+	void Render();
   bool IsPassable()
   {
     return function != COLLISION && function != WATER;

@@ -4,6 +4,8 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   :
   Player(simulation,grid,id)
 {
+  width = 64;
+  height = 64;
   physics_body.body->SetTransform(Vec2(23, 19), 0);
   x = 230;
   y = 190;
