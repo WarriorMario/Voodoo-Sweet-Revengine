@@ -126,6 +126,18 @@ bool TileGrid::LoadLevel(StringRef level_name, Physics& simulation)
 	// allocate the tiles to fill the grid width
 	tiles = new Tile[width * height];
 
+	// get the offsets
+	int offset_visual;
+	int offset_function;
+	ser.StepIn("tilesets");
+	ser.StepInArray(0);
+	ser.Get("firstgid", offset_visual);
+	ser.StepOut();
+	ser.StepInArray(1);
+	ser.Get("firstgid", offset_function);
+	ser.StepOut();
+	ser.StepOut();
+
 	// get the tiles themselves
 	ser.StepIn("layers");
 	size_t counter = 0;
@@ -147,11 +159,11 @@ bool TileGrid::LoadLevel(StringRef level_name, Physics& simulation)
 			ser.StepOut();
 			ser.StepOut();
 
-			function_value -= 668; // because for some reason they're offset with this
+			function_value -= offset_function; // because for some reason they're offset with this
 			Tile::TileFunction function = GetFunction(function_value);
 
 			// init the tile
-			tiles[counter].Init(x, y, visual-1, function, atlas, simulation);
+			tiles[counter].Init(x, y, visual - offset_visual, function, atlas, simulation);
 
 			// add any possible spawn locations
 			if (function == Tile::TileFunction::PLAYER_SPAWN_LOCATION)
