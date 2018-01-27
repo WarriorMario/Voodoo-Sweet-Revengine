@@ -19,8 +19,11 @@ Tile::TileFunction GetFunction(int function)
 	case 9:
 		return Tile::TileFunction::COLLISION;
 		break;
+  case 1:
+    return Tile::TileFunction::WATER;
+    break;
 	case 3:
-		return Tile::TileFunction::WATER;
+		return Tile::TileFunction::BORDER;
 		break;
 	default:
 		return Tile::TileFunction::DEFAULT;

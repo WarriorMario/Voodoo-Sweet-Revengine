@@ -1,5 +1,6 @@
 #include "AngryPlayer.h"
 #include "Physics\Physics.h"
+#include "Tile.h"
 AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   :
   Player(simulation,grid,id)
@@ -21,7 +22,7 @@ void AngryPlayer::Update()
     if(contacts->contact->IsTouching())
     {
       Player* player = (Player*)contacts->contact->GetFixtureA()->GetBody()->GetUserData();
-      if((size_t)player > 3)
+      if((size_t)player > Tile::WATER)
       {
         player->LoseWater();
       }

@@ -44,7 +44,6 @@ public:
     scene.SpawnPlayer(0, Vec2(450, 260));
     scene.SpawnPlayer(1, Vec2(550, 260));
     scene.SpawnPlayer(2, Vec2(350, 260));
-    scene.SpawnPlayer(3, Vec2(350, 260));
     scene.NewGod();
   }
   void OnTerminate() override

@@ -55,13 +55,13 @@ void Tile::InitFunction(TileFunction function, Physics& simulation)
     case Tile::BORDER:
     {
       Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      body.body->SetUserData((void*)2);
+      body.body->SetUserData((void*)Tile::BORDER);
     }
       break;
     case Tile::WATER:
     {
       Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      body.body->SetUserData((void*)true);
+      body.body->SetUserData((void*)Tile::WATER);
     }
     break;
     default:

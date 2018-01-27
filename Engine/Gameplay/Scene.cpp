@@ -66,7 +66,6 @@ void Scene::NewGod()
   }
 
   int new_god = 3;
-  delete players[new_god];
   players[new_god] = new AngryPlayer(simulation, tile_grid, 3);
   players[new_god]->is_god = true;
 }
