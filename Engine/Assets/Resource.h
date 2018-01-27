@@ -43,6 +43,8 @@ public:
     {
       Assets::Get().AddRef<T>(filename);
     }
+
+    return *this;
   }
 
   void Reload()
