@@ -2,6 +2,7 @@
 #include "ButtonCodes.h"
 #include "Matrix.h"
 #include "Utility.h"
+#include "ChiliMath.h"
 
 void Controller::Poll()
 {
@@ -119,8 +120,8 @@ Vec2 Controller::Trigger()
 void Controller::ApplyDeadzone(Vec2 & input)
 {
 	// clamp to deadzone
-	input.x = input.x < DEAD_ZONE_THRESHOLD ? 0.0f : input.x;
-	input.y = input.y < DEAD_ZONE_THRESHOLD ? 0.0f : input.y;
+	input.x = abs(input.x) < DEAD_ZONE_THRESHOLD ? 0.0f : input.x;
+	input.y = abs(input.y) < DEAD_ZONE_THRESHOLD ? 0.0f : input.y;
 	input = input / (1.0f - DEAD_ZONE_THRESHOLD);
 }
 
