@@ -116,7 +116,7 @@ MoveState::State MoveState::Input(::Input& input)
     dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
-  if(dir.x == 0.f && dir.y)
+  if(dir.x == 0.f && dir.y == 0)
   {
     return new IdleState;
   }
@@ -265,7 +265,7 @@ GettingWater::State GettingWater::Update(float dt)
 		Owner().waterPercentage = 0;
 	//Makes sure the speed is lower when the waterpercentage is higher 
 	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
-		Owner().speed = -((Owner().waterPercentage - 100.f) / 100);
+		Owner().speed = -((Owner().waterPercentage - 100.f) / 100.f) + 1.f;
 	}
 
 	return nullptr;

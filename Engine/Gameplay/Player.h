@@ -55,8 +55,8 @@ public:
   bool is_god;
   bool dead;
   Body physics_body;
-  float waterPercentage;
-  float speed;
+  float waterPercentage = 0;
+  float speed = 2.f;
 private:
   TileGrid & grid;
 
@@ -194,6 +194,4 @@ private:
 	float releaseWaterAmount;
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
-	//the speed of the player
-	float speed;
 };
