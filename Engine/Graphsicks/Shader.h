@@ -34,6 +34,7 @@ public:
   struct ConstData
   {
     Color color;
+    Texture* texture;
     float u10, v10, u20, v20;
   };
 
@@ -42,27 +43,18 @@ public:
     float x, y;
     float u, v;
   };
-
-  struct DataSIMDBuffer
-  {
-    void Add(BackgroundShader& s)
-    {}
-    void Clear()
-    {}
-    void GetTriangle(Vec2* points, size_t index)
-    {}
-    size_t size;
-  };
   BackgroundShader(
     const PrimData& vertex_0,
     const PrimData& vertex_1,
     const PrimData& vertex_2,
-    const Color& color)
+    const Color& color,
+    Texture* texture)
   {
     prim_data[0] = vertex_0;
     prim_data[1] = vertex_1;
     prim_data[2] = vertex_2;
     const_data.color = color;
+    const_data.texture = texture;
 
     const_data.u10 = prim_data[1].u - prim_data[0].u;
     const_data.v10 = prim_data[1].v - prim_data[0].v;
@@ -76,26 +68,45 @@ public:
     // Interpolation
     /////////////////////////////////////
 
+    // for convenience
     const PrimData& p0 = prim_data[0];
     const PrimData& p1 = prim_data[1];
     const PrimData& p2 = prim_data[2];
-    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;
+
+    // only requires t1 and t2
+    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;// Texture power of 2 to save some more bits
     float v = p0.v + const_data.v10 * interp_data.t1 + const_data.v20 * interp_data.t2;
 
-    /////////////////////////////////////
-    // Shading
-    /////////////////////////////////////
-    pixel = Color((unsigned char)(u * 255.f), (unsigned char)(v * 255.f), 0);
+
+    Color t = const_data.texture->Sample(u, v);
+    pixel = t;
   }
+
   __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
-  {}
+  {
+    /////////////////////////////////////
+    // Interpolation
+    /////////////////////////////////////
+    __m256 p0u8 = AVX_FLOAT_FROM1(prim_data[0].u);
+    __m256 p0v8 = AVX_FLOAT_FROM1(prim_data[0].v);
+    __m256 p10u8 = AVX_FLOAT_FROM1(const_data.u10);
+    __m256 p20u8 = AVX_FLOAT_FROM1(const_data.u20);
+    __m256 p10v8 = AVX_FLOAT_FROM1(const_data.v10);
+    __m256 p20v8 = AVX_FLOAT_FROM1(const_data.v20);
+    __m256 u8 = AVX_FLOAT_ADD(AVX_FLOAT_ADD(p0u8, AVX_FLOAT_MUL(p10u8, t1)), AVX_FLOAT_MUL(p20u8, t2));
+    __m256 v8 = AVX_FLOAT_ADD(AVX_FLOAT_ADD(p0v8, AVX_FLOAT_MUL(p10v8, t1)), AVX_FLOAT_MUL(p20v8, t2));
+
+    __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
+    *((__m256i*)pixel) = AVX_INT32_ADD(AVX_INT32_AND(inverseMask, *((__m256i*)pixel)), AVX_INT32_AND(mask, const_data.texture->Sample(u8, v8)));
+  }
+
   PrimData* GetPrimData()
   {
     return &prim_data[0];
   }
 
   static constexpr bool IS_ABSOLUTE = false;
-  static constexpr bool SIMD = false;
+  static constexpr bool SIMD = true;
   static constexpr bool CHECKER = false;
 private:
   ConstData const_data;
@@ -122,16 +133,6 @@ public:
     float nx, ny;
   };
 
-  struct DataSIMDBuffer
-  {
-    void Add(ForegroundShader& s)
-    {}
-    void Clear()
-    {}
-    void GetTriangle(Vec2* points, size_t index)
-    {}
-    size_t size;
-  };
   ForegroundShader(
     const PrimData& vertex_0,
     const PrimData& vertex_1,
@@ -219,25 +220,16 @@ public:
     //Color t = const_data.texture->Sample(u, v);
     //float a = t.GetA() / 255.f;
     //pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
+    __m256i final_color = const_data.texture->Sample(u8, v8);
+    __m256i temp = AVX_INT32_AND( _mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), mask);
     
-    __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
+    __m256i inverseMask = AVX_INT32_AND(_mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff)));
     
     //__m256i inverseMaskTest = _mm256_xor_si256(mask, _mm256_set1_epi32(0xffffffff));
     //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMaskTest, _mm256_set1_epi32(pixel->dword)), _mm256_and_si256(mask, _mm256_cvtps_epi32(AVXMULPS(v8, AVXSET1PS(255.0f)))));
     //return;
     //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMask, ), _mm256_and_si256(mask, _mm256_set1_epi32(-1)));
     *((__m256i*)pixel) = AVX_INT32_ADD(AVX_INT32_AND(inverseMask, *((__m256i*)pixel)), AVX_INT32_AND(mask, const_data.texture->Sample(u8, v8)));
-
-
-    //((__m256i*)pixel)->m256i_i32[0] = const_data.texture->Sample(u8.m256_f32[0], v8.m256_f32[0]).dword;
-    //((__m256i*)pixel)->m256i_i32[1] = const_data.texture->Sample(u8.m256_f32[1], v8.m256_f32[1]).dword;
-    //((__m256i*)pixel)->m256i_i32[2] = const_data.texture->Sample(u8.m256_f32[2], v8.m256_f32[2]).dword;
-    //((__m256i*)pixel)->m256i_i32[3] = const_data.texture->Sample(u8.m256_f32[3], v8.m256_f32[3]).dword;
-    //((__m256i*)pixel)->m256i_i32[4] = const_data.texture->Sample(u8.m256_f32[4], v8.m256_f32[4]).dword;
-    //((__m256i*)pixel)->m256i_i32[5] = const_data.texture->Sample(u8.m256_f32[5], v8.m256_f32[5]).dword;
-    //((__m256i*)pixel)->m256i_i32[6] = const_data.texture->Sample(u8.m256_f32[6], v8.m256_f32[6]).dword;
-    //((__m256i*)pixel)->m256i_i32[7] = const_data.texture->Sample(u8.m256_f32[7], v8.m256_f32[7]).dword;
-    //*((__m256i*)pixel) = const_data.texture->Sample(u8, v8);
   }
 
   PrimData* GetPrimData()
@@ -272,17 +264,6 @@ public:
     float x, y;
     float u, v;
   };
-  struct DataSIMDBuffer
-  {
-    void Add(UIShader& s)
-    {}
-    void Clear()
-    {}
-    void GetTriangle(Vec2* points, size_t index)
-    {}
-    size_t size;
-  };
-
   UIShader(
     const PrimData& vertex_0,
     const PrimData& vertex_1,
@@ -493,6 +474,98 @@ public:
   }
   __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
   {}
+  PrimData* GetPrimData()
+  {
+    return &prim_data[0];
+  }
+
+  static constexpr bool IS_ABSOLUTE = true;
+  static constexpr bool SIMD = false;
+  static constexpr bool CHECKER = false;
+private:
+  ConstData const_data;
+  PrimData prim_data[3];
+};
+
+
+struct ChromaShader
+{
+
+private:
+
+public:
+  struct ConstData
+  {
+    Color chroma_color;
+    Texture* texture;
+    float u10, v10, u20, v20;
+  };
+  struct PrimData
+  {
+    float x, y;
+    float u, v;
+  };
+
+  ChromaShader(
+    const PrimData& vertex_0,
+    const PrimData& vertex_1,
+    const PrimData& vertex_2,
+    const Color& chroma_color,
+    const Texture& texture)
+  {
+    prim_data[0] = vertex_0;
+    prim_data[1] = vertex_1;
+    prim_data[2] = vertex_2;
+
+    const_data.chroma_color = chroma_color;
+
+    const_data.u10 = prim_data[1].u - prim_data[0].u;
+    const_data.v10 = prim_data[1].v - prim_data[0].v;
+    const_data.u20 = prim_data[2].u - prim_data[0].u;
+    const_data.v20 = prim_data[2].v - prim_data[0].v;
+  }
+  __forceinline void Shade(const InterpData& interp_data, Color& pixel)
+  {
+
+    /////////////////////////////////////
+    // Interpolation
+    /////////////////////////////////////
+
+    const PrimData& p0 = prim_data[0];
+    const PrimData& p1 = prim_data[1];
+    const PrimData& p2 = prim_data[2];
+    float u = p0.u + const_data.u10 * interp_data.t1 + const_data.u20 * interp_data.t2;
+    float v = p0.v + const_data.v10 * interp_data.t1 + const_data.v20 * interp_data.t2;
+
+    /////////////////////////////////////
+    // Shading
+    /////////////////////////////////////
+    if(pixel.dword == const_data.chroma_color.dword)
+    pixel = Color((unsigned char)(u * 255.f), (unsigned char)(v * 255.f), 0);
+  }
+  __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
+  {
+    __m256 p0u8 = AVX_FLOAT_FROM1(prim_data[0].u);
+    __m256 p0v8 = AVX_FLOAT_FROM1(prim_data[0].v);
+    __m256 p10u8 = AVX_FLOAT_FROM1(const_data.u10);
+    __m256 p20u8 = AVX_FLOAT_FROM1(const_data.u20);
+    __m256 p10v8 = AVX_FLOAT_FROM1(const_data.v10);
+    __m256 p20v8 = AVX_FLOAT_FROM1(const_data.v20);
+    __m256 u8 = AVX_FLOAT_ADD(AVX_FLOAT_ADD(p0u8, AVX_FLOAT_MUL(p10u8, t1)), AVX_FLOAT_MUL(p20u8, t2));
+    __m256 v8 = AVX_FLOAT_ADD(AVX_FLOAT_ADD(p0v8, AVX_FLOAT_MUL(p10v8, t1)), AVX_FLOAT_MUL(p20v8, t2));
+
+    //Color t = const_data.texture->Sample(u, v);
+    //float a = t.GetA() / 255.f;
+    //pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
+
+    __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
+
+    //__m256i inverseMaskTest = _mm256_xor_si256(mask, _mm256_set1_epi32(0xffffffff));
+    //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMaskTest, _mm256_set1_epi32(pixel->dword)), _mm256_and_si256(mask, _mm256_cvtps_epi32(AVXMULPS(v8, AVXSET1PS(255.0f)))));
+    //return;
+    //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMask, ), _mm256_and_si256(mask, _mm256_set1_epi32(-1)));
+    *((__m256i*)pixel) = AVX_INT32_ADD(AVX_INT32_AND(inverseMask, *((__m256i*)pixel)), AVX_INT32_AND(mask, const_data.texture->Sample(u8, v8)));
+  }
   PrimData* GetPrimData()
   {
     return &prim_data[0];
