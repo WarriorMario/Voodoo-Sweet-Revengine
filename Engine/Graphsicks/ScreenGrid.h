@@ -91,10 +91,10 @@ public:
     SmartArray<int> v_end;
     v_end.size = height;
     v_end.array = a_end;
-    memset(a_end, 0, sizeof(int)*height);
+    memset(a_end, -1, sizeof(int)*height);
 
-    int y_min = height - 1;
-    int y_max = 0;
+    int y_min = height-1;
+    int y_max = -1;
     for(int iEdge = 0; iEdge < 3; ++iEdge)
     {
       Vec2 start = points[iEdge];
@@ -138,7 +138,7 @@ public:
           point_x += sign_x;
           x_index = (point_x / cell_width);
           size_t old_x = x_index;
-          if(y_index < height)
+          if(y_index < height&& x_index >= 0)
           {
             v_start[y_index] = Min(x_index, v_start[y_index]);
             v_end[y_index] = Max(x_index, v_end[y_index]);
@@ -148,7 +148,7 @@ public:
           y_index = (point_y / cell_height);
           point_x -= sign_x;
           x_index = (point_x / cell_width);
-          if(y_index < height)
+          if(y_index < height&& x_index >= 0)
           {
             v_start[y_index] = Min(x_index, v_start[y_index]);
             v_end[y_index] = Max(x_index, v_end[y_index]);
@@ -156,7 +156,7 @@ public:
           // Add x Add point
           point_x += sign_x;
           x_index = old_x;
-          if(y_index < height)
+          if(y_index < height&& x_index >= 0)
           {
             v_start[y_index] = Min(x_index, v_start[y_index]);
             v_end[y_index] = Max(x_index, v_end[y_index]);
@@ -170,7 +170,7 @@ public:
           // next step is horizontal
           point_x += sign_x;
           x_index = (point_x / cell_width);
-          if(y_index < height)
+          if(y_index < height&& x_index >= 0)
           {
             v_start[y_index] = Min(x_index, v_start[y_index]);
             v_end[y_index] = Max(x_index, v_end[y_index]);
@@ -185,7 +185,7 @@ public:
           point_y += sign_y;
           y_index = (point_y / cell_height);
           //if((point_y/ cell_height) >= 0 && (point_y/ cell_height) < Graphics::ScreenHeight/ cell_height)
-          if(y_index < height)
+          if(y_index < height&& x_index >= 0)
           {
             v_start[y_index] = Min(x_index, v_start[y_index]);
             v_end[y_index] = Max(x_index, v_end[y_index]);
@@ -198,15 +198,19 @@ public:
         y_max = Max((int)y_index, y_max);
       }
     }
-
+    if(y_max < 0)
+    {
+      return;
+    }
     y_max = Min(y_max, height - 1);
     y_min = Max(y_min, 0);
-    if(y_min == y_max)
-    {
-      int test = 0;
-    }
+
     for(; y_min <= y_max; ++y_min)
     {
+      if(v_end[y_min] < 0)
+      {
+        continue;
+      }
       for(int x = Max(v_start[y_min], 0); x <= Min(v_end[y_min], width-1); ++x)
       {
         ScreenGridCell& cell = cells[(y_min)* width + (x)];
