@@ -20,6 +20,7 @@
 ******************************************************************************************/
 #pragma once
 
+#include <algorithm>
 #include <math.h>
 
 // a few global defines
