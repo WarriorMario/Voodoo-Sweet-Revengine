@@ -22,24 +22,26 @@ IdleState::State IdleState::Update(float dt)
 IdleState::State IdleState::Input(::Input& input)
 {
   b2Vec2 dir = b2Vec2(0.0f, 0.0f);
+  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && !Owner().is_god)
+	  return new GettingWater();
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(dir.x != 0.f || dir.y != 0.0f)
@@ -96,25 +98,25 @@ MoveState::State MoveState::Input(::Input& input)
   dir = b2Vec2(0.0f, 0.0f);
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
-  if(dir.x == 0.f && dir.y)
+  if(dir.x == 0.f && dir.y == 0)
   {
     return new IdleState;
   }
@@ -242,6 +244,55 @@ JumpState::State JumpState::Input(::Input& input)
 #define MOVE_LAYER_2 "Images/God/Layer2/2_Kid1"
 #define MOVE_LAYER_3 "Images/God/Layer3/3_Kid1"
 
+void GettingWater::OnEnter(Player& player)
+{
+	Base::OnEnter(player);
+	//Sets the amount of water that it can consume/release simultaneously
+	consumingWaterAmount = 10.f;
+	releaseWaterAmount = -20.f;
+	waterAdding = 0;
+}
+void GettingWater::OnExit()
+{
+
+}
+
+GettingWater::State GettingWater::Update(float dt)
+{
+	//checks if the waterAdding is the right amount and adds that amount to the water percentage
+	if (waterAdding == consumingWaterAmount || waterAdding == releaseWaterAmount)
+		Owner().waterPercentage += waterAdding;
+	//This makes sure it stays within the 100% range
+	if (Owner().waterPercentage > 100)
+		Owner().waterPercentage = 100;
+	//This makes sure it doesn't go lower than 0
+	if (Owner().waterPercentage < 0)
+		Owner().waterPercentage = 0;
+	//Makes sure the speed is lower when the waterpercentage is higher 
+	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
+		Owner().speed = -((Owner().waterPercentage - 100.f) / 100.f) + 1.f;
+	}
+
+	return nullptr;
+}
+GettingWater::State GettingWater::Input(::Input& input)
+{
+	//If it's not consuming or releasing it sends it back to the Idle state
+	if (!input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && !input.IsDown(ButtonCode::GAMEPAD_B,Owner().player_id))
+		return new IdleState;
+	// Checks if you're consuming and if so it changes the 
+	if (input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
+		waterAdding = consumingWaterAmount;
+
+
+	if (input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id))
+		waterAdding = releaseWaterAmount;
+
+	return nullptr;
+}
+
+// ****************************************************************************
+
 Player::Player(Physics& simulation, TileGrid& grid, int id)
   :
   movement(*this, new IdleState),
@@ -297,7 +348,22 @@ void Player::Input(::Input & input)
 
 bool Player::IsStuck()
 {
-  return grid.IsPassable(x / Tile::SIZE, y / Tile::SIZE) == false;
+	bool res = false;
+	Vec2 offset = Vec2(width / 2, height / 2);
+
+	// outer corners
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+
+	// centre points
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+
+	return res;
 }
 
 void Player::LoseWater()

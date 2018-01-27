@@ -55,8 +55,9 @@ public:
   bool is_god;
   bool dead;
   Body physics_body;
+  float waterPercentage = 0;
+  float speed = 2.f;
   float total_time;
-
 private:
   TileGrid & grid;
 
@@ -173,4 +174,23 @@ private:
   float direction;
   Audio fart;
 
+};
+
+// ****************************************************************************
+//You use this state when you're consuming or releasing water
+class GettingWater : public IState<Player>
+{
+public:
+
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update(float dt) override;
+	State Input(::Input& input) override;
+private:
+	//The amount of water that it can consume/release simultaneously
+	float consumingWaterAmount;
+	float releaseWaterAmount;
+	//The water that needs to be added to the waterpercentage
+	float waterAdding;
 };

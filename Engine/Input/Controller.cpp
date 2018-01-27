@@ -35,8 +35,8 @@ bool Controller::ButtonIsPressed(size_t code)
 	{
 		last_state = (controller.bRightTrigger > trigger_button_threshold);
 	}
-	last_state = ((code >> 8) & controller.wButtons);
-	if (last_state == true)
+	last_state = ((bool)((code >> 8) & controller.wButtons));
+	if (last_state == false)
 	{
 		return false;
 	}
@@ -49,7 +49,7 @@ bool Controller::ButtonIsPressed(size_t code)
 	{
 		return (controller.bRightTrigger > trigger_button_threshold) == true;
 	}
-	return ((code >> 8) & controller.wButtons) == true;
+	return ((bool)((code >> 8) & controller.wButtons)) == true;
 }
 
 bool Controller::ButtonIsReleased(size_t code)
@@ -66,7 +66,7 @@ bool Controller::ButtonIsReleased(size_t code)
 		last_state = (controller.bRightTrigger > trigger_button_threshold);
 	}
 	last_state = ((code >> 8) & controller.wButtons);
-	if (last_state == false)
+	if (last_state == true)
 	{
 		return false;
 	}
