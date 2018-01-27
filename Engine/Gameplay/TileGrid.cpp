@@ -5,6 +5,7 @@
 #include "Assets\Assets.h"
 #include "Assets\Texture.h"
 #include "Graphsicks\Renderer.h"
+#include "Physics\Physics.h"
 #include <assert.h>
 
 // small utility function to determine the tile's function
@@ -13,12 +14,12 @@ Tile::TileFunction GetFunction(int function)
 	switch (function)
 	{
 	case 0:
+		return Tile::TileFunction::DEFAULT;
+		break;
+	case 9:
 		return Tile::TileFunction::COLLISION;
 		break;
-	case 2:
-		return Tile::TileFunction::WATER;
-		break;
-	case 5:
+	case 3:
 		return Tile::TileFunction::WATER;
 		break;
 	default:
@@ -34,13 +35,13 @@ TileGrid::TileGrid()
 {
 }
 
-TileGrid::TileGrid(StringRef level_name)
+TileGrid::TileGrid(StringRef level_name, Physics& simulation)
 	:
 	width(0),
 	height(0),
 	tiles(nullptr)
 {
-	bool succes = LoadLevel(level_name);
+	bool succes = LoadLevel(level_name, simulation);
 	assert(succes && "failed to load the level");
 }
 
@@ -97,7 +98,7 @@ TileGrid::~TileGrid()
 	}
 }
 
-bool TileGrid::LoadLevel(StringRef level_name)
+bool TileGrid::LoadLevel(StringRef level_name, Physics& simulation)
 {
 	Texture* atlas = new Texture(TEXTURE_TO_LOAD);
 
@@ -118,28 +119,26 @@ bool TileGrid::LoadLevel(StringRef level_name)
 	// get the tiles themselves
 	ser.StepIn("layers");
 	size_t counter = 0;
-	for (int y = 0; y < height; ++y)
+	for (unsigned int y = 0; y < height; ++y)
 	{
-		for (int x = 0; x < width; ++x, ++counter)
+		for (unsigned int x = 0; x < width; ++x, ++counter)
 		{
 			int visual;
-			ser.StepInArray(0);
+			ser.StepInArray(1);
 			ser.StepIn("data");
 			ser.GetAtIdx(counter, visual);
 			ser.StepOut();
 			ser.StepOut();
 
 			int function;
-			ser.StepInArray(0);
+			ser.StepInArray(1);
 			ser.StepIn("data");
 			ser.GetAtIdx(counter, function);
 			ser.StepOut();
 			ser.StepOut();
 
 			// -1 because for some reason, Tiled starts at 1 and not at 0
-			visual -= 1; 
-			function -= 1;
-			tiles[counter].Init(x, y, visual, GetFunction(function), atlas);
+			tiles[counter].Init(x, y, visual, GetFunction(function), atlas, simulation);
 		}
 	}
 }
@@ -147,9 +146,9 @@ bool TileGrid::LoadLevel(StringRef level_name)
 void TileGrid::Draw(Renderer & renderer)
 {
 	size_t counter = 0;
-	for (int y = 0; y < height; ++y)
+	for (unsigned int y = 0; y < height; ++y)
 	{
-		for (int x = 0; x < width; ++x, ++counter)
+		for (unsigned int x = 0; x < width; ++x, ++counter)
 		{
 			tiles[counter].Render(renderer);
 		}

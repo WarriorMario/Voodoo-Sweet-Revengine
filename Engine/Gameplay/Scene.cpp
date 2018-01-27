@@ -6,9 +6,10 @@ Scene::Scene()
 	frame_timer.Reset();
 }
 
-void Scene::Init()
+void Scene::Init(Graphics& gfx)
 {
-	tile_grid.LoadLevel(LEVEL_TO_LOAD);
+	tile_grid.LoadLevel(LEVEL_TO_LOAD, simulation);
+  simulation.CreateDebugDraw(gfx);
 }
 
 void Scene::Tick(Keyboard& kbd)
@@ -17,11 +18,10 @@ void Scene::Tick(Keyboard& kbd)
 
 	// scope for updates
 	{
-		physx.Update();
+		//simulation.Update();
 		player.Update();
 		player.Input(kbd);
 	}
-
 	frame_timer.Reset();
 }
 
@@ -33,4 +33,9 @@ void Scene::Draw(Renderer & renderer)
 
 	tile_grid.Draw(renderer);
 	player.Draw(renderer);
+}
+
+void Scene::DebugDraw()
+{
+  simulation.DebugDraw();
 }

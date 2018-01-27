@@ -6,6 +6,7 @@
 #include "Physics\Physics.h"
 
 class Renderer;
+class Graphics;
 class Keyboard;
 class Scene
 {
@@ -14,9 +15,10 @@ class Scene
 public:
 	Scene();
 
-	void Init();
+	void Init(Graphics& gfx);
 	void Tick(Keyboard& kbd);
 	void Draw(Renderer& renderer);
+  void DebugDraw();
 
 private:
 	// to keep track of the game's speed
@@ -30,5 +32,5 @@ private:
 	Player player;
 
 	// physics
-	Physics physx;
+	Physics simulation;
 };

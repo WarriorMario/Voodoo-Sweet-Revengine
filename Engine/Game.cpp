@@ -76,7 +76,7 @@ Game::Game(MainWindow& godWindow, RenderWindow& playerWindow)
 	test1.position.Set(100, 160); //set the starting position
 	test1.angle = 0; //set the starting angle
 
-	scene.Init();
+	scene.Init(gfx);
 }
 
 Game::~Game()
@@ -136,5 +136,6 @@ void Game::ComposeFrame()
 	scene.Draw(renderer);
 	frame_counter.Draw(renderer);
 	renderer.Render();
-	arena.physx.DebugDraw();
+	//arena.physx.DebugDraw();
+  //scene.DebugDraw();
 }

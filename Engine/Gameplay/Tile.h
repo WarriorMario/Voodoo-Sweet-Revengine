@@ -2,6 +2,7 @@
 
 class Texture;
 class Renderer;
+class Physics;
 class Tile
 {
 public:
@@ -17,7 +18,8 @@ public:
 	Tile();
 
 	void Init(int grid_pos_x, int grid_pos_y, int tile_visual,
-		TileFunction tile_function, Texture* atlas_texture);
+		TileFunction tile_function, Texture* atlas_texture, Physics& simulation);
+  void InitFunction(TileFunction function, Physics& simulation);
 	void Render(Renderer& renderer);
 
 private:

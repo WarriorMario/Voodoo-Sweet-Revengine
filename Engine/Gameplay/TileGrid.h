@@ -2,6 +2,7 @@
 #include "VString.h"
 
 class Renderer;
+class Physics;
 class Tile;
 
 class TileGrid
@@ -9,7 +10,7 @@ class TileGrid
 public:
 	// default and instant initialization constructor for convenience
 	TileGrid();
-	TileGrid(StringRef level_name);
+	TileGrid(StringRef level_name, Physics& simulation );
 
 	// rule of five shizzles
 	TileGrid(const TileGrid& rhs);
@@ -21,7 +22,7 @@ public:
 	~TileGrid();
 
 	// destroys any present data, creates a new level
-	bool LoadLevel(StringRef level_name);
+	bool LoadLevel(StringRef level_name, Physics& simulation);
 
 	// renders all of it's tiles
 	void Draw(Renderer& renderer);
