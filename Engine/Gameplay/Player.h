@@ -186,7 +186,7 @@ public:
 	void OnEnter(Player& player) override;
 	void OnExit() override;
 
-	State Update() override;
+	State Update(float dt) override;
 	State Input(::Input& input) override;
 private:
 	//The amount of water that it can consume/release simultaneously

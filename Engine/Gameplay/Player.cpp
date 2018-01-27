@@ -252,7 +252,7 @@ void GettingWater::OnExit()
 
 }
 
-GettingWater::State GettingWater::Update()
+GettingWater::State GettingWater::Update(float dt)
 {
 	//checks if the waterAdding is the right amount and adds that amount to the water percentage
 	if (waterAdding == consumingWaterAmount || waterAdding == releaseWaterAmount)
