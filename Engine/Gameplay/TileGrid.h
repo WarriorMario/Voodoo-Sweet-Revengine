@@ -40,6 +40,7 @@ public:
 	{
 		return width * height;
 	}
+  bool IsPassable(int x, int y);
 
 private:
 	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/DebugAtlas.bmp";

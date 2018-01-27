@@ -124,7 +124,7 @@ void Game::UpdateModel()
 	frame_counter.Update();
 
 	// tick the scene
-	scene.Tick(godWindow.kbd);
+	scene.Tick(input);
 
 	//test->SetPosition(Vec2(input.MousePos().x + 10 * input.GetAxis(AxisCode::LEFT,0).x, input.MousePos().y + 10 * input.GetAxis(AxisCode::LEFT, 0).y));
 }

@@ -154,3 +154,8 @@ void TileGrid::Draw(Renderer & renderer)
 		}
 	}
 }
+
+bool TileGrid::IsPassable(int x, int y)
+{
+  return tiles[y*width + x].IsPassable();
+}

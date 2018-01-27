@@ -21,9 +21,12 @@ public:
 		TileFunction tile_function, Texture* atlas_texture, Physics& simulation);
   void InitFunction(TileFunction function, Physics& simulation);
 	void Render(Renderer& renderer);
-
+  bool IsPassable()
+  {
+    return function != COLLISION && function != WATER;
+  }
+	static constexpr unsigned int SIZE = 64;
 private:
-	static constexpr unsigned int SIZE = 32;
 	static constexpr int TILE_SIZE_IN_ATLAS = 1;
 	float min_u, max_u, min_v, max_v;
 	int pos_x, pos_y;

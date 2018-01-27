@@ -181,6 +181,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\AngryPlayer.h" />
     <ClInclude Include="Gameplay\Blockade.h" />
     <ClInclude Include="Gameplay\Tile.h" />
     <ClInclude Include="Gameplay\TileGrid.h" />
@@ -511,6 +512,7 @@
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\AngryPlayer.cpp" />
     <ClCompile Include="Gameplay\Blockade.cpp" />
     <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\FrameCounter.cpp" />

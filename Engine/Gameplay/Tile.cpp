@@ -48,17 +48,22 @@ void Tile::InitFunction(TileFunction function, Physics& simulation)
   switch(function)
   {
     case Tile::DEFAULT:
-      //simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      break;
+    break;
     case Tile::COLLISION:
       simulation.CreateBody(Vec2(pos_x/PHYSICS_SCALE,pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
       break;
     case Tile::BORDER:
-      //simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+    {
+      Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+      body.body->SetUserData((void*)2);
+    }
       break;
     case Tile::WATER:
-      simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      break;
+    {
+      Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+      body.body->SetUserData((void*)true);
+    }
+    break;
     default:
       break;
   }

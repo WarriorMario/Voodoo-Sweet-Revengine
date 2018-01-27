@@ -7,7 +7,7 @@
 
 class Renderer;
 class Graphics;
-class Keyboard;
+class Input;
 class Scene
 {
 	// doesn't alter any objects, only needs access to the player
@@ -16,7 +16,7 @@ public:
 	Scene();
 
 	void Init(Graphics& gfx);
-	void Tick(Keyboard& kbd);
+	void Tick(Input& kbd);
 	void Draw(Renderer& renderer);
   void DebugDraw();
 
@@ -29,7 +29,7 @@ private:
 	TileGrid tile_grid;
 
 	// players
-	Player player;
+	Player* players[NUM_PLAYERS];
 
 	// physics
 	Physics simulation;

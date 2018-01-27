@@ -36,7 +36,7 @@ Physics::Physics()
 
   // Define another box shape for our dynamic body.
   static PolygonShape square_shape;
-  square_shape.SetAsBox(1.0f, 1.0f);
+  square_shape.SetAsBox(3.20f, 3.20f);
 
   circle_shape.m_radius = 3;
 
@@ -52,6 +52,7 @@ Body Physics::CreateBody(Vec2 pos, StringRef shape , BodyType type )
   body_defs.push_back(def);// This might not be required?
   
   FixtureDef fixture_def;
+  fixture_def.density = 1.0f;
   fixture_def.shape = shapes[shape];
   fixture_defs.push_back(fixture_def);
   PhysicsBody*ret  = world.CreateBody(&def);

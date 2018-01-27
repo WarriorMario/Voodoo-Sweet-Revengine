@@ -5,10 +5,12 @@
 #include "Assets\Font.h"
 #include "Utility\DrawUtils.h"
 #include "Keyboard.h"
+#include "Physics\Body.h"
 
 // Should be moved somewhere else
 static const size_t NUM_PLAYERS = 4;
-
+class Physics;
+class TileGrid;
 // ****************************************************************************
 class Player
 {
@@ -22,16 +24,10 @@ public:
 	};
 
 public:
-	Player();
+	Player(Physics& simulation, TileGrid& grid,int id);
 
-	void Update()
-	{
-		movement.Update();
-	}
-	void Input(Keyboard& input)
-	{
-		movement.Input(input);
-	}
+  virtual void Update();
+  void Input(Input& input);
 	void Draw(Renderer& renderer)
 	{
 		b2Vec2 pos = b2Vec2(x, y);
@@ -53,11 +49,17 @@ public:
 		flip_sprite = flipped;
 	}
 
+  bool IsStuck();
+  void LoseWater();
+
+
 public:
 	float x, y;
 	float width, height;
-
+  const int player_id;
+  Body physics_body;
 private:
+  TileGrid& grid;
 
 	StateMachine<Player> movement;
 	Texture sprites[4];
@@ -76,7 +78,7 @@ public:
 	void OnExit() override;
 
 	State Update() override;
-	State Input(Keyboard& input) override;
+	State Input(::Input& input) override;
 
 };
 class MoveState : public IState<Player>
@@ -91,7 +93,7 @@ public:
 	void OnExit() override;
 
 	State Update() override;
-	State Input(Keyboard& input) override;
+	State Input(::Input& input) override;
 
 private:
 	b2Vec2 dir;
@@ -109,7 +111,7 @@ public:
 	void OnExit() override;
 
 	State Update() override;
-	State Input(Keyboard& input) override;
+	State Input(::Input& input) override;
 
 private:
 	b2Vec2 dir;
@@ -131,7 +133,7 @@ public:
 	void OnExit() override;
 
 	State Update() override;
-	State Input(Keyboard& input) override;
+	State Input(::Input& input) override;
 
 private:
 	float base_y;

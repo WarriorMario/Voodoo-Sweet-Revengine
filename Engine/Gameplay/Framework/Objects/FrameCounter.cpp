@@ -66,8 +66,8 @@ void FrameCounter::Draw(Renderer & renderer)
 	text[4] = "Averaged over " + std::to_string(FRAMES_TO_MEASURE_OVER) + " frames.";
 	text[5] = has_filled_completely ? "The average is reliable" : "The average is still being calculated...";
 
-	b2Vec2 pos = b2Vec2(scene.player.x - Graphics::ScreenWidth / 2, 
-		scene.player.y + Graphics::ScreenHeight / 2 - 25);
+	b2Vec2 pos = b2Vec2(scene.players[0]->x - Graphics::ScreenWidth / 2, 
+		scene.players[0]->y + Graphics::ScreenHeight / 2 - 25);
 
 	for (int i = 0; i < num_strings; ++i)
 	{
