@@ -89,7 +89,7 @@ public:
   }
   __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
   {}
-  const PrimData* GetPrimData()
+  PrimData* GetPrimData()
   {
     return &prim_data[0];
   }
@@ -238,7 +238,7 @@ public:
     //*((__m256i*)pixel) = const_data.texture->Sample(u8, v8);
   }
 
-  const PrimData* GetPrimData()
+  PrimData* GetPrimData()
   {
     return &prim_data[0];
   }
@@ -407,7 +407,7 @@ public:
     __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
     *((__m256i*)pixel) = AVX_INT32_ADD(AVX_INT32_AND(inverseMask, *((__m256i*)pixel)), AVX_INT32_AND(mask, _mm256_or_si256(_mm256_or_si256(_mm256_or_si256(red, green), blue), alphas)));
   }
-  const PrimData* GetPrimData()
+  PrimData* GetPrimData()
   {
     return &prim_data[0];
   }
@@ -489,7 +489,7 @@ public:
   }
   __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
   {}
-  const PrimData* GetPrimData()
+  PrimData* GetPrimData()
   {
     return &prim_data[0];
   }

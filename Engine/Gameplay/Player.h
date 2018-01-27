@@ -6,10 +6,14 @@
 #include "Utility\DrawUtils.h"
 #include "Keyboard.h"
 
+// Should be moved somewhere else
+static const size_t NUM_PLAYERS = 4;
+
 // ****************************************************************************
 class Player
 {
 public:
+
   enum Sprite
   {
     Idle,
@@ -19,83 +23,64 @@ public:
 	MoveDownSide
   };
 
-public:
-  Player(Renderer& renderer);
 
-  void Update()
-  {
-    movement.Update();
-  }
-  void Input(Keyboard& input)
-  {
-    movement.Input(input);
-  }
-  void Draw()
-  {
-	b2Vec2 pos = b2Vec2(x - 0.5f * width, y - 0.5f * height);
-	b2Vec2 size = b2Vec2(width, height);
-	RenderQuad<ForegroundShader>(renderer, pos, size,
-		flip_sprite, false, Colors::Cyan, &sprites[curr_sprite]);
-	RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-		font, 24, b2Vec2(200, 200), Colors::Red);
-	RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
-		font, 24, b2Vec2(200, 100), Colors::Red);
-  }
-
-  void SetSprite(Sprite sprite)
-  {
-    curr_sprite = sprite;
-  }
-  void SetFlipped(bool flipped)
-  {
-    flip_sprite = flipped;
-  }
-  /*bool CollisionCheck(Player player) {
-	  player.topLeft = Vec2(player.x, player.y);
-	  player.downRight = Vec2(player.x+player.width, player.y+player.height);
-	  player.topLeft = Vec2(player.x + player.width, player.y);
-	  player.topRight = Vec2(player.x + player.width, player.y);
-	  topLeft = Vec2(x, y);
-	  downRight = Vec2(x + width, y + height);
-	  topLeft = Vec2(x + width, y);
-	  topRight = Vec2(x + width, y);
-	  if (b2DistanceSquared(player.topRight, topLeft) < 10 || b2DistanceSquared(player.downRight, downLeft) < 10 || b2DistanceSquared(player.topLeft, topRight) || b2DistanceSquared(player.downLeft, downRight)) {
-		  return true;
-	  }
-	  return false;
-  }*/
 public:
-  float x, y;
-  float width, height;
-  float speed;
-  float waterPercentage;
-  bool ischild;
-  Vec2 topLeft;
-  Vec2 downRight;
-  Vec2 topRight;
-  Vec2 downLeft;
+	Player();
+
+	void Update()
+	{
+		movement.Update();
+	}
+	void Input(Keyboard& input)
+	{
+		movement.Input(input);
+	}
+	void Draw(Renderer& renderer)
+	{
+		b2Vec2 pos = b2Vec2(x, y);
+		b2Vec2 size = b2Vec2(width, height);
+		RenderQuad<ForegroundShader>(renderer, pos, size,
+			flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
+		RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+			font, 24, b2Vec2(200, 200), Colors::Red);
+		RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
+			font, 24, b2Vec2(200, 100), Colors::Red);
+	}
+
+	void SetSprite(Sprite sprite)
+	{
+		curr_sprite = sprite;
+	}
+	void SetFlipped(bool flipped)
+	{
+		flip_sprite = flipped;
+	}
+
+public:
+	float x, y;
+	float width, height;
+	float speed;
+	float waterPercentage;
 private:
-  Renderer& renderer;
-  
-  StateMachine<Player> movement;
-  Texture sprites[5];
 
-  Font font;
+	StateMachine<Player> movement;
+	Texture sprites[5];
 
-  Sprite curr_sprite;
-  bool flip_sprite;
+	Font font;
 
+	Sprite curr_sprite;
+	bool flip_sprite;
 };
 
 // ****************************************************************************
 class IdleState : public IState<Player>
 {
 public:
-  void OnEnter(Player& player) override;
-  void OnExit() override;
+	void OnEnter(Player& player) override;
+	void OnExit() override;
 
-  State Update() override;
-  State Input(Keyboard& input) override;
+	State Update() override;
+	State Input(Keyboard& input) override;
 
 };
 
@@ -103,26 +88,25 @@ public:
 class MoveSideState : public IState<Player>
 {
 public:
-  MoveSideState(float direction)
+  MoveSideState(b2Vec2 direction)
     : direction(direction)
   {}
 
-  void OnEnter(Player& player) override;
-  void OnExit() override;
+	void OnEnter(Player& player) override;
+	void OnExit() override;
 
-  State Update() override;
-  State Input(Keyboard& input) override;
+	State Update() override;
+	State Input(Keyboard& input) override;
 
 private:
-  float direction;
-
+	b2Vec2 direction;
 };
 
 // ****************************************************************************
 class MoveUpSideState : public IState<Player>
 {
 public:
-	MoveUpSideState(float direction)
+	MoveUpSideState(b2Vec2 direction)
 		: direction(direction)
 	{}
 
@@ -133,7 +117,7 @@ public:
 	State Input(Keyboard& input) override;
 
 private:
-	float direction;
+	b2Vec2 direction;
 
 };
 
@@ -141,7 +125,7 @@ private:
 class MoveDownSideState : public IState<Player>
 {
 public:
-	MoveDownSideState(float direction)
+	MoveDownSideState(b2Vec2 direction)
 		: direction(direction)
 	{}
 
@@ -152,14 +136,14 @@ public:
 	State Input(Keyboard& input) override;
 
 private:
-	float direction;
+	b2Vec2 direction;
 
 };
 // ****************************************************************************
 class MoveUpDownState : public IState<Player>
 {
 public:
-	MoveUpDownState(float direction)
+	MoveUpDownState(b2Vec2 direction)
 		: direction(direction)
 	{}
 
@@ -170,37 +154,14 @@ public:
 	State Input(Keyboard& input) override;
 
 private:
-	float direction;
-
+	b2Vec2 direction;
 };
-
-// ****************************************************************************
-/*class RunState : public IState<Player>
-{
-public:
-  RunState(float direction)
-    :
-    direction(direction)
-  {}
-
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
-  State Update() override;
-  State Input(Keyboard& input) override;
-  bool isGettingWater;
-  bool isDroppingWater;
-  float waterPercentage;
-  float speed;
-private:
-  float direction;
-};*/
 
 // ****************************************************************************
 class GettingWater : public IState<Player>
 {
 public:
-	GettingWater(float direction)
+	GettingWater(b2Vec2 direction)
 		:
 		direction(direction)
 	{}
@@ -214,5 +175,5 @@ private:
 	float releaseWaterAmount;
 	float waterAdding;
 	float speed;
-	float direction;
+	b2Vec2 direction;
 };

@@ -28,11 +28,12 @@
 #include "Triangle.h"
 #include "Gameplay\Framework\Arena.h"
 #include "Assets\Assets.h"
-#include "Gameplay\Player.h"
 #include "Input\Input.h"
 #include "Gameplay\Framework\Objects\FrameCounter.h"
 #include "Threading\Job_Manager.h"
 #include "Gameplay\GodEditor.h"
+#include "Gameplay\Scene.h"
+
 class Game
 {
 public:
@@ -54,11 +55,11 @@ private:
 	b2ParticleSystem* particleSystem;
 	Renderer renderer;
 	Triangle tri_buff[2];
-  FrameCounter frame_counter;
-  Arena arena;
-  GodEditor editor;
-  Player player;
-  Input input;
+	FrameCounter frame_counter;
+	Arena arena;
+	GodEditor editor;
+	Input input;
+	Scene scene;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

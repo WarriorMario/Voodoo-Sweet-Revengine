@@ -38,8 +38,8 @@ void RenderLinePerLine(Renderer& renderer, StringRef text, Font& font,
 		max_y = line.text_quads[0].min_y + line.tot_height;
 
 	float
-		min_u = 0.0f,
-		min_v = 0.0f,
+		min_v = 0.0001f,
+		min_u = 0.0001f,
 		max_u = 0.9999f,
 		max_v = 0.9999f;
 
@@ -91,8 +91,8 @@ void RenderLinePerGlyph(Renderer& renderer, StringRef text, Font& font,
 		float max_y = min_y + cur_quad.glyph_height;
 
 		float
-			min_v = 0.0f,
-			min_u = 0.0f,
+			min_v = 0.0001f,
+			min_u = 0.0001f,
 			max_u = 0.9999f,
 			max_v = 0.9999f;
 

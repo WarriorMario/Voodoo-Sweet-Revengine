@@ -3,14 +3,15 @@
 #include "VString.h"
 
 template <typename T, typename ...Args>
-void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size, 
+void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size,
+	const b2Vec2& uv_start, const b2Vec2& uv_end,
 	bool flip_sprite_on_x = false, bool flip_sprite_on_y = false, Args&&... args)
 {
 	const float
-		min_u = flip_sprite_on_x ? 1.0f : 0.0f,
-		min_v = flip_sprite_on_y ? 1.0f : 0.0f,
-		max_u = flip_sprite_on_x ? 0.0f : 1.0f,
-		max_v = flip_sprite_on_y ? 0.0f : 1.0f;
+		min_u = flip_sprite_on_x ? uv_end.x : uv_start.x,
+		min_v = flip_sprite_on_y ? uv_end.y : uv_start.y,
+		max_u = flip_sprite_on_x ? uv_start.x : uv_end.x,
+		max_v = flip_sprite_on_y ? uv_start.y : uv_end.y;
 
 	float
 		min_x = pos.x,
@@ -38,6 +39,14 @@ void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size,
 		vertices[0], vertices[1], vertices[2], std::forward<Args>(args)...);
 
 	renderer.AddDrawCommand(shader);
+}
+
+template <typename T, typename ...Args>
+void RenderQuad(Renderer& renderer, const b2Vec2& pos, const b2Vec2& size, 
+	bool flip_sprite_on_x = false, bool flip_sprite_on_y = false, Args&&... args)
+{
+	RenderQuad<T>(renderer, pos, size, b2Vec2(0.0f, 0.0f), b2Vec2(1.0f, 1.0f),
+		flip_sprite_on_x, flip_sprite_on_y, std::forward<Args>(args)...);
 }
 
 void RenderText(Renderer& renderer, StringRef text, Font& font, 
