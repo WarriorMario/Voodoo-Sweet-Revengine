@@ -252,10 +252,15 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   x = 400.0f;
   y = 300.0f;
   physics_body.body->SetUserData(this);
+  dead = false;
 }
 
 void Player::Update()
 {
+  if(dead)
+  {
+    return;
+  }
   movement.Update();
   physics_body.body->GetWorld()->ClearForces();
   physics_body.body->SetTransform(Vec2(x, y) / PHYSICS_SCALE, 0);
@@ -274,5 +279,5 @@ bool Player::IsStuck()
 void Player::LoseWater()
 {
   // Not implemented yet
-  x = -1000;
+  dead = true;
 }

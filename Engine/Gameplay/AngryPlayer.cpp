@@ -23,7 +23,7 @@ void AngryPlayer::Update()
       Player* player = (Player*)contacts->contact->GetFixtureA()->GetBody()->GetUserData();
       if((size_t)player > 3)
       {
-        //player->LoseWater();
+        player->LoseWater();
       }
     }
     contacts = contacts->next;

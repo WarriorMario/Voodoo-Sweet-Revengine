@@ -54,6 +54,7 @@ public:
 	float width, height;
   const int player_id;
   bool is_god;
+  bool dead;
   Body physics_body;
 private:
   TileGrid& grid;
