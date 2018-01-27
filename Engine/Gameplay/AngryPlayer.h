@@ -7,5 +7,5 @@ class AngryPlayer : public Player
 {
   public:
     AngryPlayer(Physics& simulation, TileGrid& grid, int id);
-    void Update() override;
+    void Update(float dt) override;
 };

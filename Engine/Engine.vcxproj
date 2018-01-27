@@ -184,6 +184,7 @@
     <ClInclude Include="Gameplay\AngryPlayer.h" />
     <ClInclude Include="Gameplay\Blockade.h" />
     <ClInclude Include="Gameplay\Game.h" />
+    <ClInclude Include="Utility\SpriteAnimation.h" />
     <ClInclude Include="Gameplay\Tile.h" />
     <ClInclude Include="Gameplay\TileGrid.h" />
     <ClInclude Include="Gameplay\Scene.h" />
@@ -523,6 +524,7 @@
     <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\ParticleObject.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\PhysicsObject.cpp" />
+    <ClCompile Include="Utility\SpriteAnimation.cpp" />
     <ClCompile Include="Gameplay\Tile.cpp" />
     <ClCompile Include="Gameplay\TileGrid.cpp" />
     <ClCompile Include="Gameplay\Scene.cpp" />

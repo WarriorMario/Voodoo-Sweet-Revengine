@@ -12,9 +12,10 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   y = 190;
 }
 
-void AngryPlayer::Update()
+void AngryPlayer::Update(float dt)
 {
-  Player::Update();
+  Player::Update(dt);
+
   // Check overlaps with other players
   b2ContactEdge* contacts = physics_body.body->GetContactList();
   while(contacts)

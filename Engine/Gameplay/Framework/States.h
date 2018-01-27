@@ -20,17 +20,17 @@ public:
   }
   virtual void OnExit() = 0;
 
-  virtual State Update() = 0;
+  virtual State Update(float dt) = 0;
   virtual State Input(Input& input) = 0;
 
 protected:
-  T& Owner()
+  T & Owner()
   {
     return *owner;
   }
 
 private:
-  T* owner;
+  T * owner;
 
 };
 
@@ -56,9 +56,9 @@ public:
     delete state;
   }
 
-  void Update()
+  void Update(float dt)
   {
-    State new_state = state->Update();
+    State new_state = state->Update(dt);
     if(new_state)
     {
       state->OnExit();
@@ -82,7 +82,7 @@ public:
   }
 
 private:
-  T& owner;
+  T & owner;
   State state;
 
 };

@@ -999,6 +999,9 @@
     <ClInclude Include="Gameplay\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\SpriteAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -1287,6 +1290,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\SpriteAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
