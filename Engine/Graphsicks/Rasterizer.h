@@ -372,14 +372,15 @@ public:
         {
           //const bool is_inside = (t0 | t1 | t2) >= 0;
           __m256i is_inside8 = _mm256_cmpgt_epi32(_mm256_or_si256(_mm256_or_si256(t08, t18), t28), AVX_INT32_FROM1(-1));
-
-          //if(is_inside == true)
+          //int mask = _mm256_movemask_ps(*(__m256*) &is_inside8);
+          int mask = _mm256_movemask_epi8(is_inside8);
+          //int mask = _mm256_movemask_epi8(AVX_INT32_XOR(is_inside8, AVX_INT32_FROM1(0xffffffff)));
+          if(mask != 0)
           {
             // Determine interpolated values
             //const InterpData interp = {t1 * inv_area, t2 * inv_area, pix_x, pix_y};
             //SINGLE_CORE_PROFILE("RasterizeCellSimd shade");
             cmd.ShadeSIMD(AVX_FLOAT_MUL(_mm256_cvtepi32_ps(t18), inv_area8), AVX_FLOAT_MUL(_mm256_cvtepi32_ps(t28), inv_area8), is_inside8, pix_x, pix_y, cur_color);
-
           }
 
           // two steps to the right

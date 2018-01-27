@@ -220,12 +220,12 @@ public:
     //Color t = const_data.texture->Sample(u, v);
     //float a = t.GetA() / 255.f;
     //pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
-    __m256i final_color = const_data.texture->Sample(u8, v8);
-    __m256i temp = AVX_INT32_AND( _mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), mask);
+    //__m256i final_color = const_data.texture->Sample(u8, v8);
+    //__m256i temp = AVX_INT32_AND( _mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), mask);
     
-    __m256i inverseMask = AVX_INT32_AND(_mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff)));
+    //__m256i inverseMask = AVX_INT32_AND(_mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), AVX_INT32_XOR(temp, AVX_INT32_FROM1(0xffffffff)));
     
-    //__m256i inverseMaskTest = _mm256_xor_si256(mask, _mm256_set1_epi32(0xffffffff));
+    __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
     //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMaskTest, _mm256_set1_epi32(pixel->dword)), _mm256_and_si256(mask, _mm256_cvtps_epi32(AVXMULPS(v8, AVXSET1PS(255.0f)))));
     //return;
     //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMask, ), _mm256_and_si256(mask, _mm256_set1_epi32(-1)));
