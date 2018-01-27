@@ -331,7 +331,13 @@ void Player::Input(::Input & input)
 
 bool Player::IsStuck()
 {
-  return grid.IsPassable(x / Tile::SIZE, y / Tile::SIZE) == false;
+	bool res = false;
+	Vec2 offset = Vec2(width / 2, height / 2);
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	return res;
 }
 
 void Player::LoseWater()
