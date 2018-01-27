@@ -54,27 +54,27 @@ public:
    RenderWindow( const RenderWindow& ) = delete;
    RenderWindow& operator=( const RenderWindow& ) = delete;
    ~RenderWindow();
-   bool IsOpen() const;
+   
    bool IsActive() const;
-   void SetFocused()
-   {
-     SetFocus(hWnd);
-   }
+   void SetFocused();
    bool IsFocused() const;
    bool IsMinimized() const;
    void ShowMessageBox( const std::wstring& title, const std::wstring& message ) const;
-   void Kill()
-   {
-      PostQuitMessage( 0 );
-   }
+
+   static bool IsOpen();
+   static void Kill();
+
    const std::wstring& GetArgs() const
    {
       return args;
    }
+
 protected:
    HINSTANCE hInst = nullptr;
    std::wstring args;
    wchar_t* wndClassName;
+
+   static bool isOpen;
 };
 
 class MainWindow : public RenderWindow
@@ -92,7 +92,7 @@ public:
    MainWindow( const MainWindow& ) = delete;
    MainWindow& operator=( const MainWindow& ) = delete;
    // returns false if quitting
-   bool ProcessMessage();
+   void ProcessMessage();
 private:
    static LRESULT WINAPI _HandleMsgSetup( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
    static LRESULT WINAPI _HandleMsgThunk( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );

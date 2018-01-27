@@ -144,14 +144,14 @@ bool TileGrid::LoadLevel(StringRef level_name)
 	}
 }
 
-void TileGrid::Draw(Renderer & renderer)
+void TileGrid::Draw()
 {
 	size_t counter = 0;
 	for (int y = 0; y < height; ++y)
 	{
 		for (int x = 0; x < width; ++x, ++counter)
 		{
-			tiles[counter].Render(renderer);
+			tiles[counter].Render();
 		}
 	}
 }

@@ -1,17 +1,14 @@
 #include "Camera.h"
 #include "Player.h"
 
-void Camera::CalculateOffset(Player ** players, size_t num_players)
+void Camera::CalculateOffset(const Array<Player*>& players)
 {
   Vec2 average = Vec2(0,0);
   size_t i = 0;
-  for(; i < num_players; ++i)
+  for(; i < players.size(); ++i)
   {
-    if(players[i] == nullptr)
-    {
-      break;
-    }
     average += {players[i]->x, players[i]->y};
   }
-  offset = -average / i + Vec2(Graphics::ScreenWidth/2, Graphics::ScreenHeight/ 2);
+  offset = -average / i
+    + Vec2(Graphics::ScreenWidth/2, Graphics::ScreenHeight/ 2);
 }

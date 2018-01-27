@@ -18,69 +18,66 @@ public:
   {
     Idle,
     MoveSide,
-	MoveUp,
-	MoveUpSide,
-	MoveDownSide
+    MoveUp,
+    MoveUpSide,
+    MoveDownSide
   };
 
 
 public:
-	Player();
+  Player();
 
-	void Update()
-	{
-		movement.Update();
-	}
-	void Input(Keyboard& input)
-	{
-		movement.Input(input);
-	}
-	void Draw(Renderer& renderer)
-	{
-		b2Vec2 pos = b2Vec2(x, y);
-		b2Vec2 size = b2Vec2(width, height);
-		RenderQuad<ForegroundShader>(renderer, pos, size,
-			flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
-		RenderText(renderer, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-			font, 24, b2Vec2(200, 200), Colors::Red);
-		RenderText(renderer, "., -=+\\ / ()*&^@#!_>< ? %~: ; \"'_",
-			font, 24, b2Vec2(200, 100), Colors::Red);
-	}
+  void Update()
+  {
+    movement.Update();
+  }
+  void Input(Keyboard& input)
+  {
+    movement.Input(input);
+  }
+  void Draw()
+  {
+    b2Vec2 pos = b2Vec2(x, y);
+    b2Vec2 size = b2Vec2(width, height);
+    RenderSharedQuad<ForegroundShader>(pos, size,
+      flip_sprite, true, Colors::Cyan, &sprites[curr_sprite]);
+  }
 
-	void SetSprite(Sprite sprite)
-	{
-		curr_sprite = sprite;
-	}
-	void SetFlipped(bool flipped)
-	{
-		flip_sprite = flipped;
-	}
+  void SetSprite(Sprite sprite)
+  {
+    curr_sprite = sprite;
+  }
+  void SetFlipped(bool flipped)
+  {
+    flip_sprite = flipped;
+  }
 
 public:
-	float x, y;
-	float width, height;
-	float speed;
-	float waterPercentage;
+  float x, y;
+  float width, height;
+  float speed;
+  float waterPercentage;
+  bool is_god;
 private:
 
-	StateMachine<Player> movement;
-	Texture sprites[5];
+  StateMachine<Player> movement;
+  Texture sprites[5];
 
-	Font font;
+  Font font;
 
-	Sprite curr_sprite;
-	bool flip_sprite;
+  Sprite curr_sprite;
+  bool flip_sprite;
 };
 
 // ****************************************************************************
 class IdleState : public IState<Player>
 {
 public:
-	void OnEnter(Player& player) override;
-	void OnExit() override;
+  void OnEnter(Player& player) override;
+  void OnExit() override;
 
-	State Update() override;
-	State Input(Keyboard& input) override;
+  State Update() override;
+  State Input(Keyboard& input) override;
 
 };
 
@@ -92,32 +89,32 @@ public:
     : direction(direction)
   {}
 
-	void OnEnter(Player& player) override;
-	void OnExit() override;
+  void OnEnter(Player& player) override;
+  void OnExit() override;
 
-	State Update() override;
-	State Input(Keyboard& input) override;
+  State Update() override;
+  State Input(Keyboard& input) override;
 
 private:
-	b2Vec2 direction;
+  b2Vec2 direction;
 };
 
 // ****************************************************************************
 class MoveUpSideState : public IState<Player>
 {
 public:
-	MoveUpSideState(b2Vec2 direction)
-		: direction(direction)
-	{}
+  MoveUpSideState(b2Vec2 direction)
+    : direction(direction)
+  {}
 
-	void OnEnter(Player& player) override;
-	void OnExit() override;
+  void OnEnter(Player& player) override;
+  void OnExit() override;
 
-	State Update() override;
-	State Input(Keyboard& input) override;
+  State Update() override;
+  State Input(Keyboard& input) override;
 
 private:
-	b2Vec2 direction;
+  b2Vec2 direction;
 
 };
 
@@ -125,55 +122,55 @@ private:
 class MoveDownSideState : public IState<Player>
 {
 public:
-	MoveDownSideState(b2Vec2 direction)
-		: direction(direction)
-	{}
+  MoveDownSideState(b2Vec2 direction)
+    : direction(direction)
+  {}
 
-	void OnEnter(Player& player) override;
-	void OnExit() override;
+  void OnEnter(Player& player) override;
+  void OnExit() override;
 
-	State Update() override;
-	State Input(Keyboard& input) override;
+  State Update() override;
+  State Input(Keyboard& input) override;
 
 private:
-	b2Vec2 direction;
+  b2Vec2 direction;
 
 };
 // ****************************************************************************
 class MoveUpDownState : public IState<Player>
 {
 public:
-	MoveUpDownState(b2Vec2 direction)
-		: direction(direction)
-	{}
+  MoveUpDownState(b2Vec2 direction)
+    : direction(direction)
+  {}
 
-	void OnEnter(Player& player) override;
-	void OnExit() override;
+  void OnEnter(Player& player) override;
+  void OnExit() override;
 
-	State Update() override;
-	State Input(Keyboard& input) override;
+  State Update() override;
+  State Input(Keyboard& input) override;
 
 private:
-	b2Vec2 direction;
+  b2Vec2 direction;
 };
 
 // ****************************************************************************
 class GettingWater : public IState<Player>
 {
 public:
-	GettingWater(b2Vec2 direction)
-		:
-		direction(direction)
-	{}
-	void OnEnter(Player& player) override;
-	void OnExit() override;
-	
-	State Update() override;
-	State Input(Keyboard& input) override;
+  GettingWater(b2Vec2 direction)
+    :
+    direction(direction)
+  {}
+  void OnEnter(Player& player) override;
+  void OnExit() override;
+
+  State Update() override;
+  State Input(Keyboard& input) override;
 private:
-	float gettingWaterAmount;
-	float releaseWaterAmount;
-	float waterAdding;
-	float speed;
-	b2Vec2 direction;
+  float gettingWaterAmount;
+  float releaseWaterAmount;
+  float waterAdding;
+  float speed;
+  b2Vec2 direction;
 };

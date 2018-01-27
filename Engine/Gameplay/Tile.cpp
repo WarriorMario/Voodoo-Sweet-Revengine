@@ -41,8 +41,8 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	max_v = min_v + uv_delta_y - 0.002f;
 }
 
-void Tile::Render(Renderer& renderer)
+void Tile::Render()
 {
-	RenderQuad<ForegroundShader>(renderer, b2Vec2(pos_x, pos_y), b2Vec2(SIZE, SIZE),
+	RenderSharedQuad<ForegroundShader>(b2Vec2(pos_x, pos_y), b2Vec2(SIZE, SIZE),
 		b2Vec2(min_u, min_v), b2Vec2(max_u, max_v), false, true, Colors::Cyan, atlas);
 }

@@ -2,8 +2,8 @@
 #include "Keyboard.h"
 
 Scene::Scene()
+  : players{nullptr}
 {
-	frame_timer.Reset();
 }
 
 void Scene::Init()
@@ -11,26 +11,80 @@ void Scene::Init()
 	tile_grid.LoadLevel(LEVEL_TO_LOAD);
 }
 
-void Scene::Tick(Keyboard& kbd)
+void Scene::Tick(float dt, Keyboard& kbd)
 {
-	float delta_time = frame_timer.Elapsed();
+  physx.Update();
 
-	// scope for updates
-	{
-		physx.Update();
-		player.Update();
-		player.Input(kbd);
-	}
-
-	frame_timer.Reset();
+  for(Player* player : players)
+  {
+    if(player != nullptr)
+    {
+      player->Update();
+      player->Input(kbd);
+    }
+  }
 }
 
-void Scene::Draw(Renderer & renderer)
+void Scene::Draw()
 {
-	Player* players[] = { &player };
-	// Update players camera
-	renderer.camera.CalculateOffset(players, 1);
+  tile_grid.Draw();
+  for(Player* player : players)
+  {
+    if(player != nullptr) player->Draw();
+  }
+}
 
-	tile_grid.Draw(renderer);
-	player.Draw(renderer);
+Player* Scene::GetGod() const
+{
+  for(Player* player : players)
+  {
+    if(player != nullptr && player->is_god)
+    {
+      return player;
+    }
+  }
+}
+Array<Player*> Scene::GetPlayers() const
+{
+  Array<Player*> result;
+  for(Player* player : players)
+  {
+    if(player != nullptr && !player->is_god)
+    {
+      result.push_back(player);
+    }
+  }
+  return result;
+}
+
+void Scene::NewGod()
+{
+  for(Player* player : players)
+  {
+    if(player != nullptr) player->is_god = false;
+  }
+
+  int new_god = (rand() / (float)RAND_MAX) * 4;
+  players[new_god]->is_god = true;
+}
+void Scene::SpawnPlayer(int idx, Vec2 pos)
+{
+  if(players[idx] != nullptr)
+  {
+    return;
+  }
+
+  players[idx] = new Player;
+  players[idx]->x = pos.x;
+  players[idx]->y = pos.y;
+
+}
+void Scene::KillPlayer(int idx)
+{
+  if(players[idx] == nullptr)
+  {
+    return;
+  }
+
+  delete players[idx];
 }
