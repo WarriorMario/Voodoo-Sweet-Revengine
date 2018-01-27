@@ -13,9 +13,10 @@ public:
   enum Sprite
   {
     Idle,
-    Move,
-    Run,
-    Jump,
+    MoveSide,
+	MoveUp,
+	MoveUpSide,
+	MoveDownSide
   };
 
 public:
@@ -49,16 +50,35 @@ public:
   {
     flip_sprite = flipped;
   }
-  
+  /*bool CollisionCheck(Player player) {
+	  player.topLeft = Vec2(player.x, player.y);
+	  player.downRight = Vec2(player.x+player.width, player.y+player.height);
+	  player.topLeft = Vec2(player.x + player.width, player.y);
+	  player.topRight = Vec2(player.x + player.width, player.y);
+	  topLeft = Vec2(x, y);
+	  downRight = Vec2(x + width, y + height);
+	  topLeft = Vec2(x + width, y);
+	  topRight = Vec2(x + width, y);
+	  if (b2DistanceSquared(player.topRight, topLeft) < 10 || b2DistanceSquared(player.downRight, downLeft) < 10 || b2DistanceSquared(player.topLeft, topRight) || b2DistanceSquared(player.downLeft, downRight)) {
+		  return true;
+	  }
+	  return false;
+  }*/
 public:
   float x, y;
   float width, height;
-
+  float speed;
+  float waterPercentage;
+  bool ischild;
+  Vec2 topLeft;
+  Vec2 downRight;
+  Vec2 topRight;
+  Vec2 downLeft;
 private:
   Renderer& renderer;
   
   StateMachine<Player> movement;
-  Texture sprites[4];
+  Texture sprites[5];
 
   Font font;
 
@@ -78,10 +98,12 @@ public:
   State Input(Keyboard& input) override;
 
 };
-class MoveState : public IState<Player>
+
+// ****************************************************************************
+class MoveSideState : public IState<Player>
 {
 public:
-  MoveState(float direction)
+  MoveSideState(float direction)
     : direction(direction)
   {}
 
@@ -95,7 +117,65 @@ private:
   float direction;
 
 };
-class RunState : public IState<Player>
+
+// ****************************************************************************
+class MoveUpSideState : public IState<Player>
+{
+public:
+	MoveUpSideState(float direction)
+		: direction(direction)
+	{}
+
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update() override;
+	State Input(Keyboard& input) override;
+
+private:
+	float direction;
+
+};
+
+// ****************************************************************************
+class MoveDownSideState : public IState<Player>
+{
+public:
+	MoveDownSideState(float direction)
+		: direction(direction)
+	{}
+
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update() override;
+	State Input(Keyboard& input) override;
+
+private:
+	float direction;
+
+};
+// ****************************************************************************
+class MoveUpDownState : public IState<Player>
+{
+public:
+	MoveUpDownState(float direction)
+		: direction(direction)
+	{}
+
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+
+	State Update() override;
+	State Input(Keyboard& input) override;
+
+private:
+	float direction;
+
+};
+
+// ****************************************************************************
+/*class RunState : public IState<Player>
 {
 public:
   RunState(float direction)
@@ -108,33 +188,31 @@ public:
 
   State Update() override;
   State Input(Keyboard& input) override;
-
+  bool isGettingWater;
+  bool isDroppingWater;
+  float waterPercentage;
+  float speed;
 private:
   float direction;
+};*/
 
-};
-class JumpState : public IState<Player>
+// ****************************************************************************
+class GettingWater : public IState<Player>
 {
 public:
-  JumpState()
-    :
-    direction(0.f),
-    velocity(500.f),
-    jump_y(0.f),
-    fart("fart0.wav")
-  {
-  }
-
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
-  State Update() override;
-  State Input(Keyboard& input) override;
-
+	GettingWater(float direction)
+		:
+		direction(direction)
+	{}
+	void OnEnter(Player& player) override;
+	void OnExit() override;
+	
+	State Update() override;
+	State Input(Keyboard& input) override;
 private:
-  float base_y;
-  float jump_y;
-  float velocity;
-  float direction;
-  Audio fart;
+	float gettingWaterAmount;
+	float releaseWaterAmount;
+	float waterAdding;
+	float speed;
+	float direction;
 };
