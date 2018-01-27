@@ -27,7 +27,7 @@ public:
   void NewGod();
 
   void KillPlayer(int idx);
-  void SpawnPlayer(int idx, Vec2 pos);
+  void SpawnPlayer(int idx);
 
 private:
 	// to manage the playing field

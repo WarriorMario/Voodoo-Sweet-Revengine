@@ -1,5 +1,7 @@
 #pragma once
 #include "VString.h"
+#include "VArray.h"
+#include "Matrix.h"
 
 class Renderer;
 class Physics;
@@ -10,7 +12,7 @@ class TileGrid
 public:
 	// default and instant initialization constructor for convenience
 	TileGrid();
-	TileGrid(StringRef level_name, Physics& simulation );
+	TileGrid(StringRef level_name, Physics& simulation);
 
 	// rule of five shizzles
 	TileGrid(const TileGrid& rhs);
@@ -40,11 +42,17 @@ public:
 	{
 		return width * height;
 	}
-  bool IsPassable(int x, int y);
+	bool IsPassable(int x, int y);
+
+	b2Vec2 GetRandomSpawnPlayer();
+	b2Vec2 GetRandomSpawnGod();
 
 private:
-	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/DebugAtlas.bmp";
+	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/PrettyAtlasFull.png";
 	unsigned int width;
 	unsigned int height;
 	Tile* tiles;
+
+	Array<b2Vec2> player_spawn_locations;
+	Array<b2Vec2> god_spawn_locations;
 };

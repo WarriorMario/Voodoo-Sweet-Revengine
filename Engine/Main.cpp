@@ -27,6 +27,9 @@
 #include "Utility/Logging.h"
 #include "Utility/ResourceAllocator.h"
 
+#include <random>
+#include <time.h>
+
 //*****************************************************************************
 
 class OurGame : public Game
@@ -41,9 +44,9 @@ public:
   {
     scene.Init();
 
-    scene.SpawnPlayer(0, Vec2(450, 260));
-    scene.SpawnPlayer(1, Vec2(550, 260));
-    scene.SpawnPlayer(2, Vec2(350, 260));
+    scene.SpawnPlayer(0);
+    scene.SpawnPlayer(1);
+    scene.SpawnPlayer(2);
     scene.NewGod();
   }
   void OnTerminate() override
@@ -71,6 +74,7 @@ private:
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
+	std::srand(time(NULL));
   try
   {
     Logger::Get().Init();
