@@ -7,6 +7,7 @@
 #include "Graphsicks\Renderer.h"
 #include "Physics\Physics.h"
 #include <assert.h>
+#include <random>
 
 // small utility function to determine the tile's function
 Tile::TileFunction GetFunction(int function)
@@ -14,16 +15,22 @@ Tile::TileFunction GetFunction(int function)
 	switch (function)
 	{
 	case 0:
-		return Tile::TileFunction::DEFAULT;
+		return Tile::TileFunction::WATER;
 		break;
-	case 9:
+	case 1:
+		return Tile::TileFunction::GOD_SPAWN_LOCATION;
+		break;
+	case 2:
+		return Tile::TileFunction::BORDER;
+		break;
+	case 3:
+		return Tile::TileFunction::PLAYER_SPAWN_LOCATION;
+		break;
+	case 8:
 		return Tile::TileFunction::COLLISION;
 		break;
-  case 1:
-    return Tile::TileFunction::WATER;
-    break;
-	case 3:
-		return Tile::TileFunction::BORDER;
+	case 10:
+		return Tile::TileFunction::DEFAULT;
 		break;
 	default:
 		return Tile::TileFunction::DEFAULT;
@@ -127,21 +134,34 @@ bool TileGrid::LoadLevel(StringRef level_name, Physics& simulation)
 		for (unsigned int x = 0; x < width; ++x, ++counter)
 		{
 			int visual;
-			ser.StepInArray(1);
+			ser.StepInArray(0);
 			ser.StepIn("data");
 			ser.GetAtIdx(counter, visual);
 			ser.StepOut();
 			ser.StepOut();
 
-			int function;
+			int function_value;
 			ser.StepInArray(1);
 			ser.StepIn("data");
-			ser.GetAtIdx(counter, function);
+			ser.GetAtIdx(counter, function_value);
 			ser.StepOut();
 			ser.StepOut();
 
-			// -1 because for some reason, Tiled starts at 1 and not at 0
-			tiles[counter].Init(x, y, visual, GetFunction(function), atlas, simulation);
+			function_value -= 668; // because for some reason they're offset with this
+			Tile::TileFunction function = GetFunction(function_value);
+
+			// init the tile
+			tiles[counter].Init(x, y, visual-1, function, atlas, simulation);
+
+			// add any possible spawn locations
+			if (function == Tile::TileFunction::PLAYER_SPAWN_LOCATION)
+			{
+				player_spawn_locations.push_back(tiles[counter].GetPos() + Vec2(Tile::SIZE / 2, Tile::SIZE / 2));
+			}
+			else if (function == Tile::TileFunction::GOD_SPAWN_LOCATION)
+			{
+				god_spawn_locations.push_back(tiles[counter].GetPos() + Vec2(Tile::SIZE / 2, Tile::SIZE / 2));
+			}
 		}
 	}
 }
@@ -160,5 +180,19 @@ void TileGrid::Draw()
 
 bool TileGrid::IsPassable(int x, int y)
 {
-  return tiles[y*width + x].IsPassable();
+	return tiles[y*width + x].IsPassable();
+}
+
+b2Vec2 TileGrid::GetRandomSpawnPlayer()
+{
+	assert(player_spawn_locations.size() > 0 && "There are no spawn locations in this map, or something went wrong with loading.");
+	int randIdx = std::rand() % player_spawn_locations.size();
+	return player_spawn_locations[randIdx];
+}
+
+b2Vec2 TileGrid::GetRandomSpawnGod()
+{
+	assert(god_spawn_locations.size() > 0 && "There are no spawn locations in this map, or something went wrong with loading.");
+	int randIdx = std::rand() % god_spawn_locations.size();
+	return god_spawn_locations[randIdx];
 }

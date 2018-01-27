@@ -5,6 +5,14 @@
 #include "Physics\Physics.h"
 
 Tile::Tile()
+	:
+	atlas(nullptr),
+	pos_x(0),
+	pos_y(0),
+	min_u(0),
+	max_u(0),
+	min_v(0),
+	max_v(0)
 {
 }
 
@@ -26,7 +34,7 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	// number of tiles in atlas per axis
 	int atlas_width = tex_width / TILE_SIZE_IN_ATLAS;
 	int atlas_height = tex_height / TILE_SIZE_IN_ATLAS;
-	
+
 	// the step size in u and v per tile
 	float uv_delta_x = (float)TILE_SIZE_IN_ATLAS / (float)tex_width;
 	float uv_delta_y = (float)TILE_SIZE_IN_ATLAS / (float)tex_height;
@@ -36,37 +44,39 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	int atlas_y = visual / atlas_width;
 
 	// calculate my UV coordinates
-	min_u = atlas_x * uv_delta_x + 0.001f;
-	max_u = min_u + uv_delta_x - 0.002f;
-	min_v = atlas_y * uv_delta_y + 0.001f;
-	max_v = min_v + uv_delta_y - 0.002f;
-  InitFunction(tile_function,simulation);
+	min_u = atlas_x * uv_delta_x + 0.0001f;
+	max_u = min_u + uv_delta_x - 0.0002f;
+	min_v = atlas_y * uv_delta_y + 0.0001f;
+	max_v = min_v + uv_delta_y - 0.0002f;
+
+	// initialize function
+	InitFunction(tile_function, simulation);
 }
 
 void Tile::InitFunction(TileFunction function, Physics& simulation)
 {
-  switch(function)
-  {
-    case Tile::DEFAULT:
-    break;
-    case Tile::COLLISION:
-      simulation.CreateBody(Vec2(pos_x/PHYSICS_SCALE,pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      break;
-    case Tile::BORDER:
-    {
-      Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      body.body->SetUserData((void*)Tile::BORDER);
-    }
-      break;
-    case Tile::WATER:
-    {
-      Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-      body.body->SetUserData((void*)Tile::WATER);
-    }
-    break;
-    default:
-      break;
-  }
+	switch (function)
+	{
+	case Tile::DEFAULT:
+		break;
+	case Tile::COLLISION:
+		simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+		break;
+	case Tile::BORDER:
+	{
+		Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+		body.body->SetUserData((void*)Tile::BORDER);
+	}
+	break;
+	case Tile::WATER:
+	{
+		Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+		body.body->SetUserData((void*)Tile::WATER);
+	}
+	break;
+	default:
+		break;
+	}
 }
 
 void Tile::Render()
