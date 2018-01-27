@@ -55,13 +55,13 @@ public:
   bool is_god;
   bool dead;
   Body physics_body;
+  float total_time;
+
 private:
   TileGrid & grid;
 
   StateMachine<Player> movement;
-  SpriteAnimation graphics[4];
-
-  Font font;
+  LayeredAnimation graphics[4];
 
   Sprite curr_sprite;
   bool flip_sprite;
