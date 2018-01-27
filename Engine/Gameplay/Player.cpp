@@ -22,24 +22,26 @@ IdleState::State IdleState::Update()
 IdleState::State IdleState::Input(::Input& input)
 {
   b2Vec2 dir = b2Vec2(0.0f, 0.0f);
+  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && !Owner().is_god)
+	  return new GettingWater();
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(dir.x != 0.f || dir.y != 0.0f)
@@ -96,22 +98,22 @@ MoveState::State MoveState::Input(::Input& input)
   dir = b2Vec2(0.0f, 0.0f);
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
-    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
   {
-    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
     Owner().SetFlipped(false);
   }
   if(dir.x == 0.f && dir.y)
@@ -234,6 +236,54 @@ JumpState::State JumpState::Input(::Input& input)
   //}
   //
   return nullptr;
+}
+
+// ****************************************************************************
+void GettingWater::OnEnter(Player& player)
+{
+	Base::OnEnter(player);
+	//Sets the amount of water that it can consume/release simultaneously
+	consumingWaterAmount = 10.f;
+	releaseWaterAmount = -20.f;
+	waterAdding = 0;
+}
+void GettingWater::OnExit()
+{
+
+}
+
+GettingWater::State GettingWater::Update()
+{
+	//checks if the waterAdding is the right amount and adds that amount to the water percentage
+	if (waterAdding == consumingWaterAmount || waterAdding == releaseWaterAmount)
+		Owner().waterPercentage += waterAdding;
+	//This makes sure it stays within the 100% range
+	if (Owner().waterPercentage > 100)
+		Owner().waterPercentage = 100;
+	//This makes sure it doesn't go lower than 0
+	if (Owner().waterPercentage < 0)
+		Owner().waterPercentage = 0;
+	//Makes sure the speed is lower when the waterpercentage is higher 
+	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
+		Owner().speed = -((Owner().waterPercentage - 100.f) / 100);
+	}
+
+	return nullptr;
+}
+GettingWater::State GettingWater::Input(::Input& input)
+{
+	//If it's not consuming or releasing it sends it back to the Idle state
+	if (!input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && !input.IsDown(ButtonCode::GAMEPAD_B,Owner().player_id))
+		return new IdleState;
+	// Checks if you're consuming and if so it changes the 
+	if (input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
+		waterAdding = consumingWaterAmount;
+
+
+	if (input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id))
+		waterAdding = releaseWaterAmount;
+
+	return nullptr;
 }
 
 // ****************************************************************************
