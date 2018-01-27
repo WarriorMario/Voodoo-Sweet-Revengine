@@ -17,6 +17,7 @@ void Scene::Tick(Keyboard& kbd)
 
 	// scope for updates
 	{
+		physx.Update();
 		player.Update();
 		player.Input(kbd);
 	}

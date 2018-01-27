@@ -3,6 +3,7 @@
 #include "VString.h"
 #include "Utility\Timer.h"
 #include "Gameplay\Player.h"
+#include "Physics\Physics.h"
 
 class Renderer;
 class Keyboard;
@@ -27,4 +28,7 @@ private:
 
 	// players
 	Player player;
+
+	// physics
+	Physics physx;
 };

@@ -996,6 +996,9 @@
     <ClInclude Include="Gameplay\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Blockade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -1281,6 +1284,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Blockade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
