@@ -51,7 +51,6 @@ IdleState::State IdleState::Input(Keyboard& input)
 	 else
 	 if (input.KeyIsPressed(VK_UP) || input.KeyIsPressed(VK_DOWN))
 		 return new MoveUpDownState(direction);
-
   }
   return nullptr;
 }
@@ -150,8 +149,6 @@ MoveUpDownState::State MoveUpDownState::Input(Keyboard& input)
 	{
 		return new IdleState;
 	}
-
-
 	return nullptr;
 }
 
