@@ -18,6 +18,10 @@ public:
   XINPUT_GAMEPAD controller;
   XINPUT_GAMEPAD last_controller;
   unsigned char trigger_button_threshold = 200;
+  static constexpr float DEAD_ZONE_THRESHOLD = 0.2f;
 
   size_t ID;
+private:
+	void ApplyDeadzone(Vec2& input);
+
 };
