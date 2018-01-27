@@ -41,10 +41,10 @@ public:
   {
     scene.Init();
 
-    scene.SpawnPlayer(0, Vec2(450, 50));
-    scene.SpawnPlayer(1, Vec2(50, 50));
-    scene.SpawnPlayer(2, Vec2(-50, 250));
-    scene.SpawnPlayer(3, Vec2(-750, 150));
+    scene.SpawnPlayer(0, Vec2(450, 260));
+    scene.SpawnPlayer(1, Vec2(550, 260));
+    scene.SpawnPlayer(2, Vec2(350, 260));
+    scene.SpawnPlayer(3, Vec2(350, 260));
     scene.NewGod();
   }
   void OnTerminate() override
@@ -52,10 +52,10 @@ public:
   }
   void OnUpdate(float dt) override
   {
-    scene.Tick(dt, input->kbd);
+    scene.Tick(dt, *input);
 
     // Adjust the camera's for both player groups
-    god_view.AdjustCamera({scene.GetGod()});
+    god_view.AdjustCamera({(Player*)scene.GetGod()});
     player_view.AdjustCamera(scene.GetPlayers());
   }
   void OnRender() override

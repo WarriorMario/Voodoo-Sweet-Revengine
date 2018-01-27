@@ -239,8 +239,8 @@ private:
 		unsigned char* p = font_atlas.alpha_values[0];
 
 		// set the first bit of the texture buffer to be the space bar
-		font_atlas.w_h_ox_oy[0][0] = space_width;
-		font_atlas.w_h_ox_oy[0][1] = space_height;
+		font_atlas.w_h_ox_oy[0][0] = (int)space_width;
+		font_atlas.w_h_ox_oy[0][1] = (int)space_height;
 		font_atlas.w_h_ox_oy[0][2] = 0;
 		font_atlas.w_h_ox_oy[0][3] = 0;
 

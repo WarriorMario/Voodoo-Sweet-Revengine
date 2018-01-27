@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Keyboard.h"
+#include "AngryPlayer.h"
 
 Scene::Scene()
   : players{nullptr}
@@ -8,12 +9,12 @@ Scene::Scene()
 
 void Scene::Init()
 {
-	tile_grid.LoadLevel(LEVEL_TO_LOAD);
+	tile_grid.LoadLevel(LEVEL_TO_LOAD,simulation);
 }
 
-void Scene::Tick(float dt, Keyboard& kbd)
+void Scene::Tick(float dt, Input& kbd)
 {
-  physx.Update();
+  simulation.Update();
 
   for(Player* player : players)
   {
@@ -34,13 +35,13 @@ void Scene::Draw()
   }
 }
 
-Player* Scene::GetGod() const
+AngryPlayer* Scene::GetGod() const
 {
   for(Player* player : players)
   {
     if(player != nullptr && player->is_god)
     {
-      return player;
+      return (AngryPlayer*)player;
     }
   }
   return nullptr;
@@ -65,7 +66,9 @@ void Scene::NewGod()
     if(player != nullptr) player->is_god = false;
   }
 
-  int new_god = (rand() / (float)RAND_MAX) * 4;
+  int new_god = 3;
+  delete players[new_god];
+  players[new_god] = new AngryPlayer(simulation, tile_grid, 3);
   players[new_god]->is_god = true;
 }
 void Scene::SpawnPlayer(int idx, Vec2 pos)
@@ -75,7 +78,7 @@ void Scene::SpawnPlayer(int idx, Vec2 pos)
     return;
   }
 
-  players[idx] = new Player;
+  players[idx] = new Player(simulation,tile_grid,idx);
   players[idx]->x = pos.x;
   players[idx]->y = pos.y;
 

@@ -3,6 +3,7 @@
 #include "Keyboard.h"
 #include "Controller.h"
 #include "Matrix.h"
+
 const int NUM_CONTROLLERS = 4;
 Input::Input(Keyboard & kbd, Mouse & mouse)
   :

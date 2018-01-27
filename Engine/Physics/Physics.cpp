@@ -32,10 +32,16 @@ Physics::Physics()
   particle_system = world.CreateParticleSystem(&particle_system_def);
 
   ParticleObjectBase::system = particle_system;
-  static CircleShape shape;
-  shape.m_radius = 3;
+  static CircleShape circle_shape;	
 
-  AddShape(&shape, "Circle");
+  // Define another box shape for our dynamic body.
+  static PolygonShape square_shape;
+  square_shape.SetAsBox(3.20f, 3.20f);
+
+  circle_shape.m_radius = 3;
+
+  AddShape(&circle_shape, "Circle");
+  AddShape(&square_shape, "Square");
 }
 
 Body Physics::CreateBody(Vec2 pos, StringRef shape , BodyType type )
@@ -46,6 +52,7 @@ Body Physics::CreateBody(Vec2 pos, StringRef shape , BodyType type )
   body_defs.push_back(def);// This might not be required?
   
   FixtureDef fixture_def;
+  fixture_def.density = 1.0f;
   fixture_def.shape = shapes[shape];
   fixture_defs.push_back(fixture_def);
   PhysicsBody*ret  = world.CreateBody(&def);
@@ -80,5 +87,6 @@ void Physics::CreateDebugDraw(Graphics & gfx)
 void Physics::DebugDraw()
 {
   world.DrawDebugData();
+  
 
 }

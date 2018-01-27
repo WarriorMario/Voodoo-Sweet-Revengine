@@ -3,7 +3,7 @@
 #include "Utility.h"
 
 // ****************************************************************************
-class Keyboard;
+class Input;
 
 // ****************************************************************************
 template<typename T>
@@ -21,16 +21,16 @@ public:
   virtual void OnExit() = 0;
 
   virtual State Update(float dt) = 0;
-  virtual State Input(Keyboard& input) = 0;
+  virtual State Input(Input& input) = 0;
 
 protected:
-  T& Owner()
+  T & Owner()
   {
     return *owner;
   }
 
 private:
-  T* owner;
+  T * owner;
 
 };
 
@@ -68,7 +68,7 @@ public:
       state->OnEnter(owner);
     }
   }
-  void Input(Keyboard& input)
+  void Input(Input& input)
   {
     State new_state = state->Input(input);
     if(new_state)
@@ -82,7 +82,7 @@ public:
   }
 
 private:
-  T& owner;
+  T & owner;
   State state;
 
 };

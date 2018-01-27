@@ -1,5 +1,8 @@
 #include "Player.h"
-
+#include "Input\Input.h"
+#include "Physics\Physics.h"
+#include "TileGrid.h"
+#include "Tile.h"
 // ****************************************************************************
 void IdleState::OnEnter(Player& player)
 {
@@ -14,288 +17,275 @@ void IdleState::OnExit()
 
 IdleState::State IdleState::Update(float dt)
 {
-
   return nullptr;
 }
-IdleState::State IdleState::Input(Keyboard& input)
+IdleState::State IdleState::Input(::Input& input)
 {
-  b2Vec2 direction = b2Vec2(0.0f, 0.0f);
-  if(input.KeyIsPressed(VK_BACK) || input.KeyIsPressed(VK_SPACE))
-    return new GettingWater(direction);
-
-  if(input.KeyIsPressed(VK_RIGHT))
+  b2Vec2 dir = b2Vec2(0.0f, 0.0f);
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
-    direction.x += Owner().speed;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
     Owner().SetFlipped(true);
   }
-  if(input.KeyIsPressed(VK_LEFT))
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
-    direction.x -= Owner().speed;
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
     Owner().SetFlipped(false);
   }
-  if(input.KeyIsPressed(VK_UP))
-    direction.y += Owner().speed;
-
-  if(input.KeyIsPressed(VK_DOWN))
-    direction.y -= Owner().speed;
-  if(direction.x != 0.f && direction.y != 0.f)
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
-    if((input.KeyIsPressed(VK_LEFT) || input.KeyIsPressed(VK_RIGHT)) && input.KeyIsPressed(VK_UP))
-      return new MoveUpSideState(direction);
-    else
-      if((input.KeyIsPressed(VK_LEFT) || input.KeyIsPressed(VK_RIGHT)) && input.KeyIsPressed(VK_DOWN))
-        return new MoveDownSideState(direction);
-      else
-        if(input.KeyIsPressed(VK_LEFT) || input.KeyIsPressed(VK_RIGHT))
-          return new MoveSideState(direction);
-        else
-          if(input.KeyIsPressed(VK_UP) || input.KeyIsPressed(VK_DOWN))
-            return new MoveUpDownState(direction);
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    Owner().SetFlipped(true);
   }
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
+  {
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    Owner().SetFlipped(false);
+  }
+  if(dir.x != 0.f || dir.y != 0.0f)
+  {
+    //if (input.KeyIsPressed(VK_SHIFT))
+    //{
+    //	return new RunState(dir);
+    //}
+    //else
+    //{
+    return new MoveState(dir);
+    //}
+  }
+  //if (input.KeyIsPressed(VK_SPACE))
+  //{
+  //	return new JumpState;
+  //}
+
   return nullptr;
 }
 
 // ****************************************************************************
-void MoveSideState::OnEnter(Player& player)
+void MoveState::OnEnter(Player& player)
 {
   Base::OnEnter(player);
 
-  Owner().SetSprite(Player::MoveSide);
-
+  Owner().SetSprite(Player::Move);
 }
-void MoveSideState::OnExit()
+void MoveState::OnExit()
 {
 
 }
 
-MoveSideState::State MoveSideState::Update(float dt)
+MoveState::State MoveState::Update(float dt)
+{
+  dir.Normalize();
+  Owner().x += dir.x * 5.f;
+  Owner().y += dir.y * 5.f;
+  if(Owner().IsStuck())
+  {
+    Owner().x -= dir.x * 5.f;
+    Owner().y -= dir.y * 5.f;
+  }
+
+  return nullptr;
+}
+MoveState::State MoveState::Input(::Input& input)
+{
+  //if (input.KeyIsPressed(VK_SPACE))
+  //{
+  //	return new JumpState;
+  //}
+
+  dir = b2Vec2(0.0f, 0.0f);
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
+  {
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    Owner().SetFlipped(true);
+  }
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
+  {
+    dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x;
+    Owner().SetFlipped(false);
+  }
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
+  {
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    Owner().SetFlipped(true);
+  }
+  if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
+  {
+    dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y;
+    Owner().SetFlipped(false);
+  }
+  if(dir.x == 0.f && dir.y)
+  {
+    return new IdleState;
+  }
+  //else if (input.KeyIsPressed(VK_SHIFT))
+  //{
+  //	return new RunState(dir);
+  //}
+
+  return nullptr;
+}
+
+// ****************************************************************************
+void RunState::OnEnter(Player& player)
+{
+  Base::OnEnter(player);
+
+  Owner().SetSprite(Player::Run);
+}
+void RunState::OnExit()
+{
+
+}
+
+RunState::State RunState::Update(float dt)
 {
   direction.Normalize();
-  Owner().x += direction.x * 5.f;
+  Owner().x += direction.x * 10.f;
+  Owner().y += direction.y * 10.f;
 
   return nullptr;
 }
-MoveSideState::State MoveSideState::Input(Keyboard& input)
+RunState::State RunState::Input(::Input& input)
 {
-
-  direction = b2Vec2(0.0f, 0.0f);
-  if(input.KeyIsPressed(VK_RIGHT))
-  {
-    if(input.KeyIsPressed(VK_UP))
-      return new MoveUpSideState(direction);
-    if(input.KeyIsPressed(VK_DOWN))
-      return new MoveDownSideState(direction);
-
-    direction += Owner().speed;
-    Owner().SetFlipped(true);
-  }
-  if(input.KeyIsPressed(VK_LEFT))
-  {
-    if(input.KeyIsPressed(VK_UP))
-      return new MoveUpSideState(direction);
-    if(input.KeyIsPressed(VK_DOWN))
-      return new MoveDownSideState(direction);
-
-    direction -= Owner().speed;
-    Owner().SetFlipped(false);
-  }
-
-  if(direction == 0.f)
-  {
-    return new IdleState;
-  }
-
+  //if (input.KeyIsPressed(VK_SPACE))
+  //{
+  //	return new JumpState;
+  //}
+  //
+  //dir = b2Vec2(0.0f, 0.0f);
+  //if (input.KeyIsPressed(VK_RIGHT))
+  //{
+  //	dir.x += 1.f;
+  //	Owner().SetFlipped(true);
+  //}
+  //if (input.KeyIsPressed(VK_LEFT))
+  //{
+  //	dir.x -= 1.f;
+  //	Owner().SetFlipped(false);
+  //}
+  //if (input.KeyIsPressed(VK_UP))
+  //{
+  //	dir.y += 1.f;
+  //	Owner().SetFlipped(true);
+  //}
+  //if (input.KeyIsPressed(VK_DOWN))
+  //{
+  //	dir.y -= 1.f;
+  //	Owner().SetFlipped(false);
+  //}
+  //if (dir.x == 0.0f && dir.y == 0.0f)
+  //{
+  //	return new IdleState;
+  //}
+  //else if (!input.KeyIsPressed(VK_SHIFT))
+  //{
+  //	return new MoveState(dir);
+  //}
 
   return nullptr;
 }
 
 // ****************************************************************************
-void MoveUpDownState::OnEnter(Player& player)
+void JumpState::OnEnter(Player& player)
 {
   Base::OnEnter(player);
 
-  Owner().SetSprite(Player::MoveUp);
+  base_y = player.y;
+
+  fart.Play();
+
+  //Owner().SetSprite(Player::Jump);
 }
-void MoveUpDownState::OnExit()
+void JumpState::OnExit()
 {
-
-}
-
-MoveUpDownState::State MoveUpDownState::Update(float dt)
-{
-  Owner().y += direction.y * 5.f;
-
-  return nullptr;
-}
-MoveUpDownState::State MoveUpDownState::Input(Keyboard& input)
-{
-
-  direction = b2Vec2(0.0f, 0.0f);
-  if(input.KeyIsPressed(VK_DOWN))
-  {
-    if(input.KeyIsPressed(VK_LEFT) || input.KeyIsPressed(VK_RIGHT))
-      return new MoveDownSideState(direction);
-    direction.y -= Owner().speed;
-    Owner().SetFlipped(true);
-  }
-  if(input.KeyIsPressed(VK_UP))
-  {
-    if(input.KeyIsPressed(VK_LEFT) || input.KeyIsPressed(VK_RIGHT))
-      return new MoveUpSideState(direction);
-    direction.y += Owner().speed;
-    Owner().SetFlipped(false);
-  }
-  if(direction.x == 0.f && direction.y == 0)
-  {
-    return new IdleState;
-  }
-  return nullptr;
+  Owner().y = base_y;
 }
 
-// ****************************************************************************
-void MoveUpSideState::OnEnter(Player& player)
+JumpState::State JumpState::Update(float dt)
 {
-  Base::OnEnter(player);
-
-  Owner().SetSprite(Player::MoveUp);
-}
-void MoveUpSideState::OnExit()
-{
-
-}
-
-MoveUpSideState::State MoveUpSideState::Update(float dt)
-{
-  Owner().y += Owner().speed * 5.f;
-  Owner().x += direction.x * 5.f;
-  return nullptr;
-}
-MoveUpSideState::State MoveUpSideState::Input(Keyboard& input)
-{
-
-  direction = 0.f;
-  if(input.KeyIsPressed(VK_UP) && input.KeyIsPressed(VK_RIGHT))
-  {
-    direction.x += Owner().speed;
-    Owner().SetFlipped(false);
-  }
-  if(input.KeyIsPressed(VK_UP) && input.KeyIsPressed(VK_LEFT))
-  {
-    direction.x -= Owner().speed;
-    Owner().SetFlipped(true);
-  }
-  if(direction == 0.f)
-  {
-    return new IdleState;
-  }
-
-  return nullptr;
-}
-
-// ****************************************************************************
-void MoveDownSideState::OnEnter(Player& player)
-{
-  Base::OnEnter(player);
-
-  Owner().SetSprite(Player::MoveUp);
-}
-void MoveDownSideState::OnExit()
-{
-
-}
-
-MoveDownSideState::State MoveDownSideState::Update(float dt)
-{
-  Owner().y -= Owner().speed * 5.f;
-  Owner().x += direction.x * 5.f;
-  return nullptr;
-}
-MoveDownSideState::State MoveDownSideState::Input(Keyboard& input)
-{
-  direction = 0.f;
-  if(input.KeyIsPressed(VK_DOWN) && input.KeyIsPressed(VK_RIGHT))
-  {
-    direction += Owner().speed;
-    Owner().SetFlipped(false);
-  }
-  if(input.KeyIsPressed(VK_DOWN) && input.KeyIsPressed(VK_LEFT))
-  {
-    direction -= Owner().speed;
-    Owner().SetFlipped(true);
-  }
-  if(direction == 0.f)
-  {
-    return new IdleState;
-  }
-  return nullptr;
-}
-
-// ****************************************************************************
-
-// ****************************************************************************
-void GettingWater::OnEnter(Player& player)
-{
-  Base::OnEnter(player);
-  gettingWaterAmount = 10.f;
-  releaseWaterAmount = -20.f;
-  waterAdding = 0;
-
-}
-void GettingWater::OnExit()
-{
-
-}
-
-GettingWater::State GettingWater::Update(float dt)
-{
-  if(waterAdding > -100.f && waterAdding < 100.f)
-    Owner().waterPercentage += waterAdding;
-  if(Owner().waterPercentage > 100)
-    Owner().waterPercentage = 100;
-  if(Owner().waterPercentage < 0)
-    Owner().waterPercentage = 0;
-  if(Owner().waterPercentage > 0 && Owner().waterPercentage < 100)
-  {
-    Owner().speed = -((Owner().waterPercentage - 100.f) / 100);
-  }
-
-  return nullptr;
-}
-GettingWater::State GettingWater::Input(Keyboard& input)
-{
-  waterAdding = 0;
-  if(!input.KeyIsDown(VK_SPACE) && !input.KeyIsDown(VK_BACK))
-    return new IdleState;
-
-  if(input.KeyIsDown(VK_SPACE))
-    waterAdding = gettingWaterAmount;
-
-
-  if(input.KeyIsDown(VK_BACK))
-    waterAdding = releaseWaterAmount;
-
+  //jump_y += velocity * 0.015f;
+  //
+  //velocity -= 25.f; // fake drag
+  //velocity = Max(velocity, -500.f); // fake terminal velocity
+  //
+  //if (jump_y < 0.f)
+  //{
   return new IdleState;
+  //}
+  //Owner().y = base_y - jump_y;
+  //
+  //Owner().x += direction * 5.f;
+  //
+  //return nullptr;
+}
+JumpState::State JumpState::Input(::Input& input)
+{
+  //direction = 0.f;
+  //if (input.KeyIsPressed(VK_RIGHT))
+  //{
+  //	direction += 1.f;
+  //	Owner().SetFlipped(true);
+  //}
+  //if (input.KeyIsPressed(VK_LEFT))
+  //{
+  //	direction -= 1.f;
+  //	Owner().SetFlipped(false);
+  //}
+  //
   return nullptr;
 }
 
-
 // ****************************************************************************
-Player::Player()
+Player::Player(Physics& simulation, TileGrid& grid, int id)
   :
   movement(*this, new IdleState),
   graphics{
     {"Images/Walking/frame", 6, 0.1f},
     {"Images/Walking/frame", 6, 0.1f},
     {"Images/Walking/frame", 6, 0.1f},
-    {"Images/Walking/frame", 6, 0.1f},
     {"Images/Walking/frame", 6, 0.1f}
   },
   flip_sprite(false),
-  is_god(false)
+  font(Font("Fonts/times.ttf")),
+  physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
+  grid(grid),
+  player_id(id)
 {
-  width = 100.f;
-  height = 100.f;
-  x = 1920.f * 0.5f;
-  y = 1080.f * 0.5f;
-  speed = 1.0f;
+  width = 32.0f;
+  height = 32.0f;
+  x = 400.0f;
+  y = 300.0f;
+  physics_body.body->SetUserData(this);
+  dead = false;
+}
+
+void Player::Update(float dt)
+{
+  if(dead)
+  {
+    return;
+  }
+
+  movement.Update(dt);
+  graphics[(int)curr_sprite].Update(dt);
+
+  physics_body.body->GetWorld()->ClearForces();
+  physics_body.body->SetTransform(Vec2(x, y) / PHYSICS_SCALE, 0);
+}
+
+void Player::Input(::Input & input)
+{
+  movement.Input(input);
+}
+
+bool Player::IsStuck()
+{
+  return grid.IsPassable(x / Tile::SIZE, y / Tile::SIZE) == false;
+}
+
+void Player::LoseWater()
+{
+  // Not implemented yet
+  dead = true;
 }

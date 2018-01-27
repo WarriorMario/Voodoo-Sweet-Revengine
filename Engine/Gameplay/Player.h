@@ -6,41 +6,33 @@
 #include "Utility\DrawUtils.h"
 #include "Utility\SpriteAnimation.h"
 #include "Keyboard.h"
+#include "Physics\Body.h"
 
 // Should be moved somewhere else
 static const size_t NUM_PLAYERS = 4;
-
+class Physics;
+class TileGrid;
 // ****************************************************************************
 class Player
 {
 public:
-
   enum Sprite
   {
     Idle,
-    MoveSide,
-    MoveUp,
-    MoveUpSide,
-    MoveDownSide
+    Move,
+    Run,
+    Jump,
   };
 
-
 public:
-  Player();
+  Player(Physics& simulation, TileGrid& grid, int id);
 
-  void Update(float dt)
-  {
-    movement.Update(dt);
-    graphics[(int)curr_sprite].Update(dt);
-  }
-  void Input(Keyboard& input)
-  {
-    movement.Input(input);
-  }
+  virtual void Update(float dt);
+  void Input(Input& input);
   void Draw()
   {
-    Vec2 pos = Vec2(x, y);
-    Vec2 size = Vec2(width, height);
+    b2Vec2 pos = b2Vec2(x, y);
+    b2Vec2 size = b2Vec2(width, height);
     graphics[(int)curr_sprite].Draw(pos, size, flip_sprite, true);
   }
 
@@ -53,19 +45,27 @@ public:
     flip_sprite = flipped;
   }
 
+  bool IsStuck();
+  void LoseWater();
+
 public:
   float x, y;
   float width, height;
-  float speed;
-  float waterPercentage;
+  const int player_id;
   bool is_god;
-
+  bool dead;
+  Body physics_body;
 private:
+  TileGrid & grid;
+
   StateMachine<Player> movement;
-  SpriteAnimation graphics[5];
+  SpriteAnimation graphics[4];
+
+  Font font;
 
   Sprite curr_sprite;
   bool flip_sprite;
+
 };
 
 // ****************************************************************************
@@ -76,41 +76,40 @@ public:
   void OnExit() override;
 
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 };
-
-// ****************************************************************************
-class MoveSideState : public IState<Player>
+class MoveState : public IState<Player>
 {
 public:
-  MoveSideState(Vec2 direction)
-    : direction(direction)
+  MoveState(b2Vec2 direction)
+    :
+    dir(direction)
   {}
 
   void OnEnter(Player& player) override;
   void OnExit() override;
 
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 private:
-  Vec2 direction;
+  b2Vec2 dir;
 };
 
-// ****************************************************************************
-class MoveUpSideState : public IState<Player>
+class RunState : public IState<Player>
 {
 public:
-  MoveUpSideState(Vec2 direction)
-    : direction(direction)
+  RunState(b2Vec2 direction)
+    :
+    direction(direction)
   {}
 
   void OnEnter(Player& player) override;
   void OnExit() override;
 
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 private:
   Vec2 direction;
@@ -129,7 +128,7 @@ public:
   void OnExit() override;
 
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 private:
   Vec2 direction;
@@ -143,35 +142,35 @@ public:
     : direction(direction)
   {}
 
-  void OnEnter(Player& player) override;
-  void OnExit() override;
-
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 private:
-  Vec2 direction;
+  b2Vec2 direction;
 };
 
-// ****************************************************************************
-class GettingWater : public IState<Player>
+class JumpState : public IState<Player>
 {
 public:
-  GettingWater(Vec2 direction)
+  JumpState()
     :
-    direction(direction)
+    direction(0.f),
+    velocity(500.f),
+    jump_y(0.f),
+    fart("fart0.wav")
   {}
+
   void OnEnter(Player& player) override;
   void OnExit() override;
 
   State Update(float dt) override;
-  State Input(Keyboard& input) override;
+  State Input(::Input& input) override;
 
 private:
-  float gettingWaterAmount;
-  float releaseWaterAmount;
-  float waterAdding;
-  float speed;
-  Vec2 direction;
+  float base_y;
+  float jump_y;
+  float velocity;
+  float direction;
+  Audio fart;
 
 };
