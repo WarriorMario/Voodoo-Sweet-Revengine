@@ -15,7 +15,7 @@ void IdleState::OnExit()
 
 }
 
-IdleState::State IdleState::Update()
+IdleState::State IdleState::Update(float dt)
 {
   return nullptr;
 }
@@ -75,7 +75,7 @@ void MoveState::OnExit()
 
 }
 
-MoveState::State MoveState::Update()
+MoveState::State MoveState::Update(float dt)
 {
   dir.Normalize();
   Owner().x += dir.x * 5.f;
@@ -140,11 +140,11 @@ void RunState::OnExit()
 
 }
 
-RunState::State RunState::Update()
+RunState::State RunState::Update(float dt)
 {
-  dir.Normalize();
-  Owner().x += dir.x * 10.f;
-  Owner().y += dir.y * 10.f;
+  direction.Normalize();
+  Owner().x += direction.x * 10.f;
+  Owner().y += direction.y * 10.f;
 
   return nullptr;
 }
@@ -204,7 +204,7 @@ void JumpState::OnExit()
   Owner().y = base_y;
 }
 
-JumpState::State JumpState::Update()
+JumpState::State JumpState::Update(float dt)
 {
   //jump_y += velocity * 0.015f;
   //
@@ -290,7 +290,12 @@ GettingWater::State GettingWater::Input(::Input& input)
 Player::Player(Physics& simulation, TileGrid& grid, int id)
   :
   movement(*this, new IdleState),
-  sprites{"Images/idle.png", "Images/move.png", "Images/run.png", "Images/jump.png"},
+  graphics{
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f},
+    {"Images/Walking/frame", 6, 0.1f}
+  },
   flip_sprite(false),
   font(Font("Fonts/times.ttf")),
   physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
@@ -305,13 +310,16 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   dead = false;
 }
 
-void Player::Update()
+void Player::Update(float dt)
 {
   if(dead)
   {
     return;
   }
-  movement.Update();
+
+  movement.Update(dt);
+  graphics[(int)curr_sprite].Update(dt);
+
   physics_body.body->GetWorld()->ClearForces();
   physics_body.body->SetTransform(Vec2(x, y) / PHYSICS_SCALE, 0);
 }
