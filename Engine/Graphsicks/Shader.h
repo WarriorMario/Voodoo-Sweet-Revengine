@@ -93,6 +93,8 @@ public:
   {
     return &prim_data[0];
   }
+
+  static constexpr bool IS_ABSOLUTE = false;
   static constexpr bool SIMD = false;
   static constexpr bool CHECKER = false;
 private:
@@ -243,6 +245,7 @@ public:
     return &prim_data[0];
   }
 
+  static constexpr bool IS_ABSOLUTE = false;
   static constexpr bool SIMD = true;
   static constexpr bool CHECKER = true;
 private:
@@ -412,6 +415,7 @@ public:
     return &prim_data[0];
   }
 
+  static constexpr bool IS_ABSOLUTE = true;
   static constexpr bool SIMD = false;
   static constexpr bool CHECKER = false;
 private:
@@ -494,6 +498,7 @@ public:
     return &prim_data[0];
   }
 
+  static constexpr bool IS_ABSOLUTE = true;
   static constexpr bool SIMD = false;
   static constexpr bool CHECKER = false;
 private:

@@ -25,7 +25,7 @@ public:
 	bool LoadLevel(StringRef level_name, Physics& simulation);
 
 	// renders all of it's tiles
-	void Draw(Renderer& renderer);
+	void Draw();
 
 	// getters to access width and height
 	inline unsigned int GetGridWidth()

@@ -1,16 +1,27 @@
 #include "Renderer.h"
-Renderer::Renderer(Graphics & graphics)
-	:
-	gfx(graphics)
+
+Renderer::Passes<BackgroundShader, ForegroundShader, UIShader, UIShaderSimple> Renderer::shared_passes;
+
+Renderer::Renderer()
 {
-  camera.offset = Vec2(1000, 0);
+  camera.offset = Vec2(300.0f, 0.0f);
 }
 
-void Renderer::Render()
+void Renderer::AdjustCamera(const Array<Player*>& players)
+{
+  camera.CalculateOffset(players);
+}
+void Renderer::Render(Color* target)
 {
   rasterizer.FlipCheckerBoard();
+  ForEach(shared_passes, PassApplyer(), grid, rasterizer, camera);
   ForEach(passes, PassApplyer(), grid, rasterizer, camera);
-	grid.UnPackBuffer(gfx.god_window_buffer);
-  grid.UnPackBuffer(gfx.player_window_buffer);
-	grid.Clear();
+	
+  grid.UnPackBuffer(target);
+}
+void Renderer::Reset()
+{
+  ForEach(shared_passes, PassClearer());
+  ForEach(passes, PassClearer());
+  grid.Clear();
 }

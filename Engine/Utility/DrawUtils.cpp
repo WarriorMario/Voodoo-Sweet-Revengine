@@ -127,7 +127,11 @@ void RenderLinePerGlyph(Renderer& renderer, StringRef text, Font& font,
 	}
 }
 
-void RenderText(Renderer & renderer, StringRef text, Font & font, int point_size, const b2Vec2 & pos, const Color & color)
+void RenderText(Renderer & renderer, StringRef text, Font & font, int point_size, const b2Vec2 & pos, Color color)
 {
 	RenderLinePerGlyph(renderer, text, font, point_size, pos.x, pos.y, color);
+}
+void RenderText(Renderer & renderer, StringRef text, int point_size, const b2Vec2 & pos, Color color)
+{
+  RenderText(renderer, text, Font("Fonts/comic.ttf"), point_size, pos, color);
 }

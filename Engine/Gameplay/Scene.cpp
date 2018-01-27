@@ -3,52 +3,89 @@
 #include "AngryPlayer.h"
 
 Scene::Scene()
+  : players{nullptr}
 {
-	frame_timer.Reset();
 }
 
 void Scene::Init(Graphics& gfx)
 {
-	tile_grid.LoadLevel(LEVEL_TO_LOAD, simulation);
-  simulation.CreateDebugDraw(gfx);
-  for(int i = 0; i < NUM_PLAYERS-1; ++i)
-  {
-    players[i] = new Player(simulation,tile_grid,i);
-    players[i]->x += i * 100 + 100;
-  }
-  players[NUM_PLAYERS - 1] = new AngryPlayer(simulation, tile_grid, 3);
-
+	tile_grid.LoadLevel(LEVEL_TO_LOAD);
 }
 
-void Scene::Tick(Input& kbd)
+void Scene::Tick(float dt, Keyboard& kbd)
 {
-	float delta_time = frame_timer.Elapsed();
+  physx.Update();
 
-	// scope for updates
-	{
-		simulation.Update();
-    for(int i = 0; i < NUM_PLAYERS; ++i)
+  for(Player* player : players)
+  {
+    if(player != nullptr)
     {
-		  players[i]->Input(kbd);
-		  players[i]->Update();
+      player->Update();
+      player->Input(kbd);
     }
-	}
-	frame_timer.Reset();
-}
-
-void Scene::Draw(Renderer & renderer)
-{
-	// Update players camera
-	renderer.camera.CalculateOffset(players, NUM_PLAYERS);
-
-	tile_grid.Draw(renderer);
-  for(int i = 0; i < NUM_PLAYERS; ++i)
-  {
-	  players[i]->Draw(renderer);
   }
 }
 
-void Scene::DebugDraw()
+void Scene::Draw()
 {
-  simulation.DebugDraw();
+  tile_grid.Draw();
+  for(Player* player : players)
+  {
+    if(player != nullptr) player->Draw();
+  }
+}
+
+Player* Scene::GetGod() const
+{
+  for(Player* player : players)
+  {
+    if(player != nullptr && player->is_god)
+    {
+      return player;
+    }
+  }
+}
+Array<Player*> Scene::GetPlayers() const
+{
+  Array<Player*> result;
+  for(Player* player : players)
+  {
+    if(player != nullptr && !player->is_god)
+    {
+      result.push_back(player);
+    }
+  }
+  return result;
+}
+
+void Scene::NewGod()
+{
+  for(Player* player : players)
+  {
+    if(player != nullptr) player->is_god = false;
+  }
+
+  int new_god = (rand() / (float)RAND_MAX) * 4;
+  players[new_god]->is_god = true;
+}
+void Scene::SpawnPlayer(int idx, Vec2 pos)
+{
+  if(players[idx] != nullptr)
+  {
+    return;
+  }
+
+  players[idx] = new Player;
+  players[idx]->x = pos.x;
+  players[idx]->y = pos.y;
+
+}
+void Scene::KillPlayer(int idx)
+{
+  if(players[idx] == nullptr)
+  {
+    return;
+  }
+
+  delete players[idx];
 }

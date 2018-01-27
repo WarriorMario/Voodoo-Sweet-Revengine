@@ -22,7 +22,6 @@
 #include "Resource.h"
 #include "Graphsicks\Graphics.h"
 #include "ChiliException.h"
-#include "Game.h"
 #include <assert.h>
 
 MainWindow::MainWindow( HINSTANCE hInst,wchar_t * pArgs )
@@ -31,7 +30,7 @@ MainWindow::MainWindow( HINSTANCE hInst,wchar_t * pArgs )
 {
 }
 
-bool MainWindow::ProcessMessage()
+void MainWindow::ProcessMessage()
 {
 	MSG msg;
 	while( PeekMessage( &msg,nullptr,0,0,PM_REMOVE ) )
@@ -40,10 +39,9 @@ bool MainWindow::ProcessMessage()
 		DispatchMessage( &msg );
 		if( msg.message == WM_QUIT )
 		{
-			return false;
+      MainWindow::Kill();
 		}
 	}
-	return true;
 }
 
 LRESULT WINAPI MainWindow::_HandleMsgSetup( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam )
@@ -81,7 +79,7 @@ LRESULT MainWindow::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam )
 	switch( msg )
 	{
 	case WM_DESTROY:
-		PostQuitMessage( 0 );
+    Kill();
 		break;
 
 		// ************ KEYBOARD MESSAGES ************ //
@@ -181,6 +179,8 @@ LRESULT MainWindow::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam )
 	return DefWindowProc( hWnd,msg,wParam,lParam );
 }
 
+bool RenderWindow::isOpen = false;
+
 RenderWindow::RenderWindow( HINSTANCE hInst, wchar_t * pArgs, wchar_t* name, WNDPROC wndProc )
 {
    wndClassName = name;
@@ -224,6 +224,8 @@ RenderWindow::RenderWindow( HINSTANCE hInst, wchar_t * pArgs, wchar_t* name, WND
    // show and update
    ShowWindow( hWnd, SW_SHOWDEFAULT );
    UpdateWindow( hWnd );
+
+   isOpen = true;
 }
 
 RenderWindow::~RenderWindow()
@@ -232,16 +234,23 @@ RenderWindow::~RenderWindow()
    UnregisterClass( wndClassName, hInst );
 }
 
-bool RenderWindow::IsOpen() const
+bool RenderWindow::IsOpen()
 {
-   return IsWindow( hWnd );
+  return isOpen;
+}
+void RenderWindow::Kill()
+{
+  isOpen = false;
 }
 
 bool RenderWindow::IsActive() const
 {
    return GetActiveWindow() == hWnd;
 }
-
+void RenderWindow::SetFocused()
+{
+  SetFocus(hWnd);
+}
 bool RenderWindow::IsFocused() const
 {
    return GetFocus() == hWnd;

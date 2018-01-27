@@ -4,38 +4,27 @@
 #include "Assets\Font.h"
 #include "Gameplay\Scene.h"
 
-FrameCounter::FrameCounter(Scene& scene)
+FrameCounter::FrameCounter()
 	:
 	pos_x(10),
 	pos_y(1050),
 	point_size(32),
 	frame_idx(0),
-	has_filled_completely(false),
-	scene(scene)
+	has_filled_completely(false)
 {
 	// set to zero
 	for (int i = 0; i < FRAMES_TO_MEASURE_OVER; ++i)
 	{
 		past_frame_times[i] = 0.0f;
 	}
-	// load a font
-	auto& assetManager = Assets::Get();
 
-	// load the font
-	font = new Font("Fonts/comic.ttf");
-
-	// prerender the font so the font atlas is stored.
-	font->RenderLine("Plz load for me", point_size, pos_x, pos_y);
-
-	// start timing
-	timer.Reset();
 	average_fps = 0;
 }
 
-void FrameCounter::Update()
+void FrameCounter::Update(float dt)
 {
 	// update times stored
-	this_frame_time = timer.Elapsed();
+	this_frame_time = dt;
 	past_frame_times[frame_idx] = this_frame_time;
 	frame_idx++;
 	if (frame_idx > FRAMES_TO_MEASURE_OVER)
@@ -52,7 +41,6 @@ void FrameCounter::Update()
 	average_time *= INV_FRAMES_TO_MEASURE_OVER;
 	average_fps = int(1.0 / average_time);
 	fps = 1.0 / this_frame_time;
-	timer.Reset();
 }
 
 void FrameCounter::Draw(Renderer & renderer)
@@ -66,11 +54,10 @@ void FrameCounter::Draw(Renderer & renderer)
 	text[4] = "Averaged over " + std::to_string(FRAMES_TO_MEASURE_OVER) + " frames.";
 	text[5] = has_filled_completely ? "The average is reliable" : "The average is still being calculated...";
 
-	b2Vec2 pos = b2Vec2(scene.players[0]->x - Graphics::ScreenWidth / 2, 
-		scene.players[0]->y + Graphics::ScreenHeight / 2 - 25);
+	b2Vec2 pos = b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2 - 25);
 
 	for (int i = 0; i < num_strings; ++i)
 	{
-		RenderText(renderer, text[i], *font, point_size, b2Vec2(pos.x, pos.y- i * 23), Colors::Red);
+		RenderText(renderer, text[i], point_size, b2Vec2(pos.x, pos.y- i * 23), Colors::Red);
 	}
 }

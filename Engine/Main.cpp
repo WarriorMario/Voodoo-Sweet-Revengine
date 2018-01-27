@@ -18,58 +18,77 @@
 *	You should have received a copy of the GNU General Public License					  *
 *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
 ******************************************************************************************/
-#include "MainWindow.h"
-#include "Game.h"
+
+#include "Assets/Assets.h"
+#include "Gameplay/Game.h"
+
 #include "ChiliException.h"
-#include "Utility\Logging.h"
-#include "Assets\Assets.h"
-#include "Utility\ResourceAllocator.h"
+
+#include "Utility/Logging.h"
+#include "Utility/ResourceAllocator.h"
+
+//*****************************************************************************
+
+class OurGame : public Game
+{
+public:
+  OurGame(HINSTANCE hInst, LPWSTR pArgs)
+    : Game(hInst, pArgs)
+  {
+  }
+
+  void OnInitialize() override
+  {
+    scene.Init();
+
+    scene.SpawnPlayer(0, Vec2(450, 50));
+    scene.SpawnPlayer(1, Vec2(50, 50));
+    scene.SpawnPlayer(2, Vec2(-50, 250));
+    scene.SpawnPlayer(3, Vec2(-750, 150));
+    scene.NewGod();
+  }
+  void OnTerminate() override
+  {
+  }
+  void OnUpdate(float dt) override
+  {
+    scene.Tick(dt, input->kbd);
+
+    // Adjust the camera's for both player groups
+    god_view.AdjustCamera({scene.GetGod()});
+    player_view.AdjustCamera(scene.GetPlayers());
+  }
+  void OnRender() override
+  {
+    scene.Draw();
+  }
+
+private:
+  Scene scene;
+
+};
+
+//*****************************************************************************
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
   try
   {
-    MainWindow wnd(hInst, pArgs);
-    RenderWindow wnd1(hInst, pArgs);
-    try
-    {
-      Logger::Get().Init();
+    Logger::Get().Init();
 
-      MakeSingleton<Assets>();
-      MakeSingleton<ResourceAllocator>();
-      ResourceAllocator::Get().Allocate<int>(1024 * 1024*40);
+    MakeSingleton<Assets>();
 
-      { // Extra scope here so game releases its resources before assets get freed
-        Game theGame(wnd, wnd1);
-        while(wnd.ProcessMessage() && wnd1.IsOpen())
-        {
-          theGame.Go();
-        }
-      }
+    MakeSingleton<ResourceAllocator>();
+    ResourceAllocator::Get().Allocate<int>(1024 * 1024 * 40);
 
-      Assets::Get().CleanUp();
+    { // Extra scope here so game releases its resources before assets get freed
+      OurGame theGame(hInst, pArgs);
+      theGame.Go();
+    }
 
-      DestroySingleton<Assets>();
-    }
-    catch(const ChiliException& e)
-    {
-      const std::wstring eMsg = e.GetFullMessage() +
-        L"\n\nException caught at Windows message loop.";
-      wnd.ShowMessageBox(e.GetExceptionType(), eMsg);
-    }
-    catch(const std::exception& e)
-    {
-      // need to convert std::exception what() string from narrow to wide string
-      const String whatStr(e.what());
-      const std::wstring eMsg = std::wstring(whatStr.begin(), whatStr.end()) +
-        L"\n\nException caught at Windows message loop.";
-      wnd.ShowMessageBox(L"Unhandled STL Exception", eMsg);
-    }
-    catch(...)
-    {
-      wnd.ShowMessageBox(L"Unhandled Non-STL Exception",
-        L"\n\nException caught at Windows message loop.");
-    }
+    DestroySingleton<ResourceAllocator>();
+    
+    DestroySingleton<Assets>();
   }
   catch(const ChiliException& e)
   {

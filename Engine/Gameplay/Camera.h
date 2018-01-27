@@ -1,10 +1,12 @@
 #pragma once
 #include "Matrix.h"
+#include "VArray.h"
+
 class Player;
 
 class Camera
 {
 public:
-  void CalculateOffset(Player** players, size_t num_players);
+  void CalculateOffset(const Array<Player*>& players);
   Vec2 offset;
 };

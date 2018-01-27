@@ -69,8 +69,8 @@ void Tile::InitFunction(TileFunction function, Physics& simulation)
   }
 }
 
-void Tile::Render(Renderer& renderer)
+void Tile::Render()
 {
-	RenderQuad<ForegroundShader>(renderer, b2Vec2(pos_x, pos_y), b2Vec2(SIZE, SIZE),
+	RenderSharedQuad<ForegroundShader>(b2Vec2(pos_x, pos_y), b2Vec2(SIZE, SIZE),
 		b2Vec2(min_u, min_v), b2Vec2(max_u, max_v), false, true, Colors::Cyan, atlas);
 }

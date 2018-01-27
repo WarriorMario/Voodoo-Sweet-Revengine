@@ -183,6 +183,7 @@
   <ItemGroup>
     <ClInclude Include="Gameplay\AngryPlayer.h" />
     <ClInclude Include="Gameplay\Blockade.h" />
+    <ClInclude Include="Gameplay\Game.h" />
     <ClInclude Include="Gameplay\Tile.h" />
     <ClInclude Include="Gameplay\TileGrid.h" />
     <ClInclude Include="Gameplay\Scene.h" />
@@ -431,7 +432,6 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="Graphsicks\Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LiquidFun\Box2D.h" />
@@ -511,12 +511,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\AngryPlayer.cpp" />
     <ClCompile Include="Gameplay\Blockade.cpp" />
     <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\FrameCounter.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\UIButtonObject.cpp" />
+    <ClCompile Include="Gameplay\Game.cpp" />
     <ClCompile Include="Gameplay\GodEditor.cpp" />
     <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />

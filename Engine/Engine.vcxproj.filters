@@ -30,9 +30,6 @@
     <ClInclude Include="DXErr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -999,12 +996,12 @@
     <ClInclude Include="Gameplay\Blockade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gameplay\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
@@ -1287,6 +1284,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\Blockade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

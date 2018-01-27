@@ -20,47 +20,56 @@
  ******************************************************************************************/
 #pragma once
 
-#include "Keyboard.h"
-#include "Mouse.h"
-#include "Graphsicks/Graphics.h"
 #include "LiquidFun/Box2D.h"
+
+#include "MainWindow.h"
 #include "Graphsicks\Renderer.h"
-#include "Triangle.h"
-#include "Gameplay\Framework\Arena.h"
-#include "Assets\Assets.h"
+#include "Graphsicks/Graphics.h"
+
 #include "Input\Input.h"
+
 #include "Gameplay\Framework\Objects\FrameCounter.h"
-#include "Threading\Job_Manager.h"
-#include "Gameplay\GodEditor.h"
 #include "Gameplay\Scene.h"
 
 class Game
 {
 public:
-	Game(class MainWindow& wnd, class RenderWindow& wnd2);
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
-	~Game();
-	void Go();
+  Game(HINSTANCE hInst, LPWSTR pArgs);
+  ~Game();
+
+  void Go();
+  
+  virtual void OnInitialize() = 0;
+  virtual void OnTerminate() = 0;
+  virtual void OnUpdate(float dt) = 0;
+  virtual void OnRender() = 0;
+
 private:
-	void ComposeFrame();
-	void UpdateModel();
-	/********************************/
-	/*  User Functions              */
-	/********************************/
+  void Update();
+  void Render();
+
+  void EndFrame();
+  void BeginFrame();
+
+protected:
+  // Rendering
+  Renderer god_view;
+  Renderer player_view;
+  Input* input;
+
 private:
-	MainWindow& godWindow;
-	RenderWindow& playerWindow;
-	Graphics gfx;
-	b2ParticleSystem* particleSystem;
-	Renderer renderer;
-	Triangle tri_buff[2];
-	FrameCounter frame_counter;
-	Arena arena;
-	GodEditor editor;
-	Input input;
-	Scene scene;
-	/********************************/
-	/*  User Variables              */
-	/********************************/
+  // Displaying
+  MainWindow godWindow;
+  RenderWindow playerWindow;
+  Graphics* gfx;
+
+  // Updating
+  Timer timer;
+  bool show_frame_counter = false;
+  FrameCounter frame_counter;
+
+  // IDK what this stuff is doing here
+  b2ParticleSystem* particleSystem;
+  //GodEditor editor;
+
 };
