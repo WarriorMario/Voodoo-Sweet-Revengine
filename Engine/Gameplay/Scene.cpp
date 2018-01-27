@@ -14,7 +14,7 @@ void Scene::Init(Graphics& gfx)
   for(int i = 0; i < NUM_PLAYERS-1; ++i)
   {
     players[i] = new Player(simulation,tile_grid,i);
-    players[i]->x += i * 100;
+    players[i]->x += i * 100 + 100;
   }
   players[NUM_PLAYERS - 1] = new AngryPlayer(simulation, tile_grid, 3);
 

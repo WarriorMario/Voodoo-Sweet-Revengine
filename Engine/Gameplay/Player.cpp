@@ -243,13 +243,13 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   sprites{"Images/idle.png", "Images/move.png", "Images/run.png", "Images/jump.png"},
   flip_sprite(false),
   font(Font("Fonts/times.ttf")),
-  physics_body(simulation.CreateBody(Vec2(30, 30), "Square")),
+  physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
   grid(grid),
   player_id(id)
 {
   width = 32.0f;
   height = 32.0f;
-  x = 300.0f;
+  x = 400.0f;
   y = 300.0f;
   physics_body.body->SetUserData(this);
 }
