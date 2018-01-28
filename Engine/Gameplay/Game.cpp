@@ -102,6 +102,9 @@ void Game::Update()
   }
   if (input->IsPressed(ButtonCode::SPACE) == true) 
   {
+	  guiOn = true;
+  }
+  if (guiOn) {
 	  gui.Update();
   }
   OnUpdate(timer.Elapsed()); // Delegate call to concrete implementation

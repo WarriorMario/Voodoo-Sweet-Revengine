@@ -59,7 +59,7 @@ protected:
   Renderer player_view;
   Input* input;
   Graphics* gfx;
-
+  bool guiOn = false;
 private:
   // Displaying
   MainWindow godWindow;
