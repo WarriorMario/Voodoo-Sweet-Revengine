@@ -19,10 +19,6 @@ Tile::Tile()
 void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	TileFunction tile_function, Texture* atlas_texture, Physics& simulation)
 {
-	// transform the position to screen space
-	pos_x = grid_pos_x * SIZE;
-	pos_y = grid_pos_y * SIZE;
-
 	// save a copy of the atlas and type
 	atlas = atlas_texture;
 	visual = tile_visual;
@@ -34,6 +30,10 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	// number of tiles in atlas per axis
 	int atlas_width = tex_width / TILE_SIZE_IN_ATLAS;
 	int atlas_height = tex_height / TILE_SIZE_IN_ATLAS;
+
+	// transform the position to screen space
+	pos_x = (grid_pos_x) * SIZE;
+	pos_y = (atlas_height - grid_pos_y) * SIZE;
 
 	// the step size in u and v per tile
 	float uv_delta_x = (float)TILE_SIZE_IN_ATLAS / (float)tex_width;

@@ -33,7 +33,7 @@ public:
 
 private:
 	// to manage the playing field
-	static constexpr char LEVEL_TO_LOAD[] = "Levels/Debug.json";
+	static constexpr char LEVEL_TO_LOAD[] = "Levels/CustomMap.json";
 	TileGrid tile_grid;
 
 	// players
