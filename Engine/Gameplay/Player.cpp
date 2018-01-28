@@ -77,17 +77,12 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	x = 400.0f;
 	y = 300.0f;
 	physics_body.body->SetUserData(this);
-	dead = false;
+  water_forced_out = false;
   speed = BASE_SPEED;
 }
 
 void Player::Update(float dt)
 {
-	if (dead)
-	{
-		return;
-	}
-
 	total_time += dt;
 
 
@@ -130,8 +125,10 @@ bool Player::CanDrink()
 
 void Player::LoseWater()
 {
-	// Not implemented yet
-	dead = true;
+  if(waterPercentage > 0)
+  {
+    water_forced_out = true;
+  }
 }
 
 // ****************************************************************************
@@ -160,7 +157,8 @@ IdleState::State IdleState::Input(::Input& input)
       Owner().water_goes_in = true;
       return new GettingWater();
     }
-    else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id))
+    else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) ||
+      Owner().water_forced_out == true)
     {
       Owner().water_goes_in = false;
       return new GettingWater();
@@ -404,6 +402,10 @@ void GettingWater::OnExit()
 
 GettingWater::State GettingWater::Update(float dt)
 {
+  if(Owner().water_forced_out == true)
+  {
+    Owner().water_forced_out = (Owner().waterPercentage > 0);
+  }
 	//checks if the waterAdding is the right amount and adds that amount to the water percentage
 	if (waterAdding == consumingWaterAmount || waterAdding == releaseWaterAmount)
 		Owner().waterPercentage += waterAdding;
@@ -457,16 +459,24 @@ GettingWater::State GettingWater::Update(float dt)
 }
 GettingWater::State GettingWater::Input(::Input& input)
 {
-	//If it's not consuming or releasing it sends it back to the Idle state
-	if (!input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && !input.IsDown(ButtonCode::GAMEPAD_B,Owner().player_id))
-		return new IdleState;
-	// Checks if you're consuming and if so it changes the 
-	if (input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
-		waterAdding = consumingWaterAmount;
+  //If it's not consuming or releasing it sends it back to the Idle state
+  if(!input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) &&
+    !input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) &&
+    Owner().water_forced_out == false)
+  {
+    return new IdleState;
+  }
+  // Checks if you're consuming and if so it changes the 
+  if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
+  {
+    waterAdding = consumingWaterAmount;
+  }
 
 
-	if (input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id))
+  if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
+  {
 		waterAdding = releaseWaterAmount;
+  }
 
 	return nullptr;
 }

@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 4;
+static const size_t NUM_PLAYERS = 2;
 
 class Physics;
 class TileGrid;
@@ -59,7 +59,7 @@ public:
 	float width, height;
 	const int player_id;
 	bool is_god;
-	bool dead;
+	bool water_forced_out;
   bool water_goes_in;
 	Body physics_body;
 	float waterPercentage = 0;
