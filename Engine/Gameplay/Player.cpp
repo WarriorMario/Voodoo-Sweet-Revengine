@@ -30,6 +30,7 @@ float Player::GodBaseSpeed;
 
 float GettingWater::ConsumeWaterSpeed;
 float GettingWater::ReleaseWaterSpeed;
+float GettingWater::ChunkTime;
 
 Player::Player(Physics& simulation, TileGrid& grid, int id)
 	:
@@ -146,6 +147,7 @@ bool Player::LoadVariables()
 
   ser.Get("consumewaterspeed", GettingWater::ConsumeWaterSpeed);
   ser.Get("releasewaterspeed", GettingWater::ReleaseWaterSpeed);
+  ser.Get("chunktime", GettingWater::ChunkTime);
 
 }
 void Player::LoseWater()
@@ -153,6 +155,7 @@ void Player::LoseWater()
   if(waterPercentage > 0)
   {
     water_forced_out = true;
+    water_goes_in = false;
   }
 }
 
@@ -420,6 +423,7 @@ void GettingWater::OnEnter(Player& player)
 	Base::OnEnter(player);
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
 	waterAdding = 0;
+  last_update = 0;
 }
 void GettingWater::OnExit()
 {
@@ -428,6 +432,11 @@ void GettingWater::OnExit()
 
 GettingWater::State GettingWater::Update(float dt)
 {
+  if(last_update > 0)
+  {
+    last_update -= dt;
+    return nullptr;
+  }
   if(Owner().water_forced_out == true)
   {
     Owner().water_forced_out = (Owner().waterPercentage > 0);
@@ -480,7 +489,10 @@ GettingWater::State GettingWater::Update(float dt)
   //Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(1, Vec2(0, 0 * t));
 
 
-
+  if(waterAdding < 0&&Owner().water_forced_out == true)
+  {
+    last_update = ChunkTime;
+  }
 	return nullptr;
 }
 GettingWater::State GettingWater::Input(::Input& input)

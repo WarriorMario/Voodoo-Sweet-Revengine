@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 2;
+static const size_t NUM_PLAYERS = 4;
 
 class Physics;
 class TileGrid;
@@ -173,7 +173,9 @@ public:
   //The amount of water that it can consume/release simultaneously
   static float ConsumeWaterSpeed;
   static float ReleaseWaterSpeed;
+  static float ChunkTime;
 private:
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
+  float last_update;
 };

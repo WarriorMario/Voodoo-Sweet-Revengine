@@ -3,7 +3,8 @@
   "scaleamplifier": 6,
   "basespeed": 5,
   "minspeed": 0.8,
-
-  "consumewaterspeed": 0.1,
-  "releasewaterspeed": -5.8
+  "godbasespeed": 4,
+  "consumewaterspeed": 1.1,
+  "releasewaterspeed": -25.0,
+  "chunktime":  0.25
 }

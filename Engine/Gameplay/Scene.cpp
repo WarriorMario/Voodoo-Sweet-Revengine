@@ -101,7 +101,7 @@ void Scene::SpawnPlayer(int idx)
 
 void Scene::DebugDraw()
 {
-  simulation.DebugDraw();
+  //simulation.DebugDraw();
 }
 
 void Scene::KillPlayer(int idx)
