@@ -36,7 +36,7 @@ public:
   
   void Update();
   
-  void CreateDebugDraw(class Graphics& gfx);
+  void CreateDebugDraw(class Graphics& gfx, class Camera& cam);
   void DebugDraw();
 
 private:

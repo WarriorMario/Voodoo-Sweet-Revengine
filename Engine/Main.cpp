@@ -42,7 +42,7 @@ public:
 
   void OnInitialize() override
   {
-    scene.Init(*gfx);
+    scene.Init(*gfx, player_view.camera);
     for(int i = 0; i < NUM_PLAYERS - 1; ++i)
     {
       scene.SpawnPlayer(i);

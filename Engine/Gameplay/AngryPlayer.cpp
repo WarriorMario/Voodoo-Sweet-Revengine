@@ -24,7 +24,7 @@ void AngryPlayer::Update(float dt)
     if(contacts->contact->IsTouching())
     {
       Player* player = (Player*)contacts->contact->GetFixtureA()->GetBody()->GetUserData();
-      if((size_t)player > Tile::WATER)
+      if((size_t)player > Tile::NUM_FUNCTIONS)
       {
         player->LoseWater();
       }

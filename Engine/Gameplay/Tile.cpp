@@ -62,16 +62,28 @@ void Tile::InitFunction(TileFunction function, Physics& simulation)
 	case Tile::COLLISION:
 		simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
 		break;
-	case Tile::BORDER:
+	case Tile::BORDER_GOAL:
 	{
 		Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-		body.body->SetUserData((void*)Tile::BORDER);
+		body.body->SetUserData((void*)Tile::BORDER_GOAL);
 	}
 	break;
-	case Tile::WATER:
+	case Tile::BORDER_SOURCE:
+	{
+		Body & body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+		body.body->SetUserData((void*)Tile::BORDER_SOURCE);
+	}
+	break;
+	case Tile::WATER_SOURCE:
 	{
 		Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
-		body.body->SetUserData((void*)Tile::WATER);
+		body.body->SetUserData((void*)Tile::WATER_SOURCE);
+	}
+	break;
+	case Tile::WATER_GOAL:
+	{
+		Body& body = simulation.CreateBody(Vec2(pos_x / PHYSICS_SCALE, pos_y / PHYSICS_SCALE), "Square", BodyType::STATIC);
+		body.body->SetUserData((void*)Tile::WATER_GOAL);
 	}
 	break;
 	default:
