@@ -46,6 +46,7 @@ public:
   }
 
   bool IsStuck();
+  bool CanDrink();
   void LoseWater();
 
 public:

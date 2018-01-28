@@ -22,7 +22,7 @@ IdleState::State IdleState::Update(float dt)
 IdleState::State IdleState::Input(::Input& input)
 {
   b2Vec2 dir = b2Vec2(0.0f, 0.0f);
-  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && !Owner().is_god)
+  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && Owner().CanDrink())
 	  return new GettingWater();
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
@@ -379,6 +379,11 @@ bool Player::IsStuck()
 	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE,is_god) == false;
 
 	return res;
+}
+
+bool Player::CanDrink()
+{
+  return grid.DrinkingArea(x / Tile::SIZE,y / Tile::SIZE) && (is_god == false);
 }
 
 void Player::LoseWater()

@@ -36,6 +36,10 @@ public:
     }
     return function != COLLISION && function != WATER;
 	}
+  bool DrinkingArea()
+  {
+    return function == BORDER;
+  }
 	
 	static constexpr unsigned int SIZE = 64;
 

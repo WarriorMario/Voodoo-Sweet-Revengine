@@ -195,6 +195,11 @@ bool TileGrid::IsPassable(int x, int y, bool is_neighbour)
 	return tiles[y*width + x].IsPassable(is_neighbour);
 }
 
+bool TileGrid::DrinkingArea(int x, int y)
+{
+  return tiles[y*width + x].DrinkingArea();
+}
+
 b2Vec2 TileGrid::GetRandomSpawnPlayer()
 {
 	assert(player_spawn_locations.size() > 0 && "There are no spawn locations in this map, or something went wrong with loading.");
