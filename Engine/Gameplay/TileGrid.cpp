@@ -15,23 +15,21 @@ Tile::TileFunction GetFunction(int function)
 	switch (function)
 	{
 	case 0:
-		return Tile::TileFunction::WATER;
-		break;
-	case 1:
-		return Tile::TileFunction::GOD_SPAWN_LOCATION;
-		break;
-	case 2:
-		return Tile::TileFunction::BORDER;
-		break;
-	case 3:
-		return Tile::TileFunction::PLAYER_SPAWN_LOCATION;
-		break;
-	case 8:
 		return Tile::TileFunction::COLLISION;
-		break;
-	case 10:
+	case 2:
+		return Tile::TileFunction::BORDER_SOURCE;
+	case 3:
+		return Tile::TileFunction::BORDER_GOAL;
+	case 4:
+		return Tile::TileFunction::GOD_SPAWN_LOCATION;
+	case 5:
+		return Tile::TileFunction::PLAYER_SPAWN_LOCATION;
+	case 6:
+		return Tile::TileFunction::WATER_SOURCE;
+	case 7:
+		return Tile::TileFunction::WATER_GOAL;
+	case -668:
 		return Tile::TileFunction::DEFAULT;
-		break;
 	default:
 		return Tile::TileFunction::DEFAULT;
 	}

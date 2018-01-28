@@ -10,6 +10,7 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   physics_body.body->SetTransform(Vec2(64, 24), 0);
   x = 640;
   y = 240;
+  speed = GodBaseSpeed;
 }
 
 void AngryPlayer::Update(float dt)
@@ -23,7 +24,7 @@ void AngryPlayer::Update(float dt)
     if(contacts->contact->IsTouching())
     {
       Player* player = (Player*)contacts->contact->GetFixtureA()->GetBody()->GetUserData();
-      if((size_t)player > Tile::WATER)
+      if((size_t)player > Tile::NUM_FUNCTIONS)
       {
         player->LoseWater();
       }

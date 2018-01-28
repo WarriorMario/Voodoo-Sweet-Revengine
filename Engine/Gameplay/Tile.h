@@ -11,11 +11,15 @@ public:
 	{
 		DEFAULT,
 		COLLISION,
-		BORDER,
+		BORDER_SOURCE,
+		BORDER_GOAL,
 		GOD_SPAWN_LOCATION,
 		PLAYER_SPAWN_LOCATION,
-		WATER
+		WATER_SOURCE,
+		WATER_GOAL,
+		NUM_FUNCTIONS
 	};
+
 public:
 
 	Tile();
@@ -32,13 +36,13 @@ public:
 	{
     if(is_neighbour)
     {
-      return function != COLLISION && function != WATER && function != BORDER;
+      return function != COLLISION && function != WATER_SOURCE && function != WATER_GOAL && function != BORDER_SOURCE && function != BORDER_GOAL;
     }
-    return function != COLLISION && function != WATER;
+    return function != COLLISION && function != WATER_SOURCE && function != WATER_GOAL;
 	}
   bool DrinkingArea()
   {
-    return function == BORDER;
+    return function == BORDER_SOURCE;
   }
 	
 	static constexpr unsigned int SIZE = 64;

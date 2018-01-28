@@ -76,6 +76,7 @@ public:
   };
 
 public:
+  Texture() = default;
   Texture(StringRef filename)
     : Base(filename)
   {}

@@ -26,8 +26,9 @@ public:
       {
         for(int iVec = 0; iVec < 3; ++iVec)
         {
-          pd[iVec].x += camera_transform.offset.x;
-          pd[iVec].y += camera_transform.offset.y;
+          Vec2 p = camera_transform.Transform(Vec3(pd[iVec].x, pd[iVec].y, 1.0f));
+          pd[iVec].x = p.x;
+          pd[iVec].y = p.y;
         }
       }
 

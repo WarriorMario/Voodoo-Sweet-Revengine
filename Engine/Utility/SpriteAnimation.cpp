@@ -10,6 +10,7 @@ SpriteAnimation::SpriteAnimation(StringRef clipname, int frame_count, float dela
   curr_frame(0),
   elapsed(0.0f)
 {
+
   for(int i = 1; i <= frame_count; ++i)
   {
     String filename;
@@ -36,6 +37,8 @@ void SpriteAnimation::Update(float dt)
 }
 void SpriteAnimation::Draw(Vec2 pos, Vec2 size, bool flip_x, bool flip_y)
 {
+  assert(curr_frame >= 0 && curr_frame < frames.size());
+
   Vec2 half_size = size / 2;
   RenderSharedQuad<ForegroundShader>(
     pos - half_size, size,
