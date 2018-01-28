@@ -40,7 +40,7 @@ void SpriteAnimation::Draw(Vec2 pos, Vec2 size, bool flip_x, bool flip_y)
   RenderSharedQuad<ForegroundShader>(
     pos - half_size, size,
     flip_x, flip_y,
-    Colors::White, &frames[curr_frame]);
+    0, &frames[curr_frame]);
 }
 
 // ****************************************************************************

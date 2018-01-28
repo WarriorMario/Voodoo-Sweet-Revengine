@@ -1,6 +1,6 @@
 #pragma once
 #include "Singleton.h"
-static constexpr size_t RESOURCE_ALLOC_BUFF_SIZE = 256 * 1024 * 1024; // 256 megabytes should be enough
+static constexpr size_t RESOURCE_ALLOC_BUFF_SIZE = 512 * 1024 * 1024; // 512 megabytes is actually needed
 class ResourceAllocator : public Singleton<ResourceAllocator>
 {
 public:

@@ -176,19 +176,11 @@ public:
     // Shading
     /////////////////////////////////////
 
-    const float lx = 200.f;
-    const float ly = 200.f;
-    const float ldist = 3000.f;
-
-    const float dx = interp_data.x - lx;
-    const float dy = interp_data.y - ly;
-
-    float i = 1.f - (dx * dx + dy * dy) / (ldist * ldist);
-    i = Max(i, 0.f);
-
     Color t = const_data.texture->Sample(u, v);
-    float a = t.GetA() / 255.f;
-    pixel = Color(t.GetR() * i * a, t.GetG() * i  * a, t.GetB() * i * a);
+    if(t.dword != const_data.color.dword)
+    {
+      pixel = t;
+    }
   }
 
   __forceinline void ShadeSIMD(const __m256& t1, const __m256& t2, const __m256i& mask, int x, int y, Color* pixel)
@@ -225,6 +217,7 @@ public:
     
     //__m256i inverseMask = AVX_INT32_AND(_mm256_cmpeq_epi32(AVX_INT32_FROM1(const_data.color.dword), final_color), AVX_INT32_XOR(temp, AVX_INT32_FROM1(0xffffffff)));
     
+    //__m256i chroma
     __m256i inverseMask = AVX_INT32_XOR(mask, AVX_INT32_FROM1(0xffffffff));
     //*((__m256i*)pixel) = _mm256_add_epi32(_mm256_and_si256(inverseMaskTest, _mm256_set1_epi32(pixel->dword)), _mm256_and_si256(mask, _mm256_cvtps_epi32(AVXMULPS(v8, AVXSET1PS(255.0f)))));
     //return;
@@ -238,8 +231,8 @@ public:
   }
 
   static constexpr bool IS_ABSOLUTE = false;
-  static constexpr bool SIMD = true;
-  static constexpr bool CHECKER = true;
+  static constexpr bool SIMD = false;
+  static constexpr bool CHECKER = false;
 private:
   ConstData const_data;
   PrimData prim_data[3];

@@ -7,9 +7,9 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
 {
   width = 64;
   height = 64;
-  physics_body.body->SetTransform(Vec2(23, 19), 0);
-  x = 230;
-  y = 190;
+  physics_body.body->SetTransform(Vec2(64, 24), 0);
+  x = 640;
+  y = 240;
 }
 
 void AngryPlayer::Update(float dt)
