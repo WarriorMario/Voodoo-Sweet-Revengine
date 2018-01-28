@@ -518,15 +518,17 @@ GettingWater::State GettingWater::Input(::Input& input)
     return new IdleState;
   }
   // Checks if you're consuming and if so it changes the 
-  if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
+  if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && Owner().CanDrink())
   {
     waterAdding = ConsumeWaterSpeed;
   }
-
-
-  if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
+  else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
   {
     waterAdding = ReleaseWaterSpeed;
+  }
+  else
+  {
+	  return new IdleState;
   }
 
   return nullptr;
