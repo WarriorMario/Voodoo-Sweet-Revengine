@@ -28,9 +28,13 @@ public:
 	{
 		return b2Vec2(pos_x, pos_y);
 	}
-	bool IsPassable()
+	bool IsPassable(bool is_neighbour)
 	{
-		return function != COLLISION && function != WATER;
+    if(is_neighbour)
+    {
+      return function != COLLISION && function != WATER && function != BORDER;
+    }
+    return function != COLLISION && function != WATER;
 	}
 	
 	static constexpr unsigned int SIZE = 64;

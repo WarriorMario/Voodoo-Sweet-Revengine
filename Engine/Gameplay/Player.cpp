@@ -367,16 +367,16 @@ bool Player::IsStuck()
 	Vec2 offset = Vec2(width / 2, height / 2);
 
 	// outer corners
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE,is_god) == false;
 
 	// centre points
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE,is_god) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE,is_god) == false;
 
 	return res;
 }

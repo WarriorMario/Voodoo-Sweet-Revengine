@@ -42,7 +42,7 @@ public:
 	{
 		return width * height;
 	}
-	bool IsPassable(int x, int y);
+	bool IsPassable(int x, int y, bool is_neighbour);
 
 	b2Vec2 GetRandomSpawnPlayer();
 	b2Vec2 GetRandomSpawnGod();

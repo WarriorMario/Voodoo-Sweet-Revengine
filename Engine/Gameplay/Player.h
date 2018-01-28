@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 4;
+static const size_t NUM_PLAYERS = 2;
 class Physics;
 class TileGrid;
 // ****************************************************************************
