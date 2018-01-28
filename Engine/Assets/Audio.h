@@ -22,6 +22,7 @@ public:
   };
 
 public:
+  Audio() = default;
   Audio(StringRef filename)
     : Base(filename)
   {}

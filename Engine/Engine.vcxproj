@@ -198,7 +198,6 @@
     <ClInclude Include="Utility\ResourceAllocator.h" />
     <ClInclude Include="VAlgorithm.h" />
     <ClInclude Include="Assets\Font.h" />
-    <ClInclude Include="Assets\PhysicsShape.h" />
     <ClInclude Include="Gameplay\Framework\Arena.h" />
     <ClInclude Include="Assets\Assets.h" />
     <ClInclude Include="Assets\Audio.h" />

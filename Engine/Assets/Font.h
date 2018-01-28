@@ -96,6 +96,7 @@ public:
 	};
 
 public:
+  Font() = default;
 	Font(StringRef filename)
 		: Base(filename)
 	{}

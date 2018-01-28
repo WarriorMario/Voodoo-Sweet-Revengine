@@ -57,7 +57,8 @@ private:
   {
     Layer(StringRef clip_name, int frame_count, float delay) :
       animation(clip_name, frame_count, delay),
-      scale(1.f)
+      scale(1.f),
+      offset(0.f)
     {}
 
     SpriteAnimation animation;
