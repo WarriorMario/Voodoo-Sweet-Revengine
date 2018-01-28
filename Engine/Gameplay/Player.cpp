@@ -203,12 +203,18 @@ void IdleState::OnExit()
 {
 
 }
-
+constexpr float delay = 0.6f;
 IdleState::State IdleState::Update(float dt)
 {
   if(Owner().hitting == true)
   {
-      Owner().SetSprite(Player::Smash);
+    static float last_time = 0.0f;
+    if(last_time + delay < Timer::Time())
+    {
+      smash.Play();
+      last_time = Timer::Time();
+    }
+    Owner().SetSprite(Player::Smash);
   }
   else
   {

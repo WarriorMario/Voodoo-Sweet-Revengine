@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 2;
+static const size_t NUM_PLAYERS = 4;
 
 class Physics;
 class TileGrid;
@@ -91,11 +91,16 @@ private:
 class IdleState : public IState<Player>
 {
 public:
+  IdleState()
+    :
+    smash("smash.wav")
+  {}
 	void OnEnter(Player& player) override;
 	void OnExit() override;
 
 	State Update(float dt) override;
 	State Input(::Input& input) override;
+  Audio smash;
 };
 
 // ****************************************************************************
@@ -116,53 +121,6 @@ public:
 
 private:
 	b2Vec2 dir;
-};
-
-// ****************************************************************************
-// faster than the move state
-class RunState : public IState<Player>
-{
-public:
-	RunState(b2Vec2 direction)
-		:
-		direction(direction)
-	{}
-
-	void OnEnter(Player& player) override;
-	void OnExit() override;
-
-	State Update(float dt) override;
-	State Input(::Input& input) override;
-
-private:
-	Vec2 direction;
-};
-
-// ****************************************************************************
-// pretty much obsolete, but does a nice fart sound nonetheless
-class JumpState : public IState<Player>
-{
-public:
-	JumpState()
-		:
-		direction(0.f),
-		velocity(500.f),
-		jump_y(0.f),
-		fart("fart0.wav")
-	{}
-
-	void OnEnter(Player& player) override;
-	void OnExit() override;
-
-	State Update(float dt) override;
-	State Input(::Input& input) override;
-
-private:
-	float base_y;
-	float jump_y;
-	float velocity;
-	float direction;
-	Audio fart;
 };
 
 // ****************************************************************************
