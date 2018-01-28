@@ -192,8 +192,8 @@ IdleState::State IdleState::Input(::Input& input)
       Owner().water_goes_in = true;
       return new GettingWater();
     }
-    else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) ||
-      Owner().water_forced_out == true)
+    else if((input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) ||
+      Owner().water_forced_out == true) && Owner().waterPercentage > 0)
     {
       Owner().water_goes_in = false;
       return new GettingWater();
@@ -522,7 +522,7 @@ GettingWater::State GettingWater::Input(::Input& input)
   {
     waterAdding = ConsumeWaterSpeed;
   }
-  else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
+  else if((input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true) && Owner().waterPercentage > 0.0f)
   {
     waterAdding = ReleaseWaterSpeed;
   }
