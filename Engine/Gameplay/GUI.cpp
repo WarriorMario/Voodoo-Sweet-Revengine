@@ -22,6 +22,8 @@ GUI::~GUI()
 	 waterPercentage = (Player::water_added_to_goal / Player::water_needed_to_win) * 100.0f;
 	 if (waterPercentage == Player::water_needed_to_win) {
 		 done = true;
+		 displayTimeMinutes = 0;
+		 displayTimeSeconds = 0;
 	 }
 	 else
 		 if (displayTimeSeconds== 0 && displayTimeMinutes == 0) {
@@ -43,8 +45,8 @@ GUI::~GUI()
 	 b2Vec2 pos = b2Vec2(200,200);
 	 b2Vec2 wH = b2Vec2(waterPercentage*1.3f, 50);
 	 RenderText(renderer, gameTimeText, 32, b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight - 50), Colors::White);
-	 if (done) { RenderText(renderer, "The childs win", 32, b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight - 50), Colors::White); }
-	 if (win)	{RenderText(renderer, " The neighbour wins", 32, b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight - 50), Colors::White);}
+	 if (done) { RenderText(renderer, "The childs win", 32, b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2), Colors::White); }
+	 if (win)	{RenderText(renderer, " The neighbour wins", 32, b2Vec2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2), Colors::White);}
 	 RenderQuad<ForegroundShader>(renderer, b2Vec2(1664, 1984), b2Vec2(180, 50), false, false, 0x00FFFFFF, backGroundWaterPercentage);
 	 if (waterPercentage != 0)
 	 {
