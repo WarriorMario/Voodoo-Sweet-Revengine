@@ -43,6 +43,7 @@ public:
   virtual void OnTerminate() = 0;
   virtual void OnUpdate(float dt) = 0;
   virtual void OnRender() = 0;
+  virtual void OnLateRender() = 0;
 
 private:
   void Update();
@@ -56,12 +57,12 @@ protected:
   Renderer god_view;
   Renderer player_view;
   Input* input;
+  Graphics* gfx;
 
 private:
   // Displaying
   MainWindow godWindow;
   RenderWindow playerWindow;
-  Graphics* gfx;
 
   // Updating
   Timer timer;

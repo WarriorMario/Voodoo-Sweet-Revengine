@@ -59,7 +59,7 @@ public:
 	float width, height;
 	const int player_id;
 	bool is_god;
-	bool dead;
+	bool water_forced_out;
   bool water_goes_in;
 	Body physics_body;
 	float waterPercentage = 0;
@@ -69,12 +69,14 @@ public:
 	static float BaseScale;
 	static float ScaleAmplifier;
 	static float BaseSpeed;
-
+  static float GodBaseSpeed;
 	LayeredAnimation graphics[NumSprites];
 private:
 	TileGrid & grid;
 	static constexpr char VARIABLES_TO_LOAD[] = "Variables/Variables.json";
 	StateMachine<Player> movement;
+	b2Vec2 collision_box_scale_base;
+	b2Vec2 collision_box_scale_cur;
 
 	Sprite curr_sprite;
 	bool flip_sprite;
@@ -170,10 +172,12 @@ public:
 	State Update(float dt) override;
 	State Input(::Input& input) override;
 
+  //The amount of water that it can consume/release simultaneously
+  static float ConsumeWaterSpeed;
+  static float ReleaseWaterSpeed;
+  static float ChunkTime;
 private:
-	//The amount of water that it can consume/release simultaneously
-	float consumingWaterAmount;
-	float releaseWaterAmount;
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
+  float last_update;
 };

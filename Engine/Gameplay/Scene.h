@@ -15,7 +15,7 @@ class Scene
 public:
 	Scene();
 
-	void Init();
+	void Init(Graphics& gfx);
 	void Tick(float dt, Input& kbd);
 	void Draw();
 
@@ -28,6 +28,7 @@ public:
 
   void KillPlayer(int idx);
   void SpawnPlayer(int idx);
+  void DebugDraw();
 
 private:
 	// to manage the playing field
