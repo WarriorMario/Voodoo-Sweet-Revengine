@@ -1,0 +1,5 @@
+{ "basescale":1.5,
+"scaleamplifier":6,
+"basespeed":5,
+"minspeed":0.8
+}
