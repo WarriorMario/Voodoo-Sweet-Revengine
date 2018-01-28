@@ -10,6 +10,7 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   physics_body.body->SetTransform(Vec2(64, 24), 0);
   x = 640;
   y = 240;
+  speed = GodBaseSpeed;
 }
 
 void AngryPlayer::Update(float dt)

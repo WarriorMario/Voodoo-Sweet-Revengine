@@ -26,6 +26,10 @@ float Player::MinSpeed;
 float Player::BaseScale;
 float Player::ScaleAmplifier;
 float Player::BaseSpeed;
+float Player::GodBaseSpeed;
+
+float GettingWater::ConsumeWaterSpeed;
+float GettingWater::ReleaseWaterSpeed;
 
 Player::Player(Physics& simulation, TileGrid& grid, int id)
 	:
@@ -138,6 +142,10 @@ bool Player::LoadVariables()
 	ser.Get("scaleamplifier", ScaleAmplifier);
 	ser.Get("basespeed", BaseSpeed);
 	ser.Get("minspeed", MinSpeed);
+  ser.Get("godbasespeed", GodBaseSpeed);
+
+  ser.Get("consumewaterspeed", GettingWater::ConsumeWaterSpeed);
+  ser.Get("releasewaterspeed", GettingWater::ReleaseWaterSpeed);
 
 }
 void Player::LoseWater()
@@ -234,6 +242,10 @@ void MoveState::OnExit()
 
 MoveState::State MoveState::Update(float dt)
 {
+  if(Owner().water_forced_out == true)
+  {
+    return new GettingWater;
+  }
   dir.Normalize();
   if(abs(dir.x) > abs(dir.y))
   {
@@ -407,9 +419,6 @@ void GettingWater::OnEnter(Player& player)
 {
 	Base::OnEnter(player);
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
-	//Sets the amount of water that it can consume/release simultaneously
-	consumingWaterAmount = 0.1f;
-	releaseWaterAmount = -5.f;
 	waterAdding = 0;
 }
 void GettingWater::OnExit()
@@ -424,7 +433,7 @@ GettingWater::State GettingWater::Update(float dt)
     Owner().water_forced_out = (Owner().waterPercentage > 0);
   }
 	//checks if the waterAdding is the right amount and adds that amount to the water percentage
-	if (waterAdding == consumingWaterAmount || waterAdding == releaseWaterAmount)
+	if (waterAdding == ConsumeWaterSpeed || waterAdding == ReleaseWaterSpeed)
 		Owner().waterPercentage += waterAdding;
 	//This makes sure it stays within the 100% range
 	if (Owner().waterPercentage > 100)
@@ -486,13 +495,13 @@ GettingWater::State GettingWater::Input(::Input& input)
   // Checks if you're consuming and if so it changes the 
   if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
   {
-    waterAdding = consumingWaterAmount;
+    waterAdding = ConsumeWaterSpeed;
   }
 
 
   if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
   {
-		waterAdding = releaseWaterAmount;
+		waterAdding = ReleaseWaterSpeed;
   }
 
 	return nullptr;

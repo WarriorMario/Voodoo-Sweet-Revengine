@@ -1,14 +1,16 @@
 #include "Scene.h"
 #include "Keyboard.h"
 #include "AngryPlayer.h"
+#include "Physics\Physics.h"
 
 Scene::Scene()
 	: players{ nullptr }
 {
 }
 
-void Scene::Init()
+void Scene::Init(Graphics& gfx)
 {
+  simulation.CreateDebugDraw(gfx);
 	tile_grid.LoadLevel(LEVEL_TO_LOAD, simulation);
 }
 
@@ -95,6 +97,11 @@ void Scene::SpawnPlayer(int idx)
 	players[idx]->x = pos.x;
 	players[idx]->y = pos.y;
 
+}
+
+void Scene::DebugDraw()
+{
+  simulation.DebugDraw();
 }
 
 void Scene::KillPlayer(int idx)

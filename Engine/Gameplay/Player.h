@@ -69,7 +69,7 @@ public:
 	static float BaseScale;
 	static float ScaleAmplifier;
 	static float BaseSpeed;
-
+  static float GodBaseSpeed;
 	LayeredAnimation graphics[NumSprites];
 private:
 	TileGrid & grid;
@@ -170,10 +170,10 @@ public:
 	State Update(float dt) override;
 	State Input(::Input& input) override;
 
+  //The amount of water that it can consume/release simultaneously
+  static float ConsumeWaterSpeed;
+  static float ReleaseWaterSpeed;
 private:
-	//The amount of water that it can consume/release simultaneously
-	float consumingWaterAmount;
-	float releaseWaterAmount;
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
 };

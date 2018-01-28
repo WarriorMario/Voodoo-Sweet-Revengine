@@ -42,7 +42,7 @@ public:
 
   void OnInitialize() override
   {
-    scene.Init();
+    scene.Init(*gfx);
     for(int i = 0; i < NUM_PLAYERS - 1; ++i)
     {
       scene.SpawnPlayer(i);
@@ -59,6 +59,10 @@ public:
     // Adjust the camera's for both player groups
     god_view.AdjustCamera({(Player*)scene.GetGod()});
     player_view.AdjustCamera(scene.GetPlayers());
+  }
+  void OnLateRender() override
+  { 
+    scene.DebugDraw();
   }
   void OnRender() override
   {

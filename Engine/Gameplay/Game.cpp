@@ -122,6 +122,8 @@ void Game::Render()
 
   player_view.Render(gfx->player_window_buffer);
   god_view.Render(gfx->god_window_buffer);
+  
+  OnLateRender();
 
   EndFrame();
 }
