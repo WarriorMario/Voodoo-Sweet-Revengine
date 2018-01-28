@@ -44,6 +44,10 @@ public:
   {
     return function == BORDER_SOURCE;
   }
+  bool DepositingArea()
+  {
+	  return function == BORDER_GOAL;
+  }
 	
 	static constexpr unsigned int SIZE = 64;
 

@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 3;
+static const size_t NUM_PLAYERS = 4;
 
 class Physics;
 class TileGrid;
@@ -22,15 +22,15 @@ public:
 	{
 		Idle,
 		Move,
-		Run,
-		Jump,
 		AddingWater,
 		DumpingWater,
+    Smash,
 		NumSprites,
 	};
 
 public:
 	Player(Physics& simulation, TileGrid& grid, int id);
+  Player(Physics& simulation, TileGrid& grid);
 
 	virtual void Update(float dt);
 	void Input(Input& input);
@@ -52,12 +52,13 @@ public:
 
   bool IsStuck();
   bool CanDrink();
+  bool CanDepositWater();
   void LoseWater();
 
 public:
 	float x, y;
 	float width, height;
-	const int player_id;
+	int player_id;
 	bool is_god;
 	bool water_forced_out;
   bool water_goes_in;
@@ -70,7 +71,11 @@ public:
 	static float ScaleAmplifier;
 	static float BaseSpeed;
   static float GodBaseSpeed;
+  float water_added_to_goal;
+  bool hitting = false;
 	LayeredAnimation graphics[NumSprites];
+	Sprite curr_sprite;
+  Sprite last_sprite;
 private:
 	TileGrid & grid;
 	static constexpr char VARIABLES_TO_LOAD[] = "Variables/Variables.json";
@@ -78,7 +83,6 @@ private:
 	b2Vec2 collision_box_scale_base;
 	b2Vec2 collision_box_scale_cur;
 
-	Sprite curr_sprite;
 	bool flip_sprite;
 };
 
@@ -87,11 +91,16 @@ private:
 class IdleState : public IState<Player>
 {
 public:
+  IdleState()
+    :
+    smash("smash.wav")
+  {}
 	void OnEnter(Player& player) override;
 	void OnExit() override;
 
 	State Update(float dt) override;
 	State Input(::Input& input) override;
+  Audio smash;
 };
 
 // ****************************************************************************
@@ -112,53 +121,6 @@ public:
 
 private:
 	b2Vec2 dir;
-};
-
-// ****************************************************************************
-// faster than the move state
-class RunState : public IState<Player>
-{
-public:
-	RunState(b2Vec2 direction)
-		:
-		direction(direction)
-	{}
-
-	void OnEnter(Player& player) override;
-	void OnExit() override;
-
-	State Update(float dt) override;
-	State Input(::Input& input) override;
-
-private:
-	Vec2 direction;
-};
-
-// ****************************************************************************
-// pretty much obsolete, but does a nice fart sound nonetheless
-class JumpState : public IState<Player>
-{
-public:
-	JumpState()
-		:
-		direction(0.f),
-		velocity(500.f),
-		jump_y(0.f),
-		fart("fart0.wav")
-	{}
-
-	void OnEnter(Player& player) override;
-	void OnExit() override;
-
-	State Update(float dt) override;
-	State Input(::Input& input) override;
-
-private:
-	float base_y;
-	float jump_y;
-	float velocity;
-	float direction;
-	Audio fart;
 };
 
 // ****************************************************************************
@@ -187,4 +149,19 @@ private:
   float last_update;
   Audio slurp_sound;
   Audio puke_sound;
+};
+
+class SmashState : public IState<Player>
+{
+public:
+  SmashState()
+  {}
+
+  void OnEnter(Player& player) override;
+  void OnExit() override;
+
+  State Update(float dt) override;
+  State Input(::Input& input) override;
+
+private:
 };

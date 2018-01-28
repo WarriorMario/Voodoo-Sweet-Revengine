@@ -198,6 +198,11 @@ bool TileGrid::DrinkingArea(int x, int y)
   return tiles[y*width + x].DrinkingArea();
 }
 
+bool TileGrid::DepositingArea(int x, int y)
+{
+	return tiles[y*width + x].DepositingArea();
+}
+
 b2Vec2 TileGrid::GetRandomSpawnPlayer()
 {
 	assert(player_spawn_locations.size() > 0 && "There are no spawn locations in this map, or something went wrong with loading.");
