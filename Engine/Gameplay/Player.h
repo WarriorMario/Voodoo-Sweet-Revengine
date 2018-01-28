@@ -26,11 +26,13 @@ public:
 		Jump,
 		AddingWater,
 		DumpingWater,
+    Smash,
 		NumSprites,
 	};
 
 public:
 	Player(Physics& simulation, TileGrid& grid, int id);
+  Player(Physics& simulation, TileGrid& grid);
 
 	virtual void Update(float dt);
 	void Input(Input& input);
@@ -57,7 +59,7 @@ public:
 public:
 	float x, y;
 	float width, height;
-	const int player_id;
+	int player_id;
 	bool is_god;
 	bool water_forced_out;
   bool water_goes_in;

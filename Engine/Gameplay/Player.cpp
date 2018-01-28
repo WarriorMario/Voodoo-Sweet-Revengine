@@ -41,7 +41,7 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
   grid(grid),
   player_id(id),
-  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f}
+  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,0.1f}
 {
   // load in the variables from the json file
   LoadVariables();
@@ -93,6 +93,27 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   speed = BaseSpeed;
 }
 
+Player::Player(Physics& simulation, TileGrid& grid)
+  :
+  movement(*this, new IdleState),
+  collision_box_scale_base(b2Vec2(0.0f)),
+  collision_box_scale_cur(b2Vec2(0.0f)),
+  flip_sprite(false),
+  physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
+  grid(grid),
+  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,0.1f}
+{
+  // load in the variables from the json file
+  LoadVariables();
+
+  width = 32.0f;
+  height = 32.0f;
+  x = 400.0f;
+  y = 300.0f;
+  physics_body.body->SetUserData(this);
+  water_forced_out = false;
+  speed = BaseSpeed;
+}
 void Player::Update(float dt)
 {
   total_time += dt;
