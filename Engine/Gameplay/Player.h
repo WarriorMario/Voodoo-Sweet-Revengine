@@ -40,7 +40,7 @@ public:
 		b2Vec2 size = b2Vec2(width, height);
 		graphics[(int)curr_sprite].Draw(pos, size, flip_sprite, true);
 	}
-
+	bool LoadVariables();
 	void SetSprite(Sprite sprite)
 	{
 		curr_sprite = sprite;
@@ -65,11 +65,15 @@ public:
 	float waterPercentage = 0;
 	float speed;
 	float total_time;
+	static float MinSpeed;
+	static float BaseScale;
+	static float ScaleAmplifier;
+	static float BaseSpeed;
 
 	LayeredAnimation graphics[NumSprites];
 private:
 	TileGrid & grid;
-
+	static constexpr char VARIABLES_TO_LOAD[] = "Variables/Variables.json";
 	StateMachine<Player> movement;
 
 	Sprite curr_sprite;
