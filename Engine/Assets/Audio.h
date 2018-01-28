@@ -33,6 +33,12 @@ public:
     data.sound.Play(frequency_mod, volume);
   }
 
+  void Stop()
+  {
+    auto& data = (*(Data*)const_cast<void*>(reinterpret_cast<const void*>(&GetData<Audio>())));
+    data.sound.StopAll();
+  }
+
 private:
   friend bool Load(StringRef filename, Data& data)
   {

@@ -431,6 +431,9 @@ void GettingWater::OnEnter(Player& player)
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
   waterAdding = 0;
   last_update = 0;
+  puke_sound.Stop();
+  slurp_sound.Stop();
+  Owner().water_goes_in ? slurp_sound.Play() : puke_sound.Play();
 }
 void GettingWater::OnExit()
 {
@@ -494,7 +497,6 @@ GettingWater::State GettingWater::Update(float dt)
   Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(2, Vec2(0, y_offset));
   Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(3, Vec2(0, y_offset));
   //Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(1, Vec2(0, 0 * t));
-
 
   if(waterAdding < 0 && Owner().water_forced_out == true)
   {

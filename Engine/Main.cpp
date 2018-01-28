@@ -31,12 +31,13 @@
 #include <time.h>
 
 //*****************************************************************************
-
+float music_duration = 30;
 class OurGame : public Game
 {
 public:
   OurGame(HINSTANCE hInst, LPWSTR pArgs)
-    : Game(hInst, pArgs)
+    : Game(hInst, pArgs),
+    background_music("bgm.wav")
   {
   }
 
@@ -48,17 +49,24 @@ public:
       scene.SpawnPlayer(i);
     }
     scene.NewGod();
+    music_time = music_duration;
   }
   void OnTerminate() override
   {
   }
   void OnUpdate(float dt) override
   {
+    if(music_time > music_duration)
+    {
+      background_music.Play();
+      music_time = 0;
+    }
     scene.Tick(dt, *input);
 
     // Adjust the camera's for both player groups
     god_view.AdjustCamera({(Player*)scene.GetGod()});
     player_view.AdjustCamera(scene.GetPlayers());
+    music_time += dt;
   }
   void OnLateRender() override
   { 
@@ -71,6 +79,8 @@ public:
 
 private:
   Scene scene;
+  Audio background_music;
+  float music_time;
 
 };
 

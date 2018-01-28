@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 4;
+static const size_t NUM_PLAYERS = 3;
 
 class Physics;
 class TileGrid;
@@ -166,6 +166,11 @@ private:
 class GettingWater : public IState<Player>
 {
 public:
+  GettingWater()
+    :
+    slurp_sound("slurp.wav"),
+    puke_sound("puke.wav")
+  {}
 	void OnEnter(Player& player) override;
 	void OnExit() override;
 
@@ -180,4 +185,6 @@ private:
 	//The water that needs to be added to the waterpercentage
 	float waterAdding;
   float last_update;
+  Audio slurp_sound;
+  Audio puke_sound;
 };
