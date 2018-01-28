@@ -60,6 +60,7 @@ public:
 	const int player_id;
 	bool is_god;
 	bool dead;
+  bool water_goes_in;
 	Body physics_body;
 	float waterPercentage = 0;
 	float speed = 2.f;

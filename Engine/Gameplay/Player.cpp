@@ -49,6 +49,24 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_2, 1);
 	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_3, 1);
 
+
+  graphics[(int)Sprite::Idle].ScaleLayer(0, 1.0f);
+  graphics[(int)Sprite::Idle].ScaleLayer(1, 1.0f);
+  graphics[(int)Sprite::Idle].ScaleLayer(2, 1.0f);
+  graphics[(int)Sprite::Idle].ScaleLayer(3, 1.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(0, 1.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(1, 1.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(2, 1.0f);
+  graphics[(int)Sprite::Move].ScaleLayer(3, 1.0f);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(0, 1.0f);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(1, 1.0f);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(2, 1.0f);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(3, 1.0f);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(0, 1.0f);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(1, 1.0f);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(2, 1.0f);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(3, 1.0f);
+
 	width = 32.0f;
 	height = 32.0f;
 	x = 400.0f;
@@ -66,14 +84,6 @@ void Player::Update(float dt)
 
 	total_time += dt;
 
-	graphics[(int)Sprite::Idle].ScaleLayer(0, 1.0f);
-	graphics[(int)Sprite::Idle].ScaleLayer(1, 1.0f);
-	graphics[(int)Sprite::Idle].ScaleLayer(2, 1.0f);
-	graphics[(int)Sprite::Idle].ScaleLayer(3, 1.0f);
-	graphics[(int)Sprite::Move].ScaleLayer(0, 1.0f);
-	graphics[(int)Sprite::Move].ScaleLayer(1, 1.0f);
-	graphics[(int)Sprite::Move].ScaleLayer(2, 1.0f);
-	graphics[(int)Sprite::Move].ScaleLayer(3, 1.0f);
 
 	float t = sinf(total_time * 2.0f) / 2.0f + 0.5f;
 	float scale = t + 1.5f;
@@ -120,7 +130,7 @@ bool Player::IsStuck()
 
 bool Player::CanDrink()
 {
-	return false;
+	return grid.DrinkingArea(x / Tile::SIZE, y / Tile::SIZE);
 }
 
 void Player::LoseWater()
@@ -148,8 +158,19 @@ IdleState::State IdleState::Update(float dt)
 IdleState::State IdleState::Input(::Input& input)
 {
   b2Vec2 dir = b2Vec2(0.0f, 0.0f);
-  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && Owner().CanDrink())
-	  return new GettingWater();
+  if(Owner().is_god == false)
+  {
+    if((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && Owner().CanDrink()))
+    {
+      Owner().water_goes_in = true;
+      return new GettingWater();
+    }
+    else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id))
+    {
+      Owner().water_goes_in = false;
+      return new GettingWater();
+    }
+  }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
     dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
@@ -368,6 +389,7 @@ JumpState::State JumpState::Input(::Input& input)
 void GettingWater::OnEnter(Player& player)
 {
 	Base::OnEnter(player);
+  Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
 	//Sets the amount of water that it can consume/release simultaneously
 	consumingWaterAmount = 10.f;
 	releaseWaterAmount = -20.f;
