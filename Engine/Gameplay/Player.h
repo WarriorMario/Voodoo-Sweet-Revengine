@@ -9,7 +9,7 @@
 #include "Physics\Body.h"
 
 // Should be moved somewhere else
-static const size_t NUM_PLAYERS = 3;
+static const size_t NUM_PLAYERS = 2;
 
 class Physics;
 class TileGrid;
@@ -22,8 +22,6 @@ public:
 	{
 		Idle,
 		Move,
-		Run,
-		Jump,
 		AddingWater,
 		DumpingWater,
     Smash,
@@ -72,7 +70,10 @@ public:
 	static float ScaleAmplifier;
 	static float BaseSpeed;
   static float GodBaseSpeed;
+  bool hitting = false;
 	LayeredAnimation graphics[NumSprites];
+	Sprite curr_sprite;
+  Sprite last_sprite;
 private:
 	TileGrid & grid;
 	static constexpr char VARIABLES_TO_LOAD[] = "Variables/Variables.json";
@@ -80,7 +81,6 @@ private:
 	b2Vec2 collision_box_scale_base;
 	b2Vec2 collision_box_scale_cur;
 
-	Sprite curr_sprite;
 	bool flip_sprite;
 };
 
@@ -189,4 +189,19 @@ private:
   float last_update;
   Audio slurp_sound;
   Audio puke_sound;
+};
+
+class SmashState : public IState<Player>
+{
+public:
+  SmashState()
+  {}
+
+  void OnEnter(Player& player) override;
+  void OnExit() override;
+
+  State Update(float dt) override;
+  State Input(::Input& input) override;
+
+private:
 };

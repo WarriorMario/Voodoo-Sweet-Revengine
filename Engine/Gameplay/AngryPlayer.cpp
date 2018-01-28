@@ -1,17 +1,10 @@
 #include "AngryPlayer.h"
 #include "Physics\Physics.h"
 #include "Tile.h"
+
 #define IDLE_LAYER_0 "Images/Neighbour_anim/Layer0/0_BadGuyWalk"
-
 #define MOVE_LAYER_0 "Images/Neighbour_anim/Layer0/0_BadGuy"
-#define MOVE_LAYER_1 "Images/Neighbour_anim/Layer0/0_BadGuy_2"
-#define MOVE_LAYER_2 "Images/Neighbour_anim/Layer0/0_BadGuy_3"
-#define MOVE_LAYER_3 "Images/Neighbour_anim/Layer0/0_BadGuy_4"
-
-#define SMASH_LAYER_0 "Images/Kid1_Anim/Layer0/0_BadGuySmash"
-#define SMASH_LAYER_1 "Images/Kid1_Anim/Layer1/0_BadGuySmash_2"
-#define SMASH_LAYER_2 "Images/Kid1_Anim/Layer2/0_BadGuySmash_3"
-#define SMASH_LAYER_3 "Images/Kid1_Anim/Layer3/0_BadGuySmash_4"
+#define SMASH_LAYER_0 "Images/Neighbour_anim/Layer0/0_BadGuySmash"
 
 AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   :
@@ -25,26 +18,19 @@ AngryPlayer::AngryPlayer(Physics & simulation, TileGrid & grid, int id)
   y = 240;
   speed = GodBaseSpeed;
 
-
-
-
   graphics[(int)Sprite::Idle].AddLayer(IDLE_LAYER_0, 1);
-
   graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_0, 4);
-
   graphics[(int)Sprite::Smash].AddLayer(SMASH_LAYER_0, 4);
-
 
   graphics[(int)Sprite::Idle].ScaleLayer(0, BaseScale);
   graphics[(int)Sprite::Move].ScaleLayer(0, BaseScale);
   graphics[(int)Sprite::Smash].ScaleLayer(0, BaseScale);
-
 }
-
+Player::Sprite last_sprite;
 void AngryPlayer::Update(float dt)
 {
   Player::Update(dt);
-
+  bool test = false;
   // Check overlaps with other players
   b2ContactEdge* contacts = physics_body.body->GetContactList();
   while(contacts)
@@ -56,7 +42,13 @@ void AngryPlayer::Update(float dt)
       {
         player->LoseWater();
       }
+      hitting = true;
+      test = true;
     }
     contacts = contacts->next;
+  }
+  if(test == false)
+  {
+    hitting = false;
   }
 }

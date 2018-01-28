@@ -41,7 +41,7 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
   grid(grid),
   player_id(id),
-  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,0.1f}
+  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f }
 {
   // load in the variables from the json file
   LoadVariables();
@@ -101,7 +101,7 @@ Player::Player(Physics& simulation, TileGrid& grid)
   flip_sprite(false),
   physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
   grid(grid),
-  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,0.1f}
+  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f}
 {
   // load in the variables from the json file
   LoadVariables();
@@ -201,6 +201,14 @@ void IdleState::OnExit()
 
 IdleState::State IdleState::Update(float dt)
 {
+  if(Owner().hitting == true)
+  {
+      Owner().SetSprite(Player::Smash);
+  }
+  else
+  {
+    Owner().SetSprite(Player::Idle);
+  }
   return nullptr;
 }
 IdleState::State IdleState::Input(::Input& input)
@@ -273,6 +281,14 @@ void MoveState::OnExit()
 
 MoveState::State MoveState::Update(float dt)
 {
+  if(Owner().hitting == true)
+  {
+    Owner().SetSprite(Player::Smash);
+  }
+  else
+  {
+    Owner().SetSprite(Player::Move);
+  }
   if(Owner().water_forced_out == true)
   {
     return new GettingWater;
@@ -332,116 +348,6 @@ MoveState::State MoveState::Input(::Input& input)
   //	return new RunState(dir);
   //}
 
-  return nullptr;
-}
-
-// ****************************************************************************
-void RunState::OnEnter(Player& player)
-{
-  Base::OnEnter(player);
-
-  Owner().SetSprite(Player::Run);
-}
-void RunState::OnExit()
-{
-
-}
-
-RunState::State RunState::Update(float dt)
-{
-  direction.Normalize();
-  Owner().x += direction.x * 10.f;
-  Owner().y += direction.y * 10.f;
-
-  return nullptr;
-}
-RunState::State RunState::Input(::Input& input)
-{
-  //if (input.KeyIsPressed(VK_SPACE))
-  //{
-  //	return new JumpState;
-  //}
-  //
-  //dir = b2Vec2(0.0f, 0.0f);
-  //if (input.KeyIsPressed(VK_RIGHT))
-  //{
-  //	dir.x += 1.f;
-  //	Owner().SetFlipped(true);
-  //}
-  //if (input.KeyIsPressed(VK_LEFT))
-  //{
-  //	dir.x -= 1.f;
-  //	Owner().SetFlipped(false);
-  //}
-  //if (input.KeyIsPressed(VK_UP))
-  //{
-  //	dir.y += 1.f;
-  //	Owner().SetFlipped(true);
-  //}
-  //if (input.KeyIsPressed(VK_DOWN))
-  //{
-  //	dir.y -= 1.f;
-  //	Owner().SetFlipped(false);
-  //}
-  //if (dir.x == 0.0f && dir.y == 0.0f)
-  //{
-  //	return new IdleState;
-  //}
-  //else if (!input.KeyIsPressed(VK_SHIFT))
-  //{
-  //	return new MoveState(dir);
-  //}
-
-  return nullptr;
-}
-
-// ****************************************************************************
-void JumpState::OnEnter(Player& player)
-{
-  Base::OnEnter(player);
-
-  base_y = player.y;
-
-  fart.Play();
-
-  //Owner().SetSprite(Player::Jump);
-}
-void JumpState::OnExit()
-{
-  Owner().y = base_y;
-}
-
-JumpState::State JumpState::Update(float dt)
-{
-  //jump_y += velocity * 0.015f;
-  //
-  //velocity -= 25.f; // fake drag
-  //velocity = Max(velocity, -500.f); // fake terminal velocity
-  //
-  //if (jump_y < 0.f)
-  //{
-  return new IdleState;
-  //}
-  //Owner().y = base_y - jump_y;
-  //
-  //Owner().x += direction * 5.f;
-  //
-  //return nullptr;
-}
-JumpState::State JumpState::Input(::Input& input)
-{
-  //direction = 0.f;
-  //if (input.KeyIsPressed(VK_RIGHT))
-  //{
-  //	direction += 1.f;
-  //	Owner().SetFlipped(true);
-  //}
-  //if (input.KeyIsPressed(VK_LEFT))
-  //{
-  //	direction -= 1.f;
-  //	Owner().SetFlipped(false);
-  //}
-  //
   return nullptr;
 }
 
