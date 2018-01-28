@@ -1,12 +1,12 @@
 {
   "basescale": 1.5,
   "scaleamplifier": 6,
-  "basespeed": 5,
-  "minspeed": 0.8,
-  "godbasespeed": 4,
+  "basespeed": 6,
+  "minspeed": 2,
+  "godbasespeed": 8,
   "consumewaterspeed": 1.1,
   "releasewaterspeed": -25.0,
   "chunktime": 0.25,
-  "collisionboxscalex": 32,
-  "collisionboxscaley": 32
+  "collisionboxscalex": 15,
+  "collisionboxscaley": 15
 }
