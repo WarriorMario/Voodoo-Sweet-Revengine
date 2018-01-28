@@ -118,6 +118,11 @@ bool Player::IsStuck()
 	return res;
 }
 
+bool Player::CanDrink()
+{
+	return false;
+}
+
 void Player::LoseWater()
 {
 	// Not implemented yet
