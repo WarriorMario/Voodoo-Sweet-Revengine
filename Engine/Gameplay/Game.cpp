@@ -100,7 +100,10 @@ void Game::Update()
   {
     show_frame_counter = !show_frame_counter;
   }
-  gui.Update();
+  if (input->IsPressed(ButtonCode::SPACE) == true) 
+  {
+	  gui.Update();
+  }
   OnUpdate(timer.Elapsed()); // Delegate call to concrete implementation
 
   timer.Reset();
