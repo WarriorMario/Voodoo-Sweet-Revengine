@@ -9,5 +9,5 @@
   "chunktime": 0.25,
   "collisionboxscalex": 15,
   "collisionboxscaley": 15,
-  "waterneededtowin": 500
+  "waterneededtowin": 300
 }
