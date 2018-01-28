@@ -50,7 +50,6 @@ public:
   }
 	
 	static constexpr unsigned int SIZE = 64;
-	static unsigned int MAP_HEIGHT;
 private:
 	static constexpr int TILE_SIZE_IN_ATLAS = 32;
 	float min_u, max_u, min_v, max_v;
