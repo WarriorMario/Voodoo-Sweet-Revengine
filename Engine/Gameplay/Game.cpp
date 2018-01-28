@@ -113,8 +113,8 @@ void Game::Render()
   BeginFrame();
 
   OnRender(); // Delegate call to concrete implementation
-  gui.Draw(god_view);
-  gui.Draw(player_view);
+  gui.Draw(god_view,god_view.camera.offset.x, god_view.camera.offset.y);
+  gui.Draw(player_view, player_view.camera.offset.x, player_view.camera.offset.y);
   // Frame-counter is only displayed on the primary window for now
   if(show_frame_counter)
   {

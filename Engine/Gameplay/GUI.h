@@ -10,9 +10,11 @@ public:
 	GUI();
 	~GUI();
 	void Update();
-	void Draw(Renderer & renderer);
+	void Draw(Renderer & renderer, int x, int y);
 	void gameTimer();
 	Timer* gameTime;
+	int x;
+	int y;
 private:
 	int displayTimeMinutes = 0;
 	int displayTimeSeconds = 0;

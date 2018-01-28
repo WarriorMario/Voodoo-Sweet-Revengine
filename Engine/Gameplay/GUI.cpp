@@ -1,4 +1,6 @@
 #include "GUI.h"
+#include "Graphsicks\Renderer.h"
+#include "Gameplay\Player.h"
 
 GUI::GUI()
 {
@@ -17,10 +19,10 @@ GUI::~GUI()
  void GUI::Update()
 {
 	 gameTimer();
-	 waterPercentage += 1;
+	 waterPercentage = (Player::water_added_to_goal / Player::water_needed_to_win) * 100.0f;
 }
 
- void GUI::Draw(Renderer& renderer)
+ void GUI::Draw(Renderer& renderer,int xOffset, int yOffset)
 {
 	 String gameTimeText;
 	 if (displayTimeSeconds < 10 && displayTimeMinutes < 10)
@@ -31,16 +33,14 @@ GUI::~GUI()
 		 gameTimeText = "Time: " + std::to_string(displayTimeMinutes) + ":0" + std::to_string(displayTimeSeconds);
 	 else
 		 gameTimeText = "Time: " + std::to_string(displayTimeMinutes) + ":" + std::to_string(displayTimeSeconds);
-	 b2Vec2 pos = b2Vec2(Graphics::ScreenWidth / 2,Graphics::ScreenHeight/2);
+	 b2Vec2 pos = b2Vec2(200,200);
 	 b2Vec2 wH = b2Vec2(waterPercentage*1.3f, 50);
-	 RenderText(renderer, gameTimeText,32, b2Vec2(pos.x,pos.y), Colors::White);
-	 RenderQuad<ForegroundShader>(renderer, b2Vec2(pos.x,pos.y), b2Vec2(180, 50), false,false, 0x00FFFFFF, backgroundTime);
-	 RenderQuad<ForegroundShader>(renderer, b2Vec2(pos.x, pos.y), b2Vec2(180, 50), false, false, 0x00FFFFFF, backGroundWaterPercentage);
+	 RenderQuad<ForegroundShader>(renderer, b2Vec2(1664, 1984), b2Vec2(180, 50), false, false, 0x00FFFFFF, backGroundWaterPercentage);
 	 if (waterPercentage != 0)
 	 {
-		 RenderQuad<ForegroundShader>(renderer, b2Vec2(pos.x + 25, pos.y), wH, false, false, 0x00FFFFFF, fillingWaterPercentage);
+		 RenderQuad<ForegroundShader>(renderer, b2Vec2(1664 + 25, 1984), wH, false, false, 0x00FFFFFF, fillingWaterPercentage);
 	 }
-	 RenderQuad<ForegroundShader>(renderer, b2Vec2(pos.x, pos.y), b2Vec2(180, 50), false, false, 0x00FFFFFF, frontWaterPercentage);
+	 RenderQuad<ForegroundShader>(renderer, b2Vec2(1664, 1984), b2Vec2(180, 50), false, false, 0x00FFFFFF, frontWaterPercentage);
 }
 
 void  GUI::gameTimer()

@@ -27,6 +27,8 @@ float Player::BaseScale;
 float Player::ScaleAmplifier;
 float Player::BaseSpeed;
 float Player::GodBaseSpeed;
+float Player::water_added_to_goal = 0.0f;
+float Player::water_needed_to_win = 0.0f;
 
 float GettingWater::ConsumeWaterSpeed;
 float GettingWater::ReleaseWaterSpeed;
@@ -140,6 +142,7 @@ bool Player::LoadVariables()
 	ser.Get("basespeed", BaseSpeed);
 	ser.Get("minspeed", MinSpeed);
 	ser.Get("godbasespeed", GodBaseSpeed);
+	ser.Get("waterneededtowin", water_needed_to_win);
 
 	ser.Get("consumewaterspeed", GettingWater::ConsumeWaterSpeed);
 	ser.Get("releasewaterspeed", GettingWater::ReleaseWaterSpeed);
@@ -403,7 +406,7 @@ GettingWater::State GettingWater::Update(float dt)
 		Owner().waterPercentage += waterAdding;
 		if (Owner().CanDepositWater())
 		{
-			Owner().water_added_to_goal += waterAdding;
+			Owner().water_added_to_goal -= waterAdding;
 		}
 	}
 	//This makes sure it stays within the 100% range
