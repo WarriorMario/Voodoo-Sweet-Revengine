@@ -103,6 +103,7 @@ void Game::Update()
   if (input->IsPressed(ButtonCode::SPACE) == true) 
   {
 	  guiOn = true;
+	  gui.gameTime->Reset();
   }
   if (guiOn) {
 	  gui.Update();
