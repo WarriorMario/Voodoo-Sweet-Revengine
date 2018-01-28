@@ -22,6 +22,11 @@ class Resource
 public:
   using Base = Resource<T>;
 
+  Resource() :
+    data(&Assets::Get().GetFallback<T>()),
+    is_fallback(true)
+  {
+  }
   Resource(const Resource& other)
   {
     *this = other;
