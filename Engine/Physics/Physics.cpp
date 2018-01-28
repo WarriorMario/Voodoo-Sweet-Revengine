@@ -1,5 +1,6 @@
 #include "Physics.h"
 #include "DebugDraw.h"
+#include "Gameplay\Camera.h"
 #include "Gameplay\Framework\Objects\ParticleObject.h"
 
 Physics::Physics()
@@ -79,9 +80,9 @@ void Physics::Update()
   world.Step(time_step, 1, 1);
 }
 
-void Physics::CreateDebugDraw(Graphics & gfx)
+void Physics::CreateDebugDraw(Graphics & gfx, Camera& cam)
 {
-  world.SetDebugDraw(new PhysicsDebugDraw(gfx));
+  world.SetDebugDraw(new PhysicsDebugDraw(gfx, cam));
 }
 
 void Physics::DebugDraw()

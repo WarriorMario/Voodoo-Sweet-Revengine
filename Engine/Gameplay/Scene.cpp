@@ -8,9 +8,9 @@ Scene::Scene()
 {
 }
 
-void Scene::Init(Graphics& gfx)
+void Scene::Init(Graphics& gfx, Camera& cam)
 {
-  simulation.CreateDebugDraw(gfx);
+	simulation.CreateDebugDraw(gfx, cam);
 	tile_grid.LoadLevel(LEVEL_TO_LOAD, simulation);
 }
 
@@ -71,7 +71,7 @@ void Scene::NewGod()
 		}
 	}
 
-  int new_god = NUM_PLAYERS - 1;;
+	int new_god = NUM_PLAYERS - 1;;
 	if (players[new_god] != nullptr)
 	{
 		delete players[new_god];
@@ -101,7 +101,7 @@ void Scene::SpawnPlayer(int idx)
 
 void Scene::DebugDraw()
 {
-  //simulation.DebugDraw();
+	//simulation.DebugDraw();
 }
 
 void Scene::KillPlayer(int idx)

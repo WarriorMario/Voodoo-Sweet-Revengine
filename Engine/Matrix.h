@@ -11,6 +11,13 @@ using Rot = b2Rot;
 using Transform = b2Transform;
 
 // ****************************************************************************
+
+// Mat2
+inline Mat3 operator*(const Mat3& lhs, const Mat3& rhs)
+{
+  return b2Mul(lhs, rhs);
+}
+
 // Mat2
 inline Mat2 operator*(const Mat2& lhs, const Mat2& rhs)
 {

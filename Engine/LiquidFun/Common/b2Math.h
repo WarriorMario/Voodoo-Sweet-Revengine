@@ -338,8 +338,8 @@ struct b2Mat22
   /// Construct this matrix from axis scalars
   b2Mat22(float32 sx, float32 sy)
   {
-    ex.x = 1.0f; ex.y = 0.0f;
-    ey.x = 0.0f; ey.y = 1.0f;
+    ex.x = sx; ex.y = 0.0f;
+    ey.x = 0.0f; ey.y = sy;
   }
 
 	/// Initialize this matrix using columns.
@@ -449,6 +449,12 @@ struct b2Mat33
     ex.x = sx; ex.y = 0.0f; ex.z = 0.0f;
     ey.x = 0.0f; ey.y = sy; ey.z = 0.0f;
     ez.x = 0.0f; ez.y = 0.0f; ez.z = sz;
+  }
+  b2Mat33(const b2Mat22& m)
+  {
+    ex.x = m.ex.x; ex.y = m.ex.y; ex.z = 0.0f;
+    ey.x = m.ey.x; ey.y = m.ey.y; ey.z = 0.0f;
+    ez.x = 0.0f; ez.y = 0.0f; ez.z = 1.0f;
   }
 
 	/// Set this matrix to all zeros.
@@ -594,6 +600,16 @@ inline b2Vec2 b2Cross(float32 s, const b2Vec2& a)
 	return b2Vec2(-s * a.y, s * a.x);
 }
 
+// /// Multiply a matrix times a vector. If a rotation matrix is provided,
+// /// then this transforms the vector from one frame to another.
+// inline b2Vec3 b2Mul(const b2Mat33& A, const b2Vec3& v)
+// {
+//   return b2Vec3(
+//     A.ex.x * v.x + A.ey.x * v.y + A.ez.x * v.z,
+//     A.ex.y * v.x + A.ey.y * v.y + A.ez.y * v.z,
+//     A.ex.z * v.x + A.ey.z * v.y + A.ez.z * v.z);
+// }
+
 /// Multiply a matrix times a vector. If a rotation matrix is provided,
 /// then this transforms the vector from one frame to another.
 inline b2Vec2 b2Mul(const b2Mat22& A, const b2Vec2& v)
@@ -705,6 +721,11 @@ inline b2Vec3 b2Mul(const b2Mat33& A, const b2Vec3& v)
 inline b2Vec2 b2Mul22(const b2Mat33& A, const b2Vec2& v)
 {
 	return b2Vec2(A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
+}
+
+inline b2Mat33 b2Mul(const b2Mat33& A, const b2Mat33& B)
+{
+  return b2Mat33(b2Mul(A, B.ex), b2Mul(A, B.ey), b2Mul(A, B.ez));
 }
 
 /// Multiply two rotations: q * r

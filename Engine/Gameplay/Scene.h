@@ -10,12 +10,13 @@ class AngryPlayer;
 class Renderer;
 class Graphics;
 class Input;
+
 class Scene
 {
 public:
 	Scene();
 
-	void Init(Graphics& gfx);
+	void Init(Graphics& gfx, Camera& cam);
 	void Tick(float dt, Input& kbd);
 	void Draw();
 

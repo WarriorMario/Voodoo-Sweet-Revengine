@@ -4,7 +4,6 @@ Renderer::Passes<BackgroundShader, ForegroundShader, UIShader, UIShaderSimple> R
 
 Renderer::Renderer()
 {
-  camera.offset = Vec2(300.0f, 0.0f);
 }
 
 void Renderer::AdjustCamera(const Array<Player*>& players)
