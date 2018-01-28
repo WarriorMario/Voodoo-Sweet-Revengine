@@ -8,7 +8,7 @@
 struct ScreenGridCell
 {
   size_t num_indices;
-  unsigned short indices[64];
+  unsigned short indices[128];
   Color* buff;
   Color* checker_buff;
 };

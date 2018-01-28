@@ -26,7 +26,7 @@ void Camera::CalculateOffset(const Array<Player*>& players)
   const float deltaX = max(abs(maxX - minX), minZoom * Graphics::ScreenWidth);
   const float deltaY = max(abs(maxY - minY), minZoom * Graphics::ScreenHeight);
 
-  const float scaleMargin = 100.f;
+  const float scaleMargin = 400.f;
   const float scaleX = deltaX / (Graphics::ScreenWidth - scaleMargin);
   const float scaleY = deltaY / (Graphics::ScreenHeight - scaleMargin);
 

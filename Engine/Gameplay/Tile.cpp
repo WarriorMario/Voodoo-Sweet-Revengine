@@ -19,10 +19,6 @@ Tile::Tile()
 void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	TileFunction tile_function, Texture* atlas_texture, Physics& simulation)
 {
-	// transform the position to screen space
-	pos_x = grid_pos_x * SIZE;
-	pos_y = grid_pos_y * SIZE;
-
 	// save a copy of the atlas and type
 	atlas = atlas_texture;
 	visual = tile_visual;
@@ -35,6 +31,10 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 	int atlas_width = tex_width / TILE_SIZE_IN_ATLAS;
 	int atlas_height = tex_height / TILE_SIZE_IN_ATLAS;
 
+	// transform the position to screen space
+	pos_x = grid_pos_x * SIZE;
+	pos_y = grid_pos_y * SIZE;
+	
 	// the step size in u and v per tile
 	float uv_delta_x = (float)TILE_SIZE_IN_ATLAS / (float)tex_width;
 	float uv_delta_y = (float)TILE_SIZE_IN_ATLAS / (float)tex_height;
@@ -94,5 +94,5 @@ void Tile::InitFunction(TileFunction function, Physics& simulation)
 void Tile::Render()
 {
 	RenderSharedQuad<BackgroundShader>(b2Vec2(pos_x, pos_y), b2Vec2(SIZE, SIZE),
-		b2Vec2(min_u, min_v), b2Vec2(max_u, max_v), false, true, Colors::Cyan, atlas);
+		b2Vec2(min_u, min_v), b2Vec2(max_u, max_v), false, false, Colors::Cyan, atlas);
 }
