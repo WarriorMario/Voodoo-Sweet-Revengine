@@ -44,6 +44,7 @@ public:
 	}
 	bool IsPassable(int x, int y, bool is_neighbour);
   bool DrinkingArea(int x,int y);
+  bool DepositingArea(int x, int y);
 
 	b2Vec2 GetRandomSpawnPlayer();
 	b2Vec2 GetRandomSpawnGod();
