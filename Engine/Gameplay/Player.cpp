@@ -20,6 +20,9 @@
 #define MIN_WATER_LAYER_2 "Images/Kid1_Anim/Layer2/2_Kid1Hit"
 #define MIN_WATER_LAYER_3 "Images/Kid1_Anim/Layer3/3_Kid1Hit"
 
+constexpr float BASE_SCALE = 1.5f;
+constexpr float SCALE_AMPLIFIER = 3.f;
+
 Player::Player(Physics& simulation, TileGrid& grid, int id)
 	:
 	movement(*this, new IdleState),
@@ -50,22 +53,22 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_3, 1);
 
 
-  graphics[(int)Sprite::Idle].ScaleLayer(0, 1.0f);
-  graphics[(int)Sprite::Idle].ScaleLayer(1, 1.0f);
-  graphics[(int)Sprite::Idle].ScaleLayer(2, 1.0f);
-  graphics[(int)Sprite::Idle].ScaleLayer(3, 1.0f);
-  graphics[(int)Sprite::Move].ScaleLayer(0, 1.0f);
-  graphics[(int)Sprite::Move].ScaleLayer(1, 1.0f);
-  graphics[(int)Sprite::Move].ScaleLayer(2, 1.0f);
-  graphics[(int)Sprite::Move].ScaleLayer(3, 1.0f);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(0, 1.0f);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(1, 1.0f);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(2, 1.0f);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(3, 1.0f);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(0, 1.0f);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(1, 1.0f);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(2, 1.0f);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(3, 1.0f);
+  graphics[(int)Sprite::Idle].ScaleLayer(0, BASE_SCALE);
+  graphics[(int)Sprite::Idle].ScaleLayer(1, BASE_SCALE);
+  graphics[(int)Sprite::Idle].ScaleLayer(2, BASE_SCALE);
+  graphics[(int)Sprite::Idle].ScaleLayer(3, BASE_SCALE);
+  graphics[(int)Sprite::Move].ScaleLayer(0, BASE_SCALE);
+  graphics[(int)Sprite::Move].ScaleLayer(1, BASE_SCALE);
+  graphics[(int)Sprite::Move].ScaleLayer(2, BASE_SCALE);
+  graphics[(int)Sprite::Move].ScaleLayer(3, BASE_SCALE);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(0, BASE_SCALE);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(1, BASE_SCALE);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(2, BASE_SCALE);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(3, BASE_SCALE);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(0, BASE_SCALE);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(1, BASE_SCALE);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(2, BASE_SCALE);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(3, BASE_SCALE);
 
 	width = 32.0f;
 	height = 32.0f;
@@ -84,17 +87,6 @@ void Player::Update(float dt)
 
 	total_time += dt;
 
-
-	float t = sinf(total_time * 2.0f) / 2.0f + 0.5f;
-	float scale = t + 1.5f;
-	graphics[(int)Sprite::Idle].ScaleLayer(0, scale);
-	graphics[(int)Sprite::Idle].ScaleLayer(1, scale);
-	graphics[(int)Sprite::Idle].ScaleLayer(2, scale);
-	graphics[(int)Sprite::Idle].OffsetLayer(1, Vec2(0, 0 * t));
-	graphics[(int)Sprite::Move].ScaleLayer(0, scale);
-	graphics[(int)Sprite::Move].ScaleLayer(1, scale);
-	graphics[(int)Sprite::Move].ScaleLayer(2, scale);
-	graphics[(int)Sprite::Move].OffsetLayer(1, Vec2(0, 0 * t));
 
 	movement.Update(dt);
 	graphics[(int)curr_sprite].Update(dt);
@@ -391,7 +383,7 @@ void GettingWater::OnEnter(Player& player)
 	Base::OnEnter(player);
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
 	//Sets the amount of water that it can consume/release simultaneously
-	consumingWaterAmount = 10.f;
+	consumingWaterAmount = 1.f;
 	releaseWaterAmount = -20.f;
 	waterAdding = 0;
 }
@@ -415,6 +407,40 @@ GettingWater::State GettingWater::Update(float dt)
 	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
 		Owner().speed = -((Owner().waterPercentage - 100.f) / 100.f) + 1.f;
 	}
+
+  float scale = SCALE_AMPLIFIER *(Owner().waterPercentage / 100.0f) + BASE_SCALE;
+  float y_offset = (scale - BASE_SCALE)* 8.0f;
+  Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(0, scale);
+  Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(1, scale);
+  Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(2, scale);
+  Owner().graphics[(int)Player::Sprite::Move].ScaleLayer(0, scale);
+  Owner().graphics[(int)Player::Sprite::Move].ScaleLayer(1, scale);
+  Owner().graphics[(int)Player::Sprite::Move].ScaleLayer(2, scale);
+  Owner().graphics[(int)Player::Sprite::AddingWater].ScaleLayer(0, scale);
+  Owner().graphics[(int)Player::Sprite::AddingWater].ScaleLayer(1, scale);
+  Owner().graphics[(int)Player::Sprite::AddingWater].ScaleLayer(2, scale);
+  Owner().graphics[(int)Player::Sprite::DumpingWater].ScaleLayer(0, scale);
+  Owner().graphics[(int)Player::Sprite::DumpingWater].ScaleLayer(1, scale);
+  Owner().graphics[(int)Player::Sprite::DumpingWater].ScaleLayer(2, scale);
+  Owner().graphics[(int)Player::Sprite::Idle].OffsetLayer(0, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Idle].OffsetLayer(1, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Idle].OffsetLayer(2, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Idle].OffsetLayer(3, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(0, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(1, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(2, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(3, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::AddingWater].OffsetLayer(0, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::AddingWater].OffsetLayer(1, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::AddingWater].OffsetLayer(2, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::AddingWater].OffsetLayer(3, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(0, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(1, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(2, Vec2(0, y_offset));
+  Owner().graphics[(int)Player::Sprite::DumpingWater].OffsetLayer(3, Vec2(0, y_offset));
+  //Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(1, Vec2(0, 0 * t));
+
+
 
 	return nullptr;
 }

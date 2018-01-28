@@ -66,11 +66,11 @@ public:
 	float speed = 2.f;
 	float total_time;
 
+	LayeredAnimation graphics[NumSprites];
 private:
 	TileGrid & grid;
 
 	StateMachine<Player> movement;
-	LayeredAnimation graphics[NumSprites];
 
 	Sprite curr_sprite;
 	bool flip_sprite;
