@@ -192,8 +192,8 @@ IdleState::State IdleState::Input(::Input& input)
       Owner().water_goes_in = true;
       return new GettingWater();
     }
-    else if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) ||
-      Owner().water_forced_out == true)
+    else if((input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) ||
+      Owner().water_forced_out == true) && Owner().waterPercentage > 0)
     {
       Owner().water_goes_in = false;
       return new GettingWater();
@@ -285,22 +285,18 @@ MoveState::State MoveState::Input(::Input& input)
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
     dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
-    Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x < 0)
   {
     dir.x += input.GetAxis(AxisCode::LEFT, Owner().player_id).x * Owner().speed;
-    Owner().SetFlipped(false);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y > 0)
   {
     dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
-    Owner().SetFlipped(true);
   }
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).y < 0)
   {
     dir.y += input.GetAxis(AxisCode::LEFT, Owner().player_id).y * Owner().speed;
-    Owner().SetFlipped(false);
   }
   if(dir.x == 0.f && dir.y == 0)
   {
@@ -310,6 +306,14 @@ MoveState::State MoveState::Input(::Input& input)
   //{
   //	return new RunState(dir);
   //}
+  if (dir.x > 0)
+  {
+	  Owner().SetFlipped(false);
+  }
+  else
+  {
+	  Owner().SetFlipped(true);
+  }
 
   return nullptr;
 }
@@ -514,15 +518,17 @@ GettingWater::State GettingWater::Input(::Input& input)
     return new IdleState;
   }
   // Checks if you're consuming and if so it changes the 
-  if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id))
+  if(input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && Owner().CanDrink())
   {
     waterAdding = ConsumeWaterSpeed;
   }
-
-
-  if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
+  else if((input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true) && Owner().waterPercentage > 0.0f)
   {
     waterAdding = ReleaseWaterSpeed;
+  }
+  else
+  {
+	  return new IdleState;
   }
 
   return nullptr;
