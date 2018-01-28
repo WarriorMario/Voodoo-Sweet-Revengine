@@ -3,6 +3,8 @@
 #include "Physics\Physics.h"
 #include "TileGrid.h"
 #include "Tile.h"
+#include "Utility\Serialization.h"
+#include "Utility\Json\json.h"
 
 // ****************************************************************************
 #define MOVE_LAYER_0 "Images/Kid1_Anim/Layer0/0_Kid1"
@@ -20,10 +22,10 @@
 #define MIN_WATER_LAYER_2 "Images/Kid1_Anim/Layer2/2_Kid1Hit"
 #define MIN_WATER_LAYER_3 "Images/Kid1_Anim/Layer3/3_Kid1Hit"
 
-constexpr float BASE_SCALE = 1.5f;
-constexpr float SCALE_AMPLIFIER = 6.f;
-constexpr float BASE_SPEED = 5.f;
-constexpr float MIN_SPEED = 0.8f;
+float Player::MinSpeed;
+float Player::BaseScale;
+float Player::ScaleAmplifier;
+float Player::BaseSpeed;
 
 Player::Player(Physics& simulation, TileGrid& grid, int id)
 	:
@@ -34,6 +36,7 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	player_id(id),
 	graphics{ 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f }
 {
+	LoadVariables();
 	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_0, 3);
 	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_1, 3);
 	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_2, 3);
@@ -55,22 +58,22 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_3, 1);
 
 
-  graphics[(int)Sprite::Idle].ScaleLayer(0, BASE_SCALE);
-  graphics[(int)Sprite::Idle].ScaleLayer(1, BASE_SCALE);
-  graphics[(int)Sprite::Idle].ScaleLayer(2, BASE_SCALE);
-  graphics[(int)Sprite::Idle].ScaleLayer(3, BASE_SCALE);
-  graphics[(int)Sprite::Move].ScaleLayer(0, BASE_SCALE);
-  graphics[(int)Sprite::Move].ScaleLayer(1, BASE_SCALE);
-  graphics[(int)Sprite::Move].ScaleLayer(2, BASE_SCALE);
-  graphics[(int)Sprite::Move].ScaleLayer(3, BASE_SCALE);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(0, BASE_SCALE);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(1, BASE_SCALE);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(2, BASE_SCALE);
-  graphics[(int)Sprite::AddingWater].ScaleLayer(3, BASE_SCALE);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(0, BASE_SCALE);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(1, BASE_SCALE);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(2, BASE_SCALE);
-  graphics[(int)Sprite::DumpingWater].ScaleLayer(3, BASE_SCALE);
+  graphics[(int)Sprite::Idle].ScaleLayer(0, BaseScale);
+  graphics[(int)Sprite::Idle].ScaleLayer(1, BaseScale);
+  graphics[(int)Sprite::Idle].ScaleLayer(2, BaseScale);
+  graphics[(int)Sprite::Idle].ScaleLayer(3, BaseScale);
+  graphics[(int)Sprite::Move].ScaleLayer(0, BaseScale);
+  graphics[(int)Sprite::Move].ScaleLayer(1, BaseScale);
+  graphics[(int)Sprite::Move].ScaleLayer(2, BaseScale);
+  graphics[(int)Sprite::Move].ScaleLayer(3, BaseScale);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(0, BaseScale);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(1, BaseScale);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(2, BaseScale);
+  graphics[(int)Sprite::AddingWater].ScaleLayer(3, BaseScale);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(0, BaseScale);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(1, BaseScale);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(2, BaseScale);
+  graphics[(int)Sprite::DumpingWater].ScaleLayer(3, BaseScale);
 
 	width = 32.0f;
 	height = 32.0f;
@@ -78,7 +81,7 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	y = 300.0f;
 	physics_body.body->SetUserData(this);
 	dead = false;
-  speed = BASE_SPEED;
+  speed = BaseSpeed;
 }
 
 void Player::Update(float dt)
@@ -127,7 +130,21 @@ bool Player::CanDrink()
 {
 	return grid.DrinkingArea(x / Tile::SIZE, y / Tile::SIZE);
 }
+bool Player::LoadVariables()
+ {
+	StringRef loadName = VARIABLES_TO_LOAD;
+	Serializer ser("");
+	if (ser.Deserialize(loadName.data()) == ErrorCodes::FAILURE)
+	{
+		// failed to load the json file
+		return false;
+	}
+	ser.Get("basespeed", BaseScale);
+	ser.Get("scaleamplifier", ScaleAmplifier);
+	ser.Get("basespeed", BaseSpeed);
+	ser.Get("minspeed", MinSpeed);
 
+}
 void Player::LoseWater()
 {
 	// Not implemented yet
@@ -416,11 +433,11 @@ GettingWater::State GettingWater::Update(float dt)
 	//Makes sure the speed is lower when the waterpercentage is higher 
 	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) 
   {
-    Owner().speed = BASE_SPEED - (Owner().waterPercentage / 100.0f)*(BASE_SPEED - MIN_SPEED);
+    Owner().speed = Owner().BaseSpeed - (Owner().waterPercentage / 100.0f)*(Owner().BaseSpeed - Owner().MinSpeed);
 	}
 
-  float scale = SCALE_AMPLIFIER *(Owner().waterPercentage / 100.0f) + BASE_SCALE;
-  float y_offset = (scale - BASE_SCALE)* 8.0f;
+  float scale = Owner().ScaleAmplifier *(Owner().waterPercentage / 100.0f) + Owner().BaseScale;
+  float y_offset = (scale - Owner().BaseScale)* 8.0f;
   Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(0, scale);
   Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(1, scale);
   Owner().graphics[(int)Player::Sprite::Idle].ScaleLayer(2, scale);
