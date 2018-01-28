@@ -30,6 +30,7 @@
 
 #include "Gameplay\Framework\Objects\FrameCounter.h"
 #include "Gameplay\Scene.h"
+#include "GUI.h"
 
 class Game
 {
@@ -67,6 +68,7 @@ private:
   Timer timer;
   bool show_frame_counter = false;
   FrameCounter frame_counter;
+  GUI gui;
 
   // IDK what this stuff is doing here
   b2ParticleSystem* particleSystem;

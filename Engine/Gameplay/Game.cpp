@@ -46,7 +46,7 @@ Game::Game(HINSTANCE hInst, LPWSTR pArgs)
 {
   gfx = new Graphics(godWindow, playerWindow);
   input = new Input(godWindow.kbd, godWindow.mouse);
-
+  //gui = new GUI();
   JM_Get() = JM_AllocJobManager();
   JM_InitJobManager(JM_Get(), num_cores);
   
@@ -100,7 +100,7 @@ void Game::Update()
   {
     show_frame_counter = !show_frame_counter;
   }
-
+  gui.Update();
   OnUpdate(timer.Elapsed()); // Delegate call to concrete implementation
 
   timer.Reset();
@@ -113,7 +113,8 @@ void Game::Render()
   BeginFrame();
 
   OnRender(); // Delegate call to concrete implementation
-  
+  gui.Draw(god_view);
+  gui.Draw(player_view);
   // Frame-counter is only displayed on the primary window for now
   if(show_frame_counter)
   {

@@ -184,6 +184,7 @@
     <ClInclude Include="Gameplay\AngryPlayer.h" />
     <ClInclude Include="Gameplay\Blockade.h" />
     <ClInclude Include="Gameplay\Game.h" />
+    <ClInclude Include="Gameplay\GUI.h" />
     <ClInclude Include="Utility\SpriteAnimation.h" />
     <ClInclude Include="Gameplay\Tile.h" />
     <ClInclude Include="Gameplay\TileGrid.h" />
@@ -519,6 +520,7 @@
     <ClCompile Include="Gameplay\Framework\Objects\UIButtonObject.cpp" />
     <ClCompile Include="Gameplay\Game.cpp" />
     <ClCompile Include="Gameplay\GodEditor.cpp" />
+    <ClCompile Include="Gameplay\GUI.cpp" />
     <ClCompile Include="Gameplay\Player.cpp" />
     <ClCompile Include="Gameplay\Framework\Arena.cpp" />
     <ClCompile Include="Gameplay\Framework\Objects\ArenaBaseObject.cpp" />
