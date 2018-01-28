@@ -217,11 +217,18 @@ void MoveState::OnExit()
 MoveState::State MoveState::Update(float dt)
 {
   dir.Normalize();
-  Owner().x += dir.x * 5.f;
+  if(abs(dir.x) > abs(dir.y))
+  {
+    Owner().x += dir.x * 5.f;
+    if(Owner().IsStuck())
+    {
+      Owner().x -= dir.x * 5.f;
+    }
+    return nullptr;
+  }
   Owner().y += dir.y * 5.f;
   if(Owner().IsStuck())
   {
-    Owner().x -= dir.x * 5.f;
     Owner().y -= dir.y * 5.f;
   }
 
