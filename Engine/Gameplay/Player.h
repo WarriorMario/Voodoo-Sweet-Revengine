@@ -71,7 +71,8 @@ public:
 	static float ScaleAmplifier;
 	static float BaseSpeed;
   static float GodBaseSpeed;
-  float water_added_to_goal;
+  static float water_added_to_goal;
+  static float water_needed_to_win;
   bool hitting = false;
 	LayeredAnimation graphics[NumSprites];
 	Sprite curr_sprite;

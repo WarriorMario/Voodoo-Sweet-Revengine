@@ -1,5 +1,7 @@
 #include "GUI.h"
 #include "Graphsicks\Renderer.h"
+#include "Gameplay\Player.h"
+
 GUI::GUI()
 {
 	gameTime = new Timer();
@@ -17,7 +19,7 @@ GUI::~GUI()
  void GUI::Update()
 {
 	 gameTimer();
-	 waterPercentage += 1;
+	 waterPercentage = (Player::water_added_to_goal / Player::water_needed_to_win) * 100.0f;
 }
 
  void GUI::Draw(Renderer& renderer,int xOffset, int yOffset)
