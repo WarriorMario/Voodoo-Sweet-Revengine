@@ -46,10 +46,10 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   // load in the variables from the json file
   LoadVariables();
 
-  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_0, 3);
-  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_1, 3);
-  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_2, 3);
-  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_3, 3);
+  graphics[(int)Sprite::Idle].AddLayer(PLUS_WATER_LAYER_0, 1);
+  graphics[(int)Sprite::Idle].AddLayer(PLUS_WATER_LAYER_1, 1);
+  graphics[(int)Sprite::Idle].AddLayer(PLUS_WATER_LAYER_2, 1);
+  graphics[(int)Sprite::Idle].AddLayer(PLUS_WATER_LAYER_3, 1);
 
   graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_0, 3);
   graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_1, 3);
