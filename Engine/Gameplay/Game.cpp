@@ -46,7 +46,6 @@ Game::Game(HINSTANCE hInst, LPWSTR pArgs)
 {
   gfx = new Graphics(godWindow, playerWindow);
   input = new Input(godWindow.kbd, godWindow.mouse);
-  //gui = new GUI();
   JM_Get() = JM_AllocJobManager();
   JM_InitJobManager(JM_Get(), num_cores);
   
@@ -103,7 +102,8 @@ void Game::Update()
   if (input->IsPressed(ButtonCode::SPACE) == true) 
   {
 	  guiOn = true;
-	  gui.gameTime->Reset();
+	  gui = GUI::GUI();
+
   }
   if (guiOn) {
 	  gui.Update();
