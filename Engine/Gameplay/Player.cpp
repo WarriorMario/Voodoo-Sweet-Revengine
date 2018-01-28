@@ -156,21 +156,7 @@ bool Player::CanDrink()
 {
   return grid.DrinkingArea(x / Tile::SIZE, y / Tile::SIZE);
 }
-bool Player::LoadVariables()
-{
-  StringRef loadName = VARIABLES_TO_LOAD;
-  Serializer ser("");
-  if(ser.Deserialize(loadName.data()) == ErrorCodes::FAILURE)
-  {
-    // failed to load the json file
-    return false;
-  }
-  ser.Get("basescale", BaseScale);
-  ser.Get("scaleamplifier", ScaleAmplifier);
-  ser.Get("basespeed", BaseSpeed);
-  ser.Get("minspeed", MinSpeed);
 
-}
 void Player::LoseWater()
 {
   if(waterPercentage > 0)
