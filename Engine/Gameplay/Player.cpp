@@ -21,7 +21,9 @@
 #define MIN_WATER_LAYER_3 "Images/Kid1_Anim/Layer3/3_Kid1Hit"
 
 constexpr float BASE_SCALE = 1.5f;
-constexpr float SCALE_AMPLIFIER = 3.f;
+constexpr float SCALE_AMPLIFIER = 6.f;
+constexpr float BASE_SPEED = 5.f;
+constexpr float MIN_SPEED = 0.8f;
 
 Player::Player(Physics& simulation, TileGrid& grid, int id)
 	:
@@ -76,6 +78,7 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
 	y = 300.0f;
 	physics_body.body->SetUserData(this);
 	dead = false;
+  speed = BASE_SPEED;
 }
 
 void Player::Update(float dt)
@@ -219,17 +222,17 @@ MoveState::State MoveState::Update(float dt)
   dir.Normalize();
   if(abs(dir.x) > abs(dir.y))
   {
-    Owner().x += dir.x * 5.f;
+    Owner().x += dir.x * Owner().speed;
     if(Owner().IsStuck())
     {
-      Owner().x -= dir.x * 5.f;
+      Owner().x -= dir.x * Owner().speed;
     }
     return nullptr;
   }
-  Owner().y += dir.y * 5.f;
+  Owner().y += dir.y * Owner().speed;
   if(Owner().IsStuck())
   {
-    Owner().y -= dir.y * 5.f;
+    Owner().y -= dir.y * Owner().speed;
   }
 
   return nullptr;
@@ -390,8 +393,8 @@ void GettingWater::OnEnter(Player& player)
 	Base::OnEnter(player);
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
 	//Sets the amount of water that it can consume/release simultaneously
-	consumingWaterAmount = 1.f;
-	releaseWaterAmount = -20.f;
+	consumingWaterAmount = 0.1f;
+	releaseWaterAmount = -5.f;
 	waterAdding = 0;
 }
 void GettingWater::OnExit()
@@ -411,8 +414,9 @@ GettingWater::State GettingWater::Update(float dt)
 	if (Owner().waterPercentage < 0)
 		Owner().waterPercentage = 0;
 	//Makes sure the speed is lower when the waterpercentage is higher 
-	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) {
-		Owner().speed = -((Owner().waterPercentage - 100.f) / 100.f) + 1.f;
+	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) 
+  {
+    Owner().speed = BASE_SPEED - (Owner().waterPercentage / 100.0f)*(BASE_SPEED - MIN_SPEED);
 	}
 
   float scale = SCALE_AMPLIFIER *(Owner().waterPercentage / 100.0f) + BASE_SCALE;

@@ -63,7 +63,7 @@ public:
   bool water_goes_in;
 	Body physics_body;
 	float waterPercentage = 0;
-	float speed = 2.f;
+	float speed;
 	float total_time;
 
 	LayeredAnimation graphics[NumSprites];
