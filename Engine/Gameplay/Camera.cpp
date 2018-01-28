@@ -6,13 +6,31 @@ void Camera::CalculateOffset(const Array<Player*>& players)
 	float biggest_axis = 0.0f;
 
   Vec2 average = Vec2(0,0);
+  float minX = FLT_MAX, maxX = FLT_MIN;
+  float minY = FLT_MAX, maxY = FLT_MIN;
+
   size_t i = 0;
   for(; i < players.size(); ++i)
   {
     average += {players[i]->x, players[i]->y};
+
+    minX = min(players[i]->x, minX);
+    maxX = max(players[i]->x, maxX);
+    minY = min(players[i]->y, minY);
+    maxY = max(players[i]->y, maxY);
   }
   offset = -average / i
     + Vec2(Graphics::ScreenWidth/2, Graphics::ScreenHeight/ 2);
+
+  const float minZoom = 0.5f;
+  const float deltaX = max(abs(maxX - minX), minZoom * Graphics::ScreenWidth);
+  const float deltaY = max(abs(maxY - minY), minZoom * Graphics::ScreenHeight);
+
+  const float scaleMargin = 300.f;
+  const float scaleX = deltaX / (Graphics::ScreenWidth - scaleMargin);
+  const float scaleY = deltaY / (Graphics::ScreenHeight - scaleMargin);
+
+  zoom = max(scaleX, scaleY);
 }
 
 Vec2 Camera::Transform(Vec3 vector)
