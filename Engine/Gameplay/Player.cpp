@@ -258,7 +258,7 @@ void MoveState::OnExit()
 
 MoveState::State MoveState::Update(float dt)
 {
-	if (Owner().water_forced_out == true)
+	if (Owner().water_forced_out == true && Owner().waterPercentage > 0)
 	{
 		return new GettingWater;
 	}
@@ -534,7 +534,7 @@ GettingWater::State GettingWater::Input(::Input& input)
 		return new IdleState;
 	}
 	// Checks if you're consuming and if so it changes the 
-	if (input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && Owner().CanDrink())
+	if (input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) && Owner().CanDrink() && Owner().water_forced_out == false)
 	{
 		waterAdding = ConsumeWaterSpeed;
 	}
