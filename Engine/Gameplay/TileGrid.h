@@ -49,7 +49,7 @@ public:
 	b2Vec2 GetRandomSpawnGod();
 
 private:
-	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/spritesheet.jpg";
+	static constexpr char TEXTURE_TO_LOAD[] = "Images/TileAtlas/PrettyAtlas.png";
 	unsigned int width;
 	unsigned int height;
 	Tile* tiles;

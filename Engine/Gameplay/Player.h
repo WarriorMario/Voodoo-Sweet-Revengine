@@ -75,6 +75,8 @@ private:
 	TileGrid & grid;
 	static constexpr char VARIABLES_TO_LOAD[] = "Variables/Variables.json";
 	StateMachine<Player> movement;
+	b2Vec2 collision_box_scale_base;
+	b2Vec2 collision_box_scale_cur;
 
 	Sprite curr_sprite;
 	bool flip_sprite;

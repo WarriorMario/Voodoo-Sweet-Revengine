@@ -33,34 +33,38 @@ float GettingWater::ReleaseWaterSpeed;
 float GettingWater::ChunkTime;
 
 Player::Player(Physics& simulation, TileGrid& grid, int id)
-	:
-	movement(*this, new IdleState),
-	flip_sprite(false),
-	physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
-	grid(grid),
-	player_id(id),
-	graphics{ 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f }
+  :
+  movement(*this, new IdleState),
+  collision_box_scale_base(b2Vec2(0.0f)),
+  collision_box_scale_cur(b2Vec2(0.0f)),
+  flip_sprite(false),
+  physics_body(simulation.CreateBody(Vec2(40, 30), "Square")),
+  grid(grid),
+  player_id(id),
+  graphics{0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f}
 {
-	LoadVariables();
-	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_0, 3);
-	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_1, 3);
-	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_2, 3);
-	graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_3, 3);
+  // load in the variables from the json file
+  LoadVariables();
 
-	graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_0, 3);
-	graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_1, 3);
-	graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_2, 3);
-	graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_3, 3);
+  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_0, 3);
+  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_1, 3);
+  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_2, 3);
+  graphics[(int)Sprite::Idle].AddLayer(MOVE_LAYER_3, 3);
 
-	graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_0, 19);
-	graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_1, 19);
-	graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_2, 19);
-	graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_3, 19);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_0, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_1, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_2, 3);
+  graphics[(int)Sprite::Move].AddLayer(MOVE_LAYER_3, 3);
 
-	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_0, 1);
-	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_1, 1);
-	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_2, 1);
-	graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_3, 1);
+  graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_0, 19);
+  graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_1, 19);
+  graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_2, 19);
+  graphics[(int)Sprite::AddingWater].AddLayer(PLUS_WATER_LAYER_3, 19);
+
+  graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_0, 1);
+  graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_1, 1);
+  graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_2, 1);
+  graphics[(int)Sprite::DumpingWater].AddLayer(MIN_WATER_LAYER_3, 1);
 
 
   graphics[(int)Sprite::Idle].ScaleLayer(0, BaseScale);
@@ -80,74 +84,91 @@ Player::Player(Physics& simulation, TileGrid& grid, int id)
   graphics[(int)Sprite::DumpingWater].ScaleLayer(2, BaseScale);
   graphics[(int)Sprite::DumpingWater].ScaleLayer(3, BaseScale);
 
-	width = 32.0f;
-	height = 32.0f;
-	x = 400.0f;
-	y = 300.0f;
-	physics_body.body->SetUserData(this);
+  width = 32.0f;
+  height = 32.0f;
+  x = 400.0f;
+  y = 300.0f;
+  physics_body.body->SetUserData(this);
   water_forced_out = false;
   speed = BaseSpeed;
 }
 
 void Player::Update(float dt)
 {
-	total_time += dt;
+  total_time += dt;
 
 
-	movement.Update(dt);
-	graphics[(int)curr_sprite].Update(dt);
+  movement.Update(dt);
+  graphics[(int)curr_sprite].Update(dt);
 
-	physics_body.body->GetWorld()->ClearForces();
-	physics_body.body->SetTransform(Vec2(x, y) / PHYSICS_SCALE, 0);
+  physics_body.body->GetWorld()->ClearForces();
+  physics_body.body->SetTransform(Vec2(x, y) / PHYSICS_SCALE, 0);
 }
 
-void Player::Input(::Input & input)
-{
-	movement.Input(input);
-}
-
-bool Player::IsStuck()
-{
-	bool res = false;
-	Vec2 offset = Vec2(width / 2, height / 2);
-
-	// outer corners
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
-
-	// centre points
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
-
-	return res;
-}
-
-bool Player::CanDrink()
-{
-	return grid.DrinkingArea(x / Tile::SIZE, y / Tile::SIZE);
-}
 bool Player::LoadVariables()
- {
-	StringRef loadName = VARIABLES_TO_LOAD;
-	Serializer ser("");
-	if (ser.Deserialize(loadName.data()) == ErrorCodes::FAILURE)
-	{
-		// failed to load the json file
-		return false;
-	}
-	ser.Get("basescale", BaseScale);
-	ser.Get("scaleamplifier", ScaleAmplifier);
-	ser.Get("basespeed", BaseSpeed);
-	ser.Get("minspeed", MinSpeed);
+{
+  StringRef loadName = VARIABLES_TO_LOAD;
+  Serializer ser("");
+  if(ser.Deserialize(loadName.data()) == ErrorCodes::FAILURE)
+  {
+    // failed to load the json file
+    return false;
+  }
+  ser.Get("basescale", BaseScale);
+  ser.Get("scaleamplifier", ScaleAmplifier);
+  ser.Get("basespeed", BaseSpeed);
+  ser.Get("minspeed", MinSpeed);
   ser.Get("godbasespeed", GodBaseSpeed);
 
   ser.Get("consumewaterspeed", GettingWater::ConsumeWaterSpeed);
   ser.Get("releasewaterspeed", GettingWater::ReleaseWaterSpeed);
   ser.Get("chunktime", GettingWater::ChunkTime);
+
+  ser.Get("collisionboxscalex", collision_box_scale_base.x);
+  ser.Get("collisionboxscaley", collision_box_scale_base.y);
+  collision_box_scale_cur = collision_box_scale_base;
+}
+
+void Player::Input(::Input & input)
+{
+  movement.Input(input);
+}
+
+bool Player::IsStuck()
+{
+  bool res = false;
+
+  // outer corners
+  res |= grid.IsPassable((x + collision_box_scale_cur.x) / Tile::SIZE, (y + collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable((x + collision_box_scale_cur.x) / Tile::SIZE, (y - collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable((x - collision_box_scale_cur.x) / Tile::SIZE, (y + collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable((x - collision_box_scale_cur.x) / Tile::SIZE, (y - collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+
+  // centre points
+  res |= grid.IsPassable((x + collision_box_scale_cur.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable((x - collision_box_scale_cur.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable(x / Tile::SIZE, (y + collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+  res |= grid.IsPassable(x / Tile::SIZE, (y - collision_box_scale_cur.y) / Tile::SIZE, is_god) == false;
+
+  return res;
+}
+bool Player::CanDrink()
+{
+  return grid.DrinkingArea(x / Tile::SIZE, y / Tile::SIZE);
+}
+bool Player::LoadVariables()
+{
+  StringRef loadName = VARIABLES_TO_LOAD;
+  Serializer ser("");
+  if(ser.Deserialize(loadName.data()) == ErrorCodes::FAILURE)
+  {
+    // failed to load the json file
+    return false;
+  }
+  ser.Get("basescale", BaseScale);
+  ser.Get("scaleamplifier", ScaleAmplifier);
+  ser.Get("basespeed", BaseSpeed);
+  ser.Get("minspeed", MinSpeed);
 
 }
 void Player::LoseWater()
@@ -420,9 +441,9 @@ JumpState::State JumpState::Input(::Input& input)
 // ****************************************************************************
 void GettingWater::OnEnter(Player& player)
 {
-	Base::OnEnter(player);
+  Base::OnEnter(player);
   Owner().SetSprite(Owner().water_goes_in ? Player::Sprite::AddingWater : Player::Sprite::DumpingWater);
-	waterAdding = 0;
+  waterAdding = 0;
   last_update = 0;
 }
 void GettingWater::OnExit()
@@ -441,20 +462,20 @@ GettingWater::State GettingWater::Update(float dt)
   {
     Owner().water_forced_out = (Owner().waterPercentage > 0);
   }
-	//checks if the waterAdding is the right amount and adds that amount to the water percentage
-	if (waterAdding == ConsumeWaterSpeed || waterAdding == ReleaseWaterSpeed)
-		Owner().waterPercentage += waterAdding;
-	//This makes sure it stays within the 100% range
-	if (Owner().waterPercentage > 100)
-		Owner().waterPercentage = 100;
-	//This makes sure it doesn't go lower than 0
-	if (Owner().waterPercentage < 0)
-		Owner().waterPercentage = 0;
-	//Makes sure the speed is lower when the waterpercentage is higher 
-	if (Owner().waterPercentage > 0 && Owner().waterPercentage < 100) 
+  //checks if the waterAdding is the right amount and adds that amount to the water percentage
+  if(waterAdding == ConsumeWaterSpeed || waterAdding == ReleaseWaterSpeed)
+    Owner().waterPercentage += waterAdding;
+  //This makes sure it stays within the 100% range
+  if(Owner().waterPercentage > 100)
+    Owner().waterPercentage = 100;
+  //This makes sure it doesn't go lower than 0
+  if(Owner().waterPercentage < 0)
+    Owner().waterPercentage = 0;
+  //Makes sure the speed is lower when the waterpercentage is higher 
+  if(Owner().waterPercentage > 0 && Owner().waterPercentage < 100)
   {
     Owner().speed = Owner().BaseSpeed - (Owner().waterPercentage / 100.0f)*(Owner().BaseSpeed - Owner().MinSpeed);
-	}
+  }
 
   float scale = Owner().ScaleAmplifier *(Owner().waterPercentage / 100.0f) + Owner().BaseScale;
   float y_offset = (scale - Owner().BaseScale)* 8.0f;
@@ -489,11 +510,11 @@ GettingWater::State GettingWater::Update(float dt)
   //Owner().graphics[(int)Player::Sprite::Move].OffsetLayer(1, Vec2(0, 0 * t));
 
 
-  if(waterAdding < 0&&Owner().water_forced_out == true)
+  if(waterAdding < 0 && Owner().water_forced_out == true)
   {
     last_update = ChunkTime;
   }
-	return nullptr;
+  return nullptr;
 }
 GettingWater::State GettingWater::Input(::Input& input)
 {
@@ -513,8 +534,8 @@ GettingWater::State GettingWater::Input(::Input& input)
 
   if(input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id) || Owner().water_forced_out == true)
   {
-		waterAdding = ReleaseWaterSpeed;
+    waterAdding = ReleaseWaterSpeed;
   }
 
-	return nullptr;
+  return nullptr;
 }
