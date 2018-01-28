@@ -43,10 +43,10 @@ public:
   void OnInitialize() override
   {
     scene.Init();
-
-    scene.SpawnPlayer(0);
-    scene.SpawnPlayer(1);
-    scene.SpawnPlayer(2);
+    for(int i = 0; i < NUM_PLAYERS - 1; ++i)
+    {
+      scene.SpawnPlayer(i);
+    }
     scene.NewGod();
   }
   void OnTerminate() override

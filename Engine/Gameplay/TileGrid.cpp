@@ -190,9 +190,14 @@ void TileGrid::Draw()
 	}
 }
 
-bool TileGrid::IsPassable(int x, int y)
+bool TileGrid::IsPassable(int x, int y, bool is_neighbour)
 {
-	return tiles[y*width + x].IsPassable();
+	return tiles[y*width + x].IsPassable(is_neighbour);
+}
+
+bool TileGrid::DrinkingArea(int x, int y)
+{
+  return tiles[y*width + x].DrinkingArea();
 }
 
 b2Vec2 TileGrid::GetRandomSpawnPlayer()

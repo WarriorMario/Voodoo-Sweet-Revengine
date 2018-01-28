@@ -69,12 +69,12 @@ void Scene::NewGod()
 		}
 	}
 
-	int new_god = 3;
+  int new_god = NUM_PLAYERS - 1;;
 	if (players[new_god] != nullptr)
 	{
 		delete players[new_god];
 	}
-	players[new_god] = new AngryPlayer(simulation, tile_grid, 3);
+	players[new_god] = new AngryPlayer(simulation, tile_grid, new_god);
 	players[new_god]->is_god = true;
 
 	Vec2 pos = tile_grid.GetRandomSpawnGod();

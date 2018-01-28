@@ -50,8 +50,9 @@ public:
 		flip_sprite = flipped;
 	}
 
-	bool IsStuck();
-	void LoseWater();
+  bool IsStuck();
+  bool CanDrink();
+  void LoseWater();
 
 public:
 	float x, y;

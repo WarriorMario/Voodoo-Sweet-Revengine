@@ -104,16 +104,16 @@ bool Player::IsStuck()
 	Vec2 offset = Vec2(width / 2, height / 2);
 
 	// outer corners
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
 
 	// centre points
-	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
-	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE) == false;
-	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE) == false;
+	res |= grid.IsPassable((x + offset.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable((x - offset.x) / Tile::SIZE, y / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y + offset.y) / Tile::SIZE, is_god) == false;
+	res |= grid.IsPassable(x / Tile::SIZE, (y - offset.y) / Tile::SIZE, is_god) == false;
 
 	return res;
 }
@@ -143,7 +143,7 @@ IdleState::State IdleState::Update(float dt)
 IdleState::State IdleState::Input(::Input& input)
 {
   b2Vec2 dir = b2Vec2(0.0f, 0.0f);
-  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && !Owner().is_god)
+  if ((input.IsDown(ButtonCode::GAMEPAD_A, Owner().player_id) || input.IsDown(ButtonCode::GAMEPAD_B, Owner().player_id)) && Owner().CanDrink())
 	  return new GettingWater();
   if(input.GetAxis(AxisCode::LEFT, Owner().player_id).x > 0)
   {
