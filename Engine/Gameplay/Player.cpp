@@ -134,7 +134,7 @@ bool Player::LoadVariables()
 		// failed to load the json file
 		return false;
 	}
-	ser.Get("basespeed", BaseScale);
+	ser.Get("basescale", BaseScale);
 	ser.Get("scaleamplifier", ScaleAmplifier);
 	ser.Get("basespeed", BaseSpeed);
 	ser.Get("minspeed", MinSpeed);
