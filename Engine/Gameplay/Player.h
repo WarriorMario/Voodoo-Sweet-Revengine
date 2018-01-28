@@ -52,6 +52,7 @@ public:
 
   bool IsStuck();
   bool CanDrink();
+  bool CanDepositWater();
   void LoseWater();
 
 public:
@@ -70,6 +71,7 @@ public:
 	static float ScaleAmplifier;
 	static float BaseSpeed;
   static float GodBaseSpeed;
+  float water_added_to_goal;
 	LayeredAnimation graphics[NumSprites];
 private:
 	TileGrid & grid;
