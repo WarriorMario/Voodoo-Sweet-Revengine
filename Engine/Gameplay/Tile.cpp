@@ -33,7 +33,7 @@ void Tile::Init(int grid_pos_x, int grid_pos_y, int tile_visual,
 
 	// transform the position to screen space
 	pos_x = (grid_pos_x) * SIZE;
-	pos_y = (atlas_height - grid_pos_y) * SIZE;
+	pos_y = (grid_pos_y) * SIZE;
 
 	// the step size in u and v per tile
 	float uv_delta_x = (float)TILE_SIZE_IN_ATLAS / (float)tex_width;
